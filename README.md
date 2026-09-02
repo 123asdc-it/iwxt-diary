@@ -5,6 +5,8 @@ HTML、CSS、JavaScript 和图片，写作、草稿及 GitHub 凭据只留在本
 
 现有 Sites 网站和 Typecho 备份不会被此项目覆盖。
 
+公网地址：<https://123asdc-it.github.io/iwxt-diary/>
+
 ## 开始写日记
 
 最方便的方式是双击项目中的 `打开日记写作.command`。第一次启动会安装少量
@@ -51,24 +53,20 @@ npm run write
 草稿和回收站只保存在这台电脑，请把整个项目纳入 Time Machine 或其他本地
 备份；公开 GitHub 仓库只备份已经发布的日记。
 
-## 首次连接 GitHub Pages
+## GitHub Pages
 
-当前 GitHub CLI 的旧凭据已经失效。重新登录后，在本目录执行：
+项目已连接公开仓库 <https://github.com/123asdc-it/iwxt-diary>，`main` 分支
+的每次推送都会通过 GitHub Actions 自动更新 Pages。
+
+如果以后 GitHub 登录失效，可在本目录重新执行：
 
 ```bash
 gh auth login -h github.com -w
 gh auth setup-git
-gh repo create iwxt-diary --public --source=. --remote=origin --push
 ```
 
-然后进入 GitHub 仓库的 **Settings → Pages**，将 Source 设为 **GitHub
-Actions**。以后在写作页面点击“保存并发布”，工作流会自动生成并发布网站。
-
-默认地址为：
-
-```text
-https://你的GitHub用户名.github.io/iwxt-diary/
-```
+Pages 来源已设为 **GitHub Actions**。以后在写作页面点击“保存并发布”，工作流
+会自动生成并发布网站。
 
 ## 内容格式
 

@@ -46,9 +46,9 @@ a rollback.
 - Markdown HTML is sanitized before publication.
 - Only the dedicated diary project and its content are touched; the Typecho
   archives and current Sites checkout are not modified.
-- GitHub CLI account `123asdc-it` currently has an invalid token. Local work can
-  complete, but repository creation and the first production publish require a
-  new `gh auth login` session.
+- GitHub CLI account `123asdc-it` is authenticated with `repo` and `workflow`
+  scopes. The public repository is `123asdc-it/iwxt-diary` and `origin/main`
+  tracks it.
 - The user explicitly authorized Codex-only execution. The CCG Opus planner was
   unavailable because the configured Claude profile is not logged in; session
   `568e77c3-30d9-482a-a2dc-ac4240a1609a` returned no findings.
@@ -77,9 +77,12 @@ a rollback.
 - The separate `AKAROMindeximg` homepage wallpaper URL control was checked at
   desktop and 390 px mobile widths. Live URL preview, the default lake state,
   accessible labels, and both action buttons rendered without console errors.
+- GitHub Pages was enabled with `build_type=workflow`. Actions run
+  `33624377126` completed both build and deploy jobs successfully. The live
+  homepage, CSS, and default wallpaper returned HTTP 200, and a live desktop
+  browser smoke test reported no console errors.
 
 ## Remaining work
 
-- Reauthenticate GitHub, create the public repository, push `main`, enable
-  GitHub Actions Pages, and confirm the production URL. This requires the user
-  to finish GitHub's browser sign-in once.
+- No implementation work remains. The user can paste the preferred wallpaper
+  site's direct image URL in the local writer and save it when ready.
