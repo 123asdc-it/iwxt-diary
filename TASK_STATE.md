@@ -67,7 +67,6 @@ a rollback.
 
 ## Remaining work
 
-- Create the initial local commit.
 - Reauthenticate GitHub, create the public repository, push `main`, enable
   GitHub Actions Pages, and confirm the production URL. This requires the user
   to finish GitHub's browser sign-in once.
