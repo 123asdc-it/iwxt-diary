@@ -20,6 +20,8 @@ export const covers = [
 
 const allowedCovers = new Set(covers);
 const slugPattern = /^[a-z0-9][a-z0-9-]{0,99}$/;
+const publicCoverPattern = /^uploads\/covers\/[a-f0-9]{64}\.(?:avif|gif|jpg|png|webp)$/;
+const draftCoverPattern = /^draft-covers\/[a-f0-9]{64}\.(?:avif|gif|jpg|png|webp)$/;
 
 export function escapeHtml(value) {
   return String(value)
@@ -83,7 +85,10 @@ export function validateEntry(input, { requireSlug = false } = {}) {
   if (tags.length > 8 || tags.some((tag) => tag.length > 24)) {
     throw new Error('最多使用 8 个标签，每个标签不超过 24 个字。');
   }
-  if (!allowedCovers.has(cover)) throw new Error('请选择日记本提供的文章封面。');
+  const validCover = allowedCovers.has(cover)
+    || publicCoverPattern.test(cover)
+    || (status === 'draft' && draftCoverPattern.test(cover));
+  if (!validCover) throw new Error('请选择内置封面，或导入有效的图片 URL。');
   if (requireSlug && !slugPattern.test(slug)) throw new Error('日记标识无效。');
 
   const createdAt = isoString(input?.createdAt, now);

@@ -13,6 +13,7 @@ import {
   saveEntry,
   trashEntry,
 } from './content.mjs';
+import { DRAFT_COVERS_DIR, prepareCoverInput } from './remote-images.mjs';
 
 const host = '127.0.0.1';
 const port = Number(process.env.WRITER_PORT || 4173);
@@ -21,7 +22,9 @@ const writerDir = path.join(PROJECT_DIR, 'writer');
 const maxBodyBytes = 80_000;
 
 const mimeTypes = {
+  '.avif': 'image/avif',
   '.css': 'text/css; charset=utf-8',
+  '.gif': 'image/gif',
   '.html': 'text/html; charset=utf-8',
   '.ico': 'image/x-icon',
   '.jpg': 'image/jpeg',
@@ -94,7 +97,7 @@ async function syncPublishedContent(commitMessage) {
     return { pushed: false, reason: 'no-repository' };
   }
 
-  await run('git', ['add', '-A', '--', 'content/posts']);
+  await run('git', ['add', '-A', '--', 'content/posts', 'public/uploads/covers']);
   const changes = await run('git', ['diff', '--cached', '--quiet'], { allowFailure: true });
   if (changes.code > 1) throw new Error(changes.output || '无法检查待发布内容。');
   if (changes.code !== 0) {
@@ -114,7 +117,8 @@ async function syncPublishedContent(commitMessage) {
 }
 
 async function publishEntry(input) {
-  const entry = await saveEntry({ ...input, status: 'published' });
+  const prepared = await prepareCoverInput({ ...input, status: 'published' });
+  const entry = await saveEntry(prepared);
   await buildSite();
   const sync = await syncPublishedContent(`Publish diary: ${entry.title}`);
   if (sync.pushed) {
@@ -157,7 +161,7 @@ async function serveFile(response, root, pathname, { injectToken = false } = {})
     'X-Content-Type-Options': 'nosniff',
   };
   if (injectToken) {
-    headers['Content-Security-Policy'] = "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'";
+    headers['Content-Security-Policy'] = "default-src 'self'; img-src 'self' data: http: https:; style-src 'self'; script-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'";
     const source = await readFile(filePath, 'utf8');
     response.writeHead(200, headers);
     response.end(source.replace('__WRITER_TOKEN__', writerToken));
@@ -181,7 +185,7 @@ async function handleApi(request, response, pathname) {
   }
 
   if (request.method === 'POST' && pathname === '/api/entries') {
-    const entry = await saveEntry(await readJsonBody(request));
+    const entry = await saveEntry(await prepareCoverInput(await readJsonBody(request)));
     await buildSite();
     json(response, 200, { entry, message: entry.status === 'draft' ? '草稿已保存。' : '日记已保存到本地公开预览。' });
     return;
@@ -235,6 +239,10 @@ const server = createServer(async (request, response) => {
     if (requestUrl.pathname.startsWith('/api/')) {
       await handleApi(request, response, requestUrl.pathname);
       return;
+    }
+    if (requestUrl.pathname.startsWith('/local-draft-covers/')) {
+      const served = await serveFile(response, DRAFT_COVERS_DIR, requestUrl.pathname.slice('/local-draft-covers'.length));
+      if (served) return;
     }
     if (requestUrl.pathname === '/writer' || requestUrl.pathname === '/writer/') {
       await serveFile(response, writerDir, '/index.html', { injectToken: true });

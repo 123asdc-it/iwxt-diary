@@ -9,3 +9,5 @@ content/drafts/*
 !content/drafts/.gitkeep
 content/trash/*
 !content/trash/.gitkeep
+content/draft-assets/*
+!content/draft-assets/.gitkeep

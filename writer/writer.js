@@ -8,6 +8,7 @@ const errorBox = document.querySelector('[data-error]');
 const removeButton = document.querySelector('[data-remove-entry]');
 const coverPreview = document.querySelector('[data-cover-preview]');
 const coverSelect = document.querySelector('[data-cover-select]');
+const coverUrl = document.querySelector('[data-cover-url]');
 let entries = [];
 let dirty = false;
 
@@ -41,7 +42,15 @@ function setError(text = '') {
 }
 
 function updateCover() {
-  coverPreview.src = `/${coverSelect.value}`;
+  const remoteUrl = coverUrl.value.trim();
+  if (remoteUrl) {
+    coverPreview.src = remoteUrl;
+    return;
+  }
+  const cover = fields.cover.value;
+  coverPreview.src = cover.startsWith('draft-covers/')
+    ? `/local-draft-covers/${cover.slice('draft-covers/'.length)}`
+    : `/${cover}`;
 }
 
 function currentPayload(status) {
@@ -52,6 +61,7 @@ function currentPayload(status) {
     tags: fields.tags.value.split(/[，,]/).map((tag) => tag.trim()).filter(Boolean),
     summary: fields.summary.value,
     cover: fields.cover.value,
+    coverUrl: fields.coverUrl.value,
     content: fields.content.value,
     status,
   };
@@ -87,6 +97,8 @@ function resetEditor() {
   fields.slug.value = '';
   fields.date.value = localDate();
   fields.cover.value = 'romanticism/covers/1.webp';
+  fields.coverChoice.value = fields.cover.value;
+  fields.coverUrl.value = '';
   document.querySelector('[data-mode-label]').textContent = '新日记';
   document.querySelector('[data-editor-title]').textContent = '写下今天';
   removeButton.hidden = true;
@@ -105,6 +117,14 @@ function selectEntry(entry) {
   fields.tags.value = entry.tags.join('，');
   fields.summary.value = entry.summary;
   fields.cover.value = entry.cover;
+  fields.coverUrl.value = '';
+  if (![...coverSelect.options].some((option) => option.value === entry.cover)) {
+    const imported = document.createElement('option');
+    imported.value = entry.cover;
+    imported.textContent = '已导入的 URL 图片';
+    coverSelect.append(imported);
+  }
+  fields.coverChoice.value = entry.cover;
   fields.content.value = entry.content;
   document.querySelector('[data-mode-label]').textContent = entry.status === 'draft' ? '编辑草稿' : '编辑已发布日记';
   document.querySelector('[data-editor-title]').textContent = entry.title;
@@ -159,7 +179,12 @@ document.querySelector('[data-save-draft]').addEventListener('click', () => { vo
 document.querySelector('[data-new-entry]').addEventListener('click', () => {
   if (!dirty || window.confirm('当前内容还没有保存，确定新建日记吗？')) resetEditor();
 });
-coverSelect.addEventListener('change', updateCover);
+coverSelect.addEventListener('change', () => {
+  fields.cover.value = coverSelect.value;
+  fields.coverUrl.value = '';
+  updateCover();
+});
+coverUrl.addEventListener('input', updateCover);
 
 document.querySelector('[data-build-preview]').addEventListener('click', async () => {
   setMessage('正在重新生成预览…');

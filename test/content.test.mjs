@@ -14,6 +14,13 @@ import {
   trashEntry,
   validateEntry,
 } from '../scripts/content.mjs';
+import {
+  DRAFT_COVERS_DIR,
+  PUBLIC_COVERS_DIR,
+  importRemoteCover,
+  prepareCoverInput,
+  validateRemoteImageUrl,
+} from '../scripts/remote-images.mjs';
 
 const validEntry = {
   title: '测试日记',
@@ -33,6 +40,44 @@ test('project subpaths are normalized for GitHub Pages', () => {
 test('entry validation rejects invalid dates and covers', () => {
   assert.throws(() => validateEntry({ ...validEntry, date: '2026-02-30' }), /有效/);
   assert.throws(() => validateEntry({ ...validEntry, cover: '../../secret' }), /封面/);
+});
+
+test('remote cover URLs reject local network targets', async () => {
+  await assert.rejects(validateRemoteImageUrl('file:///tmp/private.png'), /http/);
+  await assert.rejects(validateRemoteImageUrl('http://127.0.0.1/private.png'), /本机或局域网/);
+  await assert.rejects(validateRemoteImageUrl('http://198.18.0.1/private.png'), /本机或局域网/);
+  await assert.rejects(validateRemoteImageUrl('https://localhost/private.png'), /本机或局域网/);
+  await assert.rejects(validateRemoteImageUrl('https://internal.example/cover.png', {
+    lookupFn: async () => [{ address: '10.0.0.8', family: 4 }],
+  }), /本机或局域网/);
+  const proxied = await validateRemoteImageUrl('https://images.example.com/cover.png', {
+    lookupFn: async () => [{ address: '198.18.0.187', family: 4 }],
+  });
+  assert.equal(proxied.hostname, 'images.example.com');
+});
+
+test('a remote draft cover stays local until publication', async () => {
+  const pngBytes = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d]);
+  const dependencies = {
+    lookupFn: async () => [{ address: '93.184.216.34', family: 4 }],
+    fetchFn: async () => new Response(pngBytes, { headers: { 'content-type': 'image/png' } }),
+  };
+  const draftCover = await importRemoteCover('https://example.com/wallpaper.png', 'draft', dependencies);
+  const filename = path.basename(draftCover);
+  const draftPath = path.join(DRAFT_COVERS_DIR, filename);
+  const publicPath = path.join(PUBLIC_COVERS_DIR, filename);
+  try {
+    assert.match(draftCover, /^draft-covers\/[a-f0-9]{64}\.png$/);
+    await access(draftPath);
+    await assert.rejects(access(publicPath));
+    const promoted = await prepareCoverInput({ status: 'published', cover: draftCover });
+    assert.equal(promoted.cover, `uploads/covers/${filename}`);
+    await access(publicPath);
+    assert.doesNotThrow(() => validateEntry({ ...validEntry, status: 'published', cover: promoted.cover }));
+  } finally {
+    await rm(draftPath, { force: true });
+    await rm(publicPath, { force: true });
+  }
 });
 
 test('published markdown is sanitized', () => {

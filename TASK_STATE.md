@@ -13,6 +13,9 @@ a rollback.
   database, server login, or browser-stored publishing credential.
 - A localhost-only writing app can create, edit, draft, publish, and recoverably
   remove Markdown entries.
+- The article cover control preserves Romanticism's custom image URL behavior:
+  remote images are validated and copied locally, draft assets remain ignored,
+  and only published assets enter the public repository.
 - Draft entries never appear in the public build.
 - Published entries have individual pages and support home-feed search, date and
   tag filtering.
@@ -49,9 +52,9 @@ a rollback.
 ## Verification status
 
 - `npm run check`: passed for generator, writer server, and both browser scripts.
-- `npm test`: 5/5 tests passed, including local-only drafts, publication
-  promotion, Markdown sanitization, validation, subpaths, and recoverable
-  deletion.
+- `npm test`: 7/7 tests passed, including local-only drafts and remote cover
+  assets, publication promotion, URL/private-network rejection, Markdown
+  sanitization, validation, subpaths, and recoverable deletion.
 - `npm audit --omit=dev`: 0 known vulnerabilities.
 - Root build and simulated `/iwxt-diary/` GitHub Pages subpath build both
   completed with one published entry; generated local links and assets use the
@@ -64,6 +67,9 @@ a rollback.
 - A browser-created test draft was present only in ignored `content/drafts/`,
   absent from `content/posts/` and `dist/`, then successfully moved into the
   ignored local trash. The test artifact was removed afterward.
+- The restored image URL field was exercised in the real writer with a public
+  PNG URL. The imported image rendered in the preview, was stored only under
+  ignored draft assets, and its test draft/image were removed afterward.
 
 ## Remaining work
 

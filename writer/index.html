@@ -36,12 +36,13 @@
 
       <form data-editor-form>
         <input type="hidden" name="slug">
+        <input type="hidden" name="cover">
         <div class="field-grid">
           <label class="field title-field"><span>标题</span><input name="title" type="text" maxlength="120" placeholder="给这一天起个名字" required></label>
           <label class="field"><span>日期</span><input name="date" type="date" required></label>
           <label class="field wide"><span>标签</span><input name="tags" type="text" placeholder="例如：日常，随笔（逗号分隔）"></label>
           <label class="field wide"><span>摘要</span><input name="summary" type="text" maxlength="300" placeholder="可不填，将自动从正文生成"></label>
-          <label class="field wide"><span>文章封面</span><div class="cover-row"><img data-cover-preview alt="当前文章封面"><select name="cover" data-cover-select></select></div></label>
+          <div class="field wide"><span>文章封面</span><div class="cover-row"><img data-cover-preview alt="当前文章封面"><div class="cover-controls"><label><span class="visually-hidden">选择内置封面</span><select name="coverChoice" data-cover-select aria-label="选择内置封面"></select></label><label class="cover-url-field"><span>或者粘贴图片 URL</span><input name="coverUrl" type="url" maxlength="2048" inputmode="url" placeholder="https://example.com/my-wallpaper.jpg" data-cover-url></label><p>保存时会把图片复制到日记项目中，不会依赖原网址长期在线。</p></div></div></div>
           <label class="field wide body-field"><span>正文（支持 Markdown）</span><textarea name="content" maxlength="50000" placeholder="从这里开始写……&#10;&#10;空一行可以分段。" required></textarea></label>
         </div>
         <p class="editor-error" data-error role="alert" hidden></p>

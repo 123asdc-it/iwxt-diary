@@ -24,6 +24,10 @@ npm run write
 目录。草稿保存在本机的 `content/drafts/`，这个目录被 Git 忽略，因此既不会
 进入 `dist/` 的公开网站，也不会出现在公开 GitHub 仓库中。
 
+文章封面既可以从 Romanticism 自带图片中选择，也可以像旧 Typecho 主题一样
+粘贴图片 URL。保存时会验证并下载 PNG、JPEG、WebP、GIF 或 AVIF 图片（最大
+8 MB）：草稿图片只保存在本机，点击“保存并发布”后才会复制到公开资源目录。
+
 “移到回收站”不会真正删除文件，而是移到本机的 `content/trash/`，该目录也
 不会上传。需要恢复已发布文章时，把对应 `.md` 文件移回 `content/posts/`；
 恢复草稿时移回 `content/drafts/`。
@@ -80,6 +84,9 @@ updatedAt: "2026-09-02T08:00:00.000Z"
 
 正文写在这里。
 ```
+
+从 URL 导入并发布的图片会使用 `uploads/covers/...` 路径；原始 URL 不会写入
+文章文件，也不需要在浏览器中保存任何图片站账号。
 
 可在 `site.config.json` 修改站名、副标题和作者名。
 
