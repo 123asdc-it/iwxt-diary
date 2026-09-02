@@ -91,11 +91,16 @@ a rollback.
   retaining the theme's circular crop and placement. A real-browser check at
   390 x 844 confirmed the avatar remains centered, the drawer layout is intact,
   and the page reports no console errors or warnings.
-- The drawer header's concert photo was replaced with a blue-purple anime
-  streetscape from Wallhaven wallpaper `ogjwvl`. The source was reduced from a
-  3840 x 2160 JPEG to a 1600 x 900 WebP for the public asset. A 390 x 844
-  Playwright check confirmed the avatar, title, close control, crop, and text
-  contrast remain usable with no console errors or warnings.
+- After a brief streetscape trial, the user requested imagery with an explicit
+  anime illustration style. The drawer header now uses Wallhaven wallpaper
+  `lyylpl`, and the welcome post cover uses `pokd2m`; both were converted to
+  1600 x 900 WebP assets. Playwright checks at 1440 x 1000 and 390 x 844
+  confirmed usable crops and text contrast with no console errors or warnings.
+- The large area below the single post was diagnosed as intentional layout
+  space: `.home-surface` has `min-height: 520px`, while the post feed overlaps
+  the hero by 180px. With only one post, the unused minimum height is visible.
+  No spacing change was made because the user asked why rather than asking to
+  alter the layout.
 
 ## Remaining work
 
