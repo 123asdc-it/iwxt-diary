@@ -87,6 +87,10 @@ a rollback.
   updated `site.config.json`, and pushed commit `0b19972`. GitHub Pages run
   `33644605634` completed successfully; the live homepage references the new
   asset and the public image URL returns HTTP 200 with `image/png`.
+- The drawer avatar was replaced with the user's supplied 940 x 940 JPEG while
+  retaining the theme's circular crop and placement. A real-browser check at
+  390 x 844 confirmed the avatar remains centered, the drawer layout is intact,
+  and the page reports no console errors or warnings.
 
 ## Remaining work
 
