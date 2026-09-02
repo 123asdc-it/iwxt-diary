@@ -122,7 +122,7 @@ function indexPage(config, entries) {
 
   return `${pageHead({ config, title: config.title, description: config.description, pathname: '', imagePath: 'og.png' })}
 <body>
-<div class="romanticism-site" data-site style="--index-hero:url('${pathUrl(config.basePath, 'romanticism/indeximg.webp')}')">
+<div class="romanticism-site" data-site style="--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">
 ${appbar(config, { homePage: true })}
 ${drawer({ config, entries, months, tags })}
 <main>
@@ -187,7 +187,7 @@ ${footer(config)}
 
 function notFoundPage(config) {
   return `${pageHead({ config, title: `没有找到 · ${config.title}`, description: '没有找到这个页面。', pathname: '404.html', imagePath: 'og.png' })}
-<body><div class="romanticism-site" data-site style="--index-hero:url('${pathUrl(config.basePath, 'romanticism/indeximg.webp')}')">${appbar(config)}<main><section class="index-hero"><div class="image-shade"></div><div class="index-hero-copy"><p>404</p><h1>这里是空荡的原野……</h1><p><a class="hero-home-link" href="${pathUrl(config.basePath)}">返回日记首页</a></p></div></section></main></div><script type="module" src="${pathUrl(config.basePath, 'assets/app.js')}"></script></body></html>`;
+<body><div class="romanticism-site" data-site style="--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">${appbar(config)}<main><section class="index-hero"><div class="image-shade"></div><div class="index-hero-copy"><p>404</p><h1>这里是空荡的原野……</h1><p><a class="hero-home-link" href="${pathUrl(config.basePath)}">返回日记首页</a></p></div></section></main></div><script type="module" src="${pathUrl(config.basePath, 'assets/app.js')}"></script></body></html>`;
 }
 
 async function build() {

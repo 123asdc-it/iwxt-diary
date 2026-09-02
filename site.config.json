@@ -3,6 +3,7 @@
   "description": "在日常生活中，留下一点浪漫主义。",
   "tagline": "写下来，就不会忘记。",
   "author": "iwxt",
+  "homeImage": "romanticism/indeximg.webp",
   "basePath": "/",
   "siteUrl": "http://127.0.0.1:4173"
 }

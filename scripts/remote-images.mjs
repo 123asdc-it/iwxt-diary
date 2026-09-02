@@ -9,6 +9,7 @@ import { PROJECT_DIR } from './content.mjs';
 
 export const DRAFT_COVERS_DIR = path.join(PROJECT_DIR, 'content', 'draft-assets', 'covers');
 export const PUBLIC_COVERS_DIR = path.join(PROJECT_DIR, 'public', 'uploads', 'covers');
+export const PUBLIC_SITE_IMAGES_DIR = path.join(PROJECT_DIR, 'public', 'uploads', 'site');
 
 const maxImageBytes = 8 * 1024 * 1024;
 const redirectStatuses = new Set([301, 302, 303, 307, 308]);
@@ -153,6 +154,14 @@ export async function importRemoteCover(value, status, dependencies = {}) {
   await mkdir(directory, { recursive: true });
   await writeOnce(path.join(directory, filename), downloaded.bytes);
   return draft ? `draft-covers/${filename}` : `uploads/covers/${filename}`;
+}
+
+export async function importRemoteSiteImage(value, dependencies = {}) {
+  const downloaded = await downloadRemoteImage(value, dependencies);
+  const filename = `${createHash('sha256').update(downloaded.bytes).digest('hex')}.${downloaded.extension}`;
+  await mkdir(PUBLIC_SITE_IMAGES_DIR, { recursive: true });
+  await writeOnce(path.join(PUBLIC_SITE_IMAGES_DIR, filename), downloaded.bytes);
+  return `uploads/site/${filename}`;
 }
 
 export async function promoteDraftCover(cover) {

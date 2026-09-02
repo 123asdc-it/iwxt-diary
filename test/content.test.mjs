@@ -17,7 +17,9 @@ import {
 import {
   DRAFT_COVERS_DIR,
   PUBLIC_COVERS_DIR,
+  PUBLIC_SITE_IMAGES_DIR,
   importRemoteCover,
+  importRemoteSiteImage,
   prepareCoverInput,
   validateRemoteImageUrl,
 } from '../scripts/remote-images.mjs';
@@ -66,6 +68,7 @@ test('a remote draft cover stays local until publication', async () => {
   const filename = path.basename(draftCover);
   const draftPath = path.join(DRAFT_COVERS_DIR, filename);
   const publicPath = path.join(PUBLIC_COVERS_DIR, filename);
+  let siteImagePath;
   try {
     assert.match(draftCover, /^draft-covers\/[a-f0-9]{64}\.png$/);
     await access(draftPath);
@@ -74,9 +77,14 @@ test('a remote draft cover stays local until publication', async () => {
     assert.equal(promoted.cover, `uploads/covers/${filename}`);
     await access(publicPath);
     assert.doesNotThrow(() => validateEntry({ ...validEntry, status: 'published', cover: promoted.cover }));
+    const siteImage = await importRemoteSiteImage('https://example.com/home.png', dependencies);
+    assert.equal(siteImage, `uploads/site/${filename}`);
+    siteImagePath = path.join(PUBLIC_SITE_IMAGES_DIR, filename);
+    await access(siteImagePath);
   } finally {
     await rm(draftPath, { force: true });
     await rm(publicPath, { force: true });
+    if (siteImagePath) await rm(siteImagePath, { force: true });
   }
 });
 

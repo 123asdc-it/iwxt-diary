@@ -22,6 +22,7 @@ const allowedCovers = new Set(covers);
 const slugPattern = /^[a-z0-9][a-z0-9-]{0,99}$/;
 const publicCoverPattern = /^uploads\/covers\/[a-f0-9]{64}\.(?:avif|gif|jpg|png|webp)$/;
 const draftCoverPattern = /^draft-covers\/[a-f0-9]{64}\.(?:avif|gif|jpg|png|webp)$/;
+const siteImagePattern = /^(?:romanticism\/indeximg\.webp|uploads\/site\/[a-f0-9]{64}\.(?:avif|gif|jpg|png|webp))$/;
 
 export function escapeHtml(value) {
   return String(value)
@@ -241,7 +242,20 @@ export async function loadSiteConfig() {
     description: String(parsed.description || ''),
     tagline: String(parsed.tagline || ''),
     author: String(parsed.author || 'iwxt'),
+    homeImage: siteImagePattern.test(String(parsed.homeImage || '')) ? String(parsed.homeImage) : 'romanticism/indeximg.webp',
     basePath: normalizeBasePath(process.env.SITE_BASE_PATH ?? parsed.basePath),
     siteUrl: String(process.env.SITE_URL ?? parsed.siteUrl).replace(/\/+$/, ''),
   };
+}
+
+export async function saveHomeImage(homeImage) {
+  const normalized = String(homeImage || '').trim().replace(/^\/+/, '');
+  if (!siteImagePattern.test(normalized)) throw new Error('主页壁纸路径无效。');
+  const configPath = path.join(PROJECT_DIR, 'site.config.json');
+  const parsed = JSON.parse(await readFile(configPath, 'utf8'));
+  parsed.homeImage = normalized;
+  const temporary = path.join(PROJECT_DIR, `.site.config.${process.pid}.tmp`);
+  await writeFile(temporary, `${JSON.stringify(parsed, null, 2)}\n`, { encoding: 'utf8', flag: 'wx' });
+  await rename(temporary, configPath);
+  return loadSiteConfig();
 }

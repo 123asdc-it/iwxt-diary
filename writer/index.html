@@ -20,6 +20,15 @@
   </header>
 
   <main class="writer-shell">
+    <section class="appearance-card" aria-labelledby="appearance-title">
+      <div class="appearance-copy"><span>站点外观</span><h2 id="appearance-title">主页壁纸 URL</h2><p>恢复自 Romanticism 的“首页主题图”设置。旧 URL 的具体值不在现有 Typecho 备份中，你可以在这里重新粘贴。</p></div>
+      <img data-home-image-preview alt="当前主页壁纸预览">
+      <div class="appearance-controls">
+        <label><span>图片 URL</span><input type="url" maxlength="2048" inputmode="url" placeholder="https://壁纸站/图片.jpg" data-home-image-url></label>
+        <div><button type="button" data-reset-home-image>恢复内置湖景</button><button class="appearance-save" type="button" data-save-home-image>保存主页壁纸</button></div>
+        <output data-appearance-message aria-live="polite">当前使用内置湖景。</output>
+      </div>
+    </section>
     <aside class="entry-sidebar" aria-label="本地日记列表">
       <div class="sidebar-heading">
         <div><span>我的日记</span><strong data-entry-count>0 篇</strong></div>

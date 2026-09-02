@@ -28,6 +28,11 @@ npm run write
 粘贴图片 URL。保存时会验证并下载 PNG、JPEG、WebP、GIF 或 AVIF 图片（最大
 8 MB）：草稿图片只保存在本机，点击“保存并发布”后才会复制到公开资源目录。
 
+写作页顶部的“站点外观 → 主页壁纸 URL”对应旧 Romanticism 的
+`AKAROMindeximg`。粘贴壁纸站的图片直链并保存后，主页大图会立即更新；也可
+随时恢复内置湖景。现有备份里没有旧 Typecho 数据库，因此旧 URL 的具体值需
+重新粘贴一次。
+
 “移到回收站”不会真正删除文件，而是移到本机的 `content/trash/`，该目录也
 不会上传。需要恢复已发布文章时，把对应 `.md` 文件移回 `content/posts/`；
 恢复草稿时移回 `content/drafts/`。

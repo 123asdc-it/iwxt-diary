@@ -9,11 +9,13 @@ import {
   DIST_DIR,
   PROJECT_DIR,
   covers,
+  loadSiteConfig,
   readEntries,
   saveEntry,
+  saveHomeImage,
   trashEntry,
 } from './content.mjs';
-import { DRAFT_COVERS_DIR, prepareCoverInput } from './remote-images.mjs';
+import { DRAFT_COVERS_DIR, importRemoteSiteImage, prepareCoverInput } from './remote-images.mjs';
 
 const host = '127.0.0.1';
 const port = Number(process.env.WRITER_PORT || 4173);
@@ -97,7 +99,7 @@ async function syncPublishedContent(commitMessage) {
     return { pushed: false, reason: 'no-repository' };
   }
 
-  await run('git', ['add', '-A', '--', 'content/posts', 'public/uploads/covers']);
+  await run('git', ['add', '-A', '--', 'content/posts', 'public/uploads/covers', 'public/uploads/site', 'site.config.json']);
   const changes = await run('git', ['diff', '--cached', '--quiet'], { allowFailure: true });
   if (changes.code > 1) throw new Error(changes.output || '无法检查待发布内容。');
   if (changes.code !== 0) {
@@ -181,6 +183,30 @@ async function handleApi(request, response, pathname) {
   if (request.method === 'GET' && pathname === '/api/posts') {
     const entries = await readEntries({ includeDrafts: true });
     json(response, 200, { entries, covers });
+    return;
+  }
+
+  if (request.method === 'GET' && pathname === '/api/site-settings') {
+    const config = await loadSiteConfig();
+    json(response, 200, { homeImage: config.homeImage });
+    return;
+  }
+
+  if (request.method === 'POST' && pathname === '/api/site-settings') {
+    const input = await readJsonBody(request);
+    const reset = input?.reset === true;
+    const homeImageUrl = typeof input?.homeImageUrl === 'string' ? input.homeImageUrl.trim() : '';
+    if (!reset && !homeImageUrl) throw new Error('请先填写主页壁纸 URL。');
+    const homeImage = reset ? 'romanticism/indeximg.webp' : await importRemoteSiteImage(homeImageUrl);
+    await saveHomeImage(homeImage);
+    await buildSite();
+    const sync = await syncPublishedContent(reset ? 'Restore default homepage wallpaper' : 'Update homepage wallpaper');
+    const message = sync.pushed
+      ? '主页壁纸已更新并推送到 GitHub。'
+      : sync.reason === 'push-failed'
+        ? `主页壁纸已保存在本机，但 GitHub 推送失败：${sync.detail || '请重新登录 GitHub。'}`
+        : '主页壁纸已保存并生成本地预览；连接 GitHub 后即可发布。';
+    json(response, 200, { homeImage, pushed: sync.pushed, message });
     return;
   }
 

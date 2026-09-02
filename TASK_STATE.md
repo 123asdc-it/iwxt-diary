@@ -16,6 +16,10 @@ a rollback.
 - The article cover control preserves Romanticism's custom image URL behavior:
   remote images are validated and copied locally, draft assets remain ignored,
   and only published assets enter the public repository.
+- The local writer restores Romanticism's `AKAROMindeximg` homepage wallpaper
+  URL setting as a separate site-appearance control. Imported wallpapers are
+  copied into `public/uploads/site/`, recorded in `site.config.json`, and used
+  by both the home page and 404 page.
 - Draft entries never appear in the public build.
 - Published entries have individual pages and support home-feed search, date and
   tag filtering.
@@ -70,6 +74,9 @@ a rollback.
 - The restored image URL field was exercised in the real writer with a public
   PNG URL. The imported image rendered in the preview, was stored only under
   ignored draft assets, and its test draft/image were removed afterward.
+- The separate `AKAROMindeximg` homepage wallpaper URL control was checked at
+  desktop and 390 px mobile widths. Live URL preview, the default lake state,
+  accessible labels, and both action buttons rendered without console errors.
 
 ## Remaining work
 

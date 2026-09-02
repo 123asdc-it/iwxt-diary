@@ -9,8 +9,14 @@ const removeButton = document.querySelector('[data-remove-entry]');
 const coverPreview = document.querySelector('[data-cover-preview]');
 const coverSelect = document.querySelector('[data-cover-select]');
 const coverUrl = document.querySelector('[data-cover-url]');
+const homeImagePreview = document.querySelector('[data-home-image-preview]');
+const homeImageUrl = document.querySelector('[data-home-image-url]');
+const appearanceMessage = document.querySelector('[data-appearance-message]');
+const saveHomeImageButton = document.querySelector('[data-save-home-image]');
+const resetHomeImageButton = document.querySelector('[data-reset-home-image]');
 let entries = [];
 let dirty = false;
+let homeImage = 'romanticism/indeximg.webp';
 
 function localDate() {
   const now = new Date();
@@ -51,6 +57,46 @@ function updateCover() {
   coverPreview.src = cover.startsWith('draft-covers/')
     ? `/local-draft-covers/${cover.slice('draft-covers/'.length)}`
     : `/${cover}`;
+}
+
+function homeImageSource() {
+  return homeImageUrl.value.trim() || `/${homeImage}`;
+}
+
+function updateHomeImagePreview() {
+  const source = homeImageSource();
+  homeImagePreview.src = source;
+  document.querySelector('.writer-hero').style.backgroundImage = `url(${JSON.stringify(source)})`;
+}
+
+async function loadSiteSettings() {
+  const result = await api('/api/site-settings');
+  homeImage = result.homeImage;
+  homeImageUrl.value = '';
+  appearanceMessage.textContent = homeImage === 'romanticism/indeximg.webp' ? '当前使用内置湖景。' : '当前使用从 URL 导入的主页壁纸。';
+  updateHomeImagePreview();
+}
+
+async function saveHomeImage(reset = false) {
+  if (!reset && (!homeImageUrl.value.trim() || !homeImageUrl.reportValidity())) return;
+  saveHomeImageButton.disabled = true;
+  resetHomeImageButton.disabled = true;
+  appearanceMessage.textContent = reset ? '正在恢复内置湖景…' : '正在下载并保存主页壁纸…';
+  try {
+    const result = await api('/api/site-settings', {
+      method: 'POST',
+      body: JSON.stringify({ homeImageUrl: homeImageUrl.value, reset }),
+    });
+    homeImage = result.homeImage;
+    homeImageUrl.value = '';
+    appearanceMessage.textContent = result.message;
+    updateHomeImagePreview();
+  } catch (error) {
+    appearanceMessage.textContent = error instanceof Error ? error.message : '主页壁纸保存失败。';
+  } finally {
+    saveHomeImageButton.disabled = false;
+    resetHomeImageButton.disabled = false;
+  }
 }
 
 function currentPayload(status) {
@@ -185,6 +231,9 @@ coverSelect.addEventListener('change', () => {
   updateCover();
 });
 coverUrl.addEventListener('input', updateCover);
+homeImageUrl.addEventListener('input', updateHomeImagePreview);
+saveHomeImageButton.addEventListener('click', () => { void saveHomeImage(false); });
+resetHomeImageButton.addEventListener('click', () => { void saveHomeImage(true); });
 
 document.querySelector('[data-build-preview]').addEventListener('click', async () => {
   setMessage('正在重新生成预览…');
@@ -219,4 +268,7 @@ window.addEventListener('beforeunload', (event) => {
 void reloadEntries().catch((error) => {
   setError(error instanceof Error ? error.message : '无法读取本地日记。');
   setMessage('本地写作服务未准备好。', 'error');
+});
+void loadSiteSettings().catch((error) => {
+  appearanceMessage.textContent = error instanceof Error ? error.message : '无法读取主页壁纸设置。';
 });
