@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="writer-token" content="__WRITER_TOKEN__">
+  <meta name="theme-color" content="#e9f1df">
+  <title>本地写作间 · iwxt 日记本</title>
+  <link rel="stylesheet" href="/writer/writer.css">
+</head>
+<body>
+  <header class="writer-hero">
+    <div class="hero-shade"></div>
+    <div class="hero-copy">
+      <span>只在这台电脑上运行</span>
+      <h1>本地写作间</h1>
+      <p>慢慢写，保存为 Markdown，再决定是否放到公网。</p>
+    </div>
+    <a class="preview-link" href="/" target="_blank" rel="noreferrer">查看网站预览 ↗</a>
+  </header>
+
+  <main class="writer-shell">
+    <aside class="entry-sidebar" aria-label="本地日记列表">
+      <div class="sidebar-heading">
+        <div><span>我的日记</span><strong data-entry-count>0 篇</strong></div>
+        <button type="button" data-new-entry>＋ 新日记</button>
+      </div>
+      <div class="entry-list" data-entry-list></div>
+    </aside>
+
+    <section class="editor-card">
+      <div class="editor-heading">
+        <div><span data-mode-label>新日记</span><h2 data-editor-title>写下今天</h2></div>
+        <output class="connection-state" data-message aria-live="polite">正在读取本地日记…</output>
+      </div>
+
+      <form data-editor-form>
+        <input type="hidden" name="slug">
+        <div class="field-grid">
+          <label class="field title-field"><span>标题</span><input name="title" type="text" maxlength="120" placeholder="给这一天起个名字" required></label>
+          <label class="field"><span>日期</span><input name="date" type="date" required></label>
+          <label class="field wide"><span>标签</span><input name="tags" type="text" placeholder="例如：日常，随笔（逗号分隔）"></label>
+          <label class="field wide"><span>摘要</span><input name="summary" type="text" maxlength="300" placeholder="可不填，将自动从正文生成"></label>
+          <label class="field wide"><span>文章封面</span><div class="cover-row"><img data-cover-preview alt="当前文章封面"><select name="cover" data-cover-select></select></div></label>
+          <label class="field wide body-field"><span>正文（支持 Markdown）</span><textarea name="content" maxlength="50000" placeholder="从这里开始写……&#10;&#10;空一行可以分段。" required></textarea></label>
+        </div>
+        <p class="editor-error" data-error role="alert" hidden></p>
+        <footer class="editor-actions">
+          <button class="danger-button" type="button" data-remove-entry hidden>移到回收站</button>
+          <span></span>
+          <button class="secondary-button" type="button" data-build-preview>重新生成预览</button>
+          <button class="draft-button" type="button" data-save-draft>保存草稿</button>
+          <button class="publish-button" type="submit">保存并发布</button>
+        </footer>
+      </form>
+    </section>
+  </main>
+
+  <script type="module" src="/writer/writer.js"></script>
+</body>
+</html>

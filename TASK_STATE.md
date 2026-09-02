@@ -1,0 +1,73 @@
+# TASK_STATE
+
+## Current goal
+
+Build a separate, public GitHub Pages diary that preserves the recognizable
+Romanticism 2.2 visual system while keeping all authoring local and storing
+entries as Markdown files. The existing Sites deployment remains unchanged as
+a rollback.
+
+## Acceptance criteria
+
+- Public output is static HTML, CSS, JavaScript, and images only; it has no PHP,
+  database, server login, or browser-stored publishing credential.
+- A localhost-only writing app can create, edit, draft, publish, and recoverably
+  remove Markdown entries.
+- Draft entries never appear in the public build.
+- Published entries have individual pages and support home-feed search, date and
+  tag filtering.
+- Preserve the Romanticism visual contract: translucent app bar, lake hero,
+  seashell surface, image post cards, glass controls, drawer navigation, serif
+  typography, dark mode, responsive layout, and original attribution.
+- Build output works both at `/` locally and under a GitHub project subpath.
+- A local publish action builds first and uses the machine's Git credential
+  helper; no GitHub token is exposed to or saved by browser code.
+- Tests cover validation, draft exclusion, path generation, and recoverable
+  deletion; final verification includes syntax checks, tests, production build,
+  link/asset checks, and a localhost smoke test.
+
+## Architecture and security decisions
+
+- New project: `/Users/admin/Work/Project/博客/iwxt-diary-pages`.
+- Published source entries: `content/posts/*.md`. Local-only drafts live in
+  gitignored `content/drafts/`; removed entries move to gitignored
+  `content/trash/` instead of being destroyed. This prevents a public GitHub
+  repository from exposing draft or deleted text.
+- Generated public output: `dist/`, rebuilt locally and by GitHub Actions.
+- The writing server binds only to `127.0.0.1`, verifies the Host and Origin,
+  and requires an in-memory per-run token for every mutation.
+- Markdown HTML is sanitized before publication.
+- Only the dedicated diary project and its content are touched; the Typecho
+  archives and current Sites checkout are not modified.
+- GitHub CLI account `123asdc-it` currently has an invalid token. Local work can
+  complete, but repository creation and the first production publish require a
+  new `gh auth login` session.
+- The user explicitly authorized Codex-only execution. The CCG Opus planner was
+  unavailable because the configured Claude profile is not logged in; session
+  `568e77c3-30d9-482a-a2dc-ac4240a1609a` returned no findings.
+
+## Verification status
+
+- `npm run check`: passed for generator, writer server, and both browser scripts.
+- `npm test`: 5/5 tests passed, including local-only drafts, publication
+  promotion, Markdown sanitization, validation, subpaths, and recoverable
+  deletion.
+- `npm audit --omit=dev`: 0 known vulnerabilities.
+- Root build and simulated `/iwxt-diary/` GitHub Pages subpath build both
+  completed with one published entry; generated local links and assets use the
+  correct project prefix.
+- Browser smoke tests covered desktop and mobile layouts, dark mode, drawer,
+  search/filter empty state, writer save/delete flow, and an individual post;
+  the checked post page reported no console errors.
+- Live listener inspection confirmed the writing server is bound only to
+  `127.0.0.1:4173`. Invalid Host requests and tokenless API requests return 403.
+- A browser-created test draft was present only in ignored `content/drafts/`,
+  absent from `content/posts/` and `dist/`, then successfully moved into the
+  ignored local trash. The test artifact was removed afterward.
+
+## Remaining work
+
+- Create the initial local commit.
+- Reauthenticate GitHub, create the public repository, push `main`, enable
+  GitHub Actions Pages, and confirm the production URL. This requires the user
+  to finish GitHub's browser sign-in once.
