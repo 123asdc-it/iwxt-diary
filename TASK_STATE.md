@@ -81,6 +81,12 @@ a rollback.
   `33624377126` completed both build and deploy jobs successfully. The live
   homepage, CSS, and default wallpaper returned HTTP 200, and a live desktop
   browser smoke test reported no console errors.
+- On 2026-09-02, the user requested a live trial of the landscape anime API at
+  `https://api.yppp.net/pc.php`. The local writer imported the returned PNG as
+  `public/uploads/site/584fcbef23095071ec126080e7b364f1afa43f1f88a4d48d8fd7b2245e8f19fa.png`,
+  updated `site.config.json`, and pushed commit `0b19972`. GitHub Pages run
+  `33644605634` completed successfully; the live homepage references the new
+  asset and the public image URL returns HTTP 200 with `image/png`.
 
 ## Remaining work
 
