@@ -91,6 +91,11 @@ a rollback.
   retaining the theme's circular crop and placement. A real-browser check at
   390 x 844 confirmed the avatar remains centered, the drawer layout is intact,
   and the page reports no console errors or warnings.
+- The drawer header's concert photo was replaced with a blue-purple anime
+  streetscape from Wallhaven wallpaper `ogjwvl`. The source was reduced from a
+  3840 x 2160 JPEG to a 1600 x 900 WebP for the public asset. A 390 x 844
+  Playwright check confirmed the avatar, title, close control, crop, and text
+  contrast remain usable with no console errors or warnings.
 
 ## Remaining work
 
