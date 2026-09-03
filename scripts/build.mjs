@@ -20,6 +20,7 @@ const iconPaths = {
   search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
   sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>',
   tags: '<path d="M20 12 12 20 4 12V4h8Z"/><circle cx="9" cy="9" r="1"/>',
+  up: '<path d="m6 15 6-6 6 6"/>',
   x: '<path d="m6 6 12 12M18 6 6 18"/>',
 };
 
@@ -104,12 +105,27 @@ function footer(config) {
 </footer>`;
 }
 
+function experienceChrome() {
+  return `<div class="scroll-progress" aria-hidden="true"><span data-scroll-progress></span></div>
+<div class="pointer-aurora" aria-hidden="true"></div>
+<button class="back-to-top glass" type="button" data-back-to-top aria-label="回到页面顶部">${icon('up')}<span>回到顶部</span></button>`;
+}
+
+function heroAtmosphere() {
+  return `<div class="hero-atmosphere" aria-hidden="true">
+  <span class="hero-orb hero-orb-one"></span>
+  <span class="hero-orb hero-orb-two"></span>
+  <span class="hero-orb hero-orb-three"></span>
+  <span class="hero-stars"></span>
+</div>`;
+}
+
 function indexPage(config, entries) {
   const months = [...new Set(entries.map((entry) => entry.month))];
   const tags = [...new Set(entries.flatMap((entry) => entry.tags))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
   const cards = entries.map((entry) => {
     const searchText = [entry.title, entry.summary, entry.displayDate, ...entry.tags, entry.content].join(' ').toLocaleLowerCase('zh-CN');
-    return `<a class="romanticism-post-card" href="${pathUrl(config.basePath, `posts/${entry.slug}/`)}" data-entry-card data-month="${escapeHtml(entry.month)}" data-tags="${escapeHtml(entry.tags.join('|'))}" data-search="${escapeHtml(searchText)}" style="background-image:url('${pathUrl(config.basePath, entry.cover)}')">
+    return `<a class="romanticism-post-card reveal-on-scroll" href="${pathUrl(config.basePath, `posts/${entry.slug}/`)}" data-entry-card data-tilt-card data-reveal data-month="${escapeHtml(entry.month)}" data-tags="${escapeHtml(entry.tags.join('|'))}" data-search="${escapeHtml(searchText)}" style="background-image:url('${pathUrl(config.basePath, entry.cover)}')">
   <span class="post-card-shade"></span>
   <span class="post-card-copy">
     <strong>${escapeHtml(entry.title)}</strong>
@@ -124,14 +140,17 @@ function indexPage(config, entries) {
   return `${pageHead({ config, title: config.title, description: config.description, pathname: '', imagePath: 'og.png' })}
 <body>
 <div class="romanticism-site" data-site style="--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">
+${experienceChrome()}
 ${appbar(config, { homePage: true })}
 ${drawer({ config, entries, months, tags })}
 <main>
-  <section class="index-hero" aria-labelledby="index-title">
+  <section class="index-hero" data-hero aria-labelledby="index-title">
     <div class="image-shade"></div>
-    <div class="index-hero-copy clear-in"><p>${escapeHtml(config.description)}</p><h1 id="index-title">${escapeHtml(config.tagline)}</h1></div>
+    ${heroAtmosphere()}
+    <div class="index-hero-copy clear-in" data-hero-copy><span class="hero-eyebrow">IWXT · PERSONAL DIARY</span><p>${escapeHtml(config.description)}</p><h1 id="index-title">${escapeHtml(config.tagline)}</h1></div>
+    <a class="hero-scroll-cue" href="#diary-feed"><span>向下翻阅</span><i aria-hidden="true"></i></a>
   </section>
-  <section class="theme-surface home-surface">
+  <section class="theme-surface home-surface" id="diary-feed">
     <div class="post-feed clear-in">
       <div class="filter-notice glass" data-filter-notice hidden><span data-filter-label></span><button type="button" data-clear-filter>查看全部</button></div>
       ${cards}
@@ -163,16 +182,18 @@ function postPage(config, entries, entry) {
   return `${pageHead({ config, title: `${entry.title} · ${config.title}`, description: entry.summary, pathname: `posts/${entry.slug}/`, imagePath: entry.cover })}
 <body>
 <div class="romanticism-site" data-site>
+${experienceChrome()}
 ${appbar(config)}
 ${drawer({ config, entries, months, tags })}
 <main>
-  <section class="post-hero" style="background-image:url('${pathUrl(config.basePath, entry.cover)}')" aria-labelledby="post-title">
+  <section class="post-hero" data-hero style="background-image:url('${pathUrl(config.basePath, entry.cover)}')" aria-labelledby="post-title">
     <div class="image-shade"></div>
-    <div class="post-hero-copy clear-in"><h1 id="post-title">${escapeHtml(entry.title)}</h1><p>${escapeHtml(config.author)} · ${escapeHtml(entry.displayDate)} · ${escapeHtml(entry.tags.join('、'))}</p></div>
+    ${heroAtmosphere()}
+    <div class="post-hero-copy clear-in" data-hero-copy><span class="hero-eyebrow">DIARY ENTRY</span><h1 id="post-title">${escapeHtml(entry.title)}</h1><p>${escapeHtml(config.author)} · ${escapeHtml(entry.displayDate)} · ${escapeHtml(entry.tags.join('、'))}</p></div>
   </section>
   <section class="theme-surface post-surface">
     <div class="reading-tools glass"><a href="${pathUrl(config.basePath)}">← 返回主页</a><span>日记正文</span></div>
-    <article class="romanticism-article clear-in">
+    <article class="romanticism-article reveal-on-scroll" data-reveal>
       <p class="post-summary">${escapeHtml(entry.summary)}</p><hr>
       <div class="markdown-body">${entry.html}</div>
       <div class="copyright-panel glass"><span aria-hidden="true">©</span><p>最后更新时间：${escapeHtml(new Date(entry.updatedAt).toLocaleString('zh-CN'))}<br>这是一篇公开日记，不开放评论。</p></div>
@@ -188,7 +209,7 @@ ${footer(config)}
 
 function notFoundPage(config) {
   return `${pageHead({ config, title: `没有找到 · ${config.title}`, description: '没有找到这个页面。', pathname: '404.html', imagePath: 'og.png' })}
-<body><div class="romanticism-site" data-site style="--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">${appbar(config)}<main><section class="index-hero"><div class="image-shade"></div><div class="index-hero-copy"><p>404</p><h1>这里是空荡的原野……</h1><p><a class="hero-home-link" href="${pathUrl(config.basePath)}">返回日记首页</a></p></div></section></main></div><script type="module" src="${pathUrl(config.basePath, 'assets/app.js')}"></script></body></html>`;
+<body><div class="romanticism-site" data-site style="--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">${experienceChrome()}${appbar(config)}<main><section class="index-hero" data-hero><div class="image-shade"></div>${heroAtmosphere()}<div class="index-hero-copy clear-in" data-hero-copy><span class="hero-eyebrow">LOST IN THE TIDE</span><p>404</p><h1>这里是空荡的原野……</h1><p><a class="hero-home-link" href="${pathUrl(config.basePath)}">返回日记首页</a></p></div></section></main></div><script type="module" src="${pathUrl(config.basePath, 'assets/app.js')}"></script></body></html>`;
 }
 
 async function build() {

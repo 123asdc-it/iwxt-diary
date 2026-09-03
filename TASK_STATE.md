@@ -5,7 +5,9 @@
 Build a separate, public GitHub Pages diary that preserves the recognizable
 Romanticism 2.2 visual system while keeping all authoring local and storing
 entries as Markdown files. The existing Sites deployment remains unchanged as
-a rollback.
+a rollback. The current iteration adds a lightweight cinematic interaction
+layer inspired by the user's reference blog while keeping the diary's own
+anime-and-ocean Romanticism identity.
 
 ## Acceptance criteria
 
@@ -111,8 +113,30 @@ a rollback.
   copy feedback, and mobile containment (`390px` page width; code viewport
   `344px`, scrollable code width `396px`) with no console errors or warnings;
   the temporary article was removed before publication.
+- On 2026-09-04, the public reference at `https://blog.ayeez.cn/` and its
+  open-source frontend were inspected read-only. The reference combines a
+  cinematic welcome area, ambient flow graphics, reveal motion, interactive
+  cards, and reader utilities, but its Vue/Spring/MySQL architecture was not
+  copied into this static diary.
+- A distinct ocean-blue cinematic layer was implemented with no new runtime
+  dependency: staged hero lettering, ambient stars/orbs, desktop pointer glow,
+  subtle hero parallax, card tilt/spotlight/sheen, scroll reveal, a top progress
+  line, a compacting app bar, and an accessible back-to-top button. Static
+  content remains visible without JavaScript; touch devices skip pointer-only
+  effects, and `prefers-reduced-motion` disables the main motion effects.
+- The former fixed `520px` home-surface minimum was removed. The single-card
+  homepage now keeps about `92px` of intentional space before the footer rather
+  than showing a large empty field.
+- Playwright verification covered the homepage and article at desktop and
+  `390x844`, light and dark modes, card interaction, scroll progress, back to
+  top, and reduced-motion emulation. The mobile document stayed exactly
+  `390px` wide, desktop stayed `1200px` wide, and browser console checks found
+  zero errors or warnings.
 
 ## Remaining work
 
-- No implementation work remains. The user can paste the preferred wallpaper
-  site's direct image URL in the local writer and save it when ready.
+- No implementation work remains for this visual pass. Possible later features
+  from the reference site, such as a dedicated archive timeline or generated
+  article table of contents, should be added separately if the user wants them;
+  comments would require a third-party service or a backend and are not implied
+  by this static visual upgrade.
