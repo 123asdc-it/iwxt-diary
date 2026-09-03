@@ -120,6 +120,36 @@ function heroAtmosphere() {
 </div>`;
 }
 
+function glassSidebar({ config, entries, months, tags }) {
+  const home = pathUrl(config.basePath);
+  const tagLinks = tags.slice(0, 8).map((tag) => {
+    const count = entries.filter((entry) => entry.tags.includes(tag)).length;
+    return `<a href="${home}#tag=${encodeURIComponent(tag)}"><span>#${escapeHtml(tag)}</span><b>${count}</b></a>`;
+  }).join('');
+  const monthLinks = months.slice(0, 5).map((month) => {
+    const count = entries.filter((entry) => entry.month === month).length;
+    return `<a href="${home}#month=${encodeURIComponent(month)}"><span>${escapeHtml(month)}</span><b>${count}</b></a>`;
+  }).join('');
+
+  return `<aside class="glass-sidebar" aria-label="站点信息">
+  <section class="sidebar-profile glass-panel reveal-on-scroll" data-reveal>
+    <span class="sidebar-profile-avatar" style="--profile-avatar:url('${pathUrl(config.basePath, 'romanticism/user.jpg')}')" aria-hidden="true"></span>
+    <span class="sidebar-profile-kicker">ABOUT THIS DIARY</span>
+    <h2>${escapeHtml(config.author)}</h2>
+    <p>${escapeHtml(config.tagline)}</p>
+    <div class="sidebar-stats"><span><strong>${entries.length}</strong>文章</span><span><strong>${tags.length}</strong>标签</span><span><strong>${months.length}</strong>归档</span></div>
+  </section>
+  <section class="sidebar-taxonomy glass-panel reveal-on-scroll" data-reveal>
+    <h2>${icon('tags')}<span>标签</span></h2>
+    <nav class="sidebar-link-list">${tagLinks || '<span class="sidebar-empty">还没有标签</span>'}</nav>
+  </section>
+  <section class="sidebar-taxonomy glass-panel reveal-on-scroll" data-reveal>
+    <h2>${icon('archive')}<span>归档</span></h2>
+    <nav class="sidebar-link-list">${monthLinks || '<span class="sidebar-empty">还没有文章</span>'}</nav>
+  </section>
+</aside>`;
+}
+
 function indexPage(config, entries) {
   const months = [...new Set(entries.map((entry) => entry.month))];
   const tags = [...new Set(entries.flatMap((entry) => entry.tags))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
@@ -139,22 +169,25 @@ function indexPage(config, entries) {
 
   return `${pageHead({ config, title: config.title, description: config.description, pathname: '', imagePath: 'og.png' })}
 <body>
-<div class="romanticism-site" data-site style="--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">
+<div class="romanticism-site" data-site style="--site-wallpaper:url('${pathUrl(config.basePath, config.homeImage)}');--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">
 ${experienceChrome()}
 ${appbar(config, { homePage: true })}
 ${drawer({ config, entries, months, tags })}
 <main>
-  <section class="index-hero" data-hero aria-labelledby="index-title">
+  <section class="index-hero glass-frame" data-hero aria-labelledby="index-title">
     <div class="image-shade"></div>
     ${heroAtmosphere()}
     <div class="index-hero-copy clear-in" data-hero-copy><span class="hero-eyebrow">IWXT · PERSONAL DIARY</span><p>${escapeHtml(config.description)}</p><h1 id="index-title">${escapeHtml(config.tagline)}</h1></div>
     <a class="hero-scroll-cue" href="#diary-feed"><span>向下翻阅</span><i aria-hidden="true"></i></a>
   </section>
   <section class="theme-surface home-surface" id="diary-feed">
-    <div class="post-feed clear-in">
-      <div class="filter-notice glass" data-filter-notice hidden><span data-filter-label></span><button type="button" data-clear-filter>查看全部</button></div>
-      ${cards}
-      <div class="empty-card glass" data-empty-card hidden>${icon('search')}<h2>这里是空荡的原野……</h2><p>没有找到符合当前条件的日记。</p><button type="button" data-clear-filter>查看全部</button></div>
+    <div class="glass-page-grid">
+      <div class="post-feed clear-in">
+        <div class="filter-notice glass-panel" data-filter-notice hidden><span data-filter-label></span><button type="button" data-clear-filter>查看全部</button></div>
+        ${cards}
+        <div class="empty-card glass-panel" data-empty-card hidden>${icon('search')}<h2>这里是空荡的原野……</h2><p>没有找到符合当前条件的日记。</p><button type="button" data-clear-filter>查看全部</button></div>
+      </div>
+      ${glassSidebar({ config, entries, months, tags })}
     </div>
   </section>
 </main>
@@ -181,23 +214,26 @@ function postPage(config, entries, entry) {
   const tags = [...new Set(entries.flatMap((item) => item.tags))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
   return `${pageHead({ config, title: `${entry.title} · ${config.title}`, description: entry.summary, pathname: `posts/${entry.slug}/`, imagePath: entry.cover })}
 <body>
-<div class="romanticism-site" data-site>
+<div class="romanticism-site" data-site style="--site-wallpaper:url('${pathUrl(config.basePath, config.homeImage)}')">
 ${experienceChrome()}
 ${appbar(config)}
 ${drawer({ config, entries, months, tags })}
 <main>
-  <section class="post-hero" data-hero style="background-image:url('${pathUrl(config.basePath, entry.cover)}')" aria-labelledby="post-title">
+  <section class="post-hero glass-frame" data-hero style="background-image:url('${pathUrl(config.basePath, entry.cover)}')" aria-labelledby="post-title">
     <div class="image-shade"></div>
     ${heroAtmosphere()}
     <div class="post-hero-copy clear-in" data-hero-copy><span class="hero-eyebrow">DIARY ENTRY</span><h1 id="post-title">${escapeHtml(entry.title)}</h1><p>${escapeHtml(config.author)} · ${escapeHtml(entry.displayDate)} · ${escapeHtml(entry.tags.join('、'))}</p></div>
   </section>
   <section class="theme-surface post-surface">
     <div class="reading-tools glass"><a href="${pathUrl(config.basePath)}">← 返回主页</a><span>日记正文</span></div>
-    <article class="romanticism-article reveal-on-scroll" data-reveal>
-      <p class="post-summary">${escapeHtml(entry.summary)}</p><hr>
-      <div class="markdown-body">${entry.html}</div>
-      <div class="copyright-panel glass"><span aria-hidden="true">©</span><p>最后更新时间：${escapeHtml(new Date(entry.updatedAt).toLocaleString('zh-CN'))}<br>这是一篇公开日记，不开放评论。</p></div>
-    </article>
+    <div class="glass-page-grid post-page-grid">
+      <article class="romanticism-article glass-content-panel reveal-on-scroll" data-reveal>
+        <p class="post-summary">${escapeHtml(entry.summary)}</p><hr>
+        <div class="markdown-body">${entry.html}</div>
+        <div class="copyright-panel glass"><span aria-hidden="true">©</span><p>最后更新时间：${escapeHtml(new Date(entry.updatedAt).toLocaleString('zh-CN'))}<br>这是一篇公开日记，不开放评论。</p></div>
+      </article>
+      ${glassSidebar({ config, entries, months, tags })}
+    </div>
   </section>
 </main>
 ${footer(config)}
@@ -209,7 +245,7 @@ ${footer(config)}
 
 function notFoundPage(config) {
   return `${pageHead({ config, title: `没有找到 · ${config.title}`, description: '没有找到这个页面。', pathname: '404.html', imagePath: 'og.png' })}
-<body><div class="romanticism-site" data-site style="--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">${experienceChrome()}${appbar(config)}<main><section class="index-hero" data-hero><div class="image-shade"></div>${heroAtmosphere()}<div class="index-hero-copy clear-in" data-hero-copy><span class="hero-eyebrow">LOST IN THE TIDE</span><p>404</p><h1>这里是空荡的原野……</h1><p><a class="hero-home-link" href="${pathUrl(config.basePath)}">返回日记首页</a></p></div></section></main></div><script type="module" src="${pathUrl(config.basePath, 'assets/app.js')}"></script></body></html>`;
+<body><div class="romanticism-site" data-site style="--site-wallpaper:url('${pathUrl(config.basePath, config.homeImage)}');--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">${experienceChrome()}${appbar(config)}<main><section class="index-hero glass-frame" data-hero><div class="image-shade"></div>${heroAtmosphere()}<div class="index-hero-copy clear-in" data-hero-copy><span class="hero-eyebrow">LOST IN THE TIDE</span><p>404</p><h1>这里是空荡的原野……</h1><p><a class="hero-home-link" href="${pathUrl(config.basePath)}">返回日记首页</a></p></div></section></main></div><script type="module" src="${pathUrl(config.basePath, 'assets/app.js')}"></script></body></html>`;
 }
 
 async function build() {

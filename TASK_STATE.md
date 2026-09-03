@@ -7,7 +7,9 @@ Romanticism 2.2 visual system while keeping all authoring local and storing
 entries as Markdown files. The existing Sites deployment remains unchanged as
 a rollback. The current iteration adds a lightweight cinematic interaction
 layer inspired by the user's reference blog while keeping the diary's own
-anime-and-ocean Romanticism identity.
+anime-and-ocean Romanticism identity. The active visual pass now adopts a
+full-page wallpaper and translucent framed layout inspired by the user's
+`mccsjs.cn` and `blog.snowy.moe` references.
 
 ## Acceptance criteria
 
@@ -61,7 +63,7 @@ anime-and-ocean Romanticism identity.
 ## Verification status
 
 - `npm run check`: passed for generator, writer server, and both browser scripts.
-- `npm test`: 7/7 tests passed, including local-only drafts and remote cover
+- `npm test`: 8/8 tests passed, including local-only drafts and remote cover
   assets, publication promotion, URL/private-network rejection, Markdown
   sanitization, validation, subpaths, and recoverable deletion.
 - `npm audit --omit=dev`: 0 known vulnerabilities.
@@ -132,11 +134,18 @@ anime-and-ocean Romanticism identity.
   top, and reduced-motion emulation. The mobile document stayed exactly
   `390px` wide, desktop stayed `1200px` wide, and browser console checks found
   zero errors or warnings.
+- The `mccsjs.cn` and `blog.snowy.moe` references were inspected read-only for
+  composition. The local redesign keeps this diary's own art and controls while
+  adding a full-page anime wallpaper, floating rounded glass app bar, framed
+  hero, translucent content panels, and a profile/tag/archive sidebar.
+- The wallpaper-and-glass pass was checked on the homepage and article at
+  `1200px` desktop and `390x844` mobile widths in both light and dark modes.
+  The two-column desktop grid collapses to one column without horizontal
+  overflow, the article return bar no longer overlaps the content, and browser
+  console checks found zero errors or warnings.
 
 ## Remaining work
 
-- No implementation work remains for this visual pass. Possible later features
-  from the reference site, such as a dedicated archive timeline or generated
-  article table of contents, should be added separately if the user wants them;
-  comments would require a third-party service or a backend and are not implied
-  by this static visual upgrade.
+- No implementation work remains for this wallpaper-and-glass pass. Possible
+  later additions such as a dedicated archive timeline, automatic article
+  table of contents, or music player should be handled as separate features.
