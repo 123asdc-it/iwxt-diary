@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import matter from 'gray-matter';
+import hljs from 'highlight.js/lib/common';
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
 
@@ -32,6 +33,21 @@ export function escapeHtml(value) {
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
 }
+
+function normalizeCodeLanguage(value) {
+  const language = String(value || '').trim().split(/\s+/, 1)[0].toLowerCase();
+  return /^[a-z0-9][a-z0-9_+-]{0,31}$/.test(language) ? language : '';
+}
+
+const markdownRenderer = new marked.Renderer();
+markdownRenderer.code = ({ text, lang }) => {
+  const language = normalizeCodeLanguage(lang);
+  const highlighted = language && hljs.getLanguage(language)
+    ? hljs.highlight(text, { language, ignoreIllegals: true }).value
+    : escapeHtml(text);
+  const languageClass = language ? ` language-${language}` : '';
+  return `<pre><code class="hljs${languageClass}">${highlighted}</code></pre>\n`;
+};
 
 export function normalizeBasePath(value) {
   const trimmed = String(value || '').trim();
@@ -109,14 +125,18 @@ export function validateEntry(input, { requireSlug = false } = {}) {
 }
 
 export function renderMarkdown(markdown) {
-  const rendered = marked.parse(markdown, { gfm: true, breaks: false });
+  const rendered = marked.parse(markdown, { gfm: true, breaks: false, renderer: markdownRenderer });
   return sanitizeHtml(rendered, {
     allowedTags: [
       'p', 'br', 'hr', 'h2', 'h3', 'h4', 'blockquote', 'ul', 'ol', 'li',
-      'strong', 'em', 'del', 'code', 'pre', 'a', 'table', 'thead', 'tbody',
+      'strong', 'em', 'del', 'code', 'pre', 'span', 'a', 'table', 'thead', 'tbody',
       'tr', 'th', 'td',
     ],
     allowedAttributes: { a: ['href', 'title', 'rel'] },
+    allowedClasses: {
+      code: ['hljs', /^language-[a-z0-9][a-z0-9_+-]{0,31}$/],
+      span: [/^hljs-[a-z0-9_-]+$/],
+    },
     allowedSchemes: ['http', 'https', 'mailto'],
     allowProtocolRelative: false,
     transformTags: {

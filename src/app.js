@@ -27,6 +27,101 @@ document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
   applyTheme(dark);
 });
 
+const codeLanguageNames = new Map([
+  ['bash', 'Shell'],
+  ['c', 'C'],
+  ['cpp', 'C++'],
+  ['cs', 'C#'],
+  ['csharp', 'C#'],
+  ['css', 'CSS'],
+  ['go', 'Go'],
+  ['html', 'HTML'],
+  ['java', 'Java'],
+  ['javascript', 'JavaScript'],
+  ['js', 'JavaScript'],
+  ['json', 'JSON'],
+  ['kotlin', 'Kotlin'],
+  ['markdown', 'Markdown'],
+  ['md', 'Markdown'],
+  ['plaintext', '纯文本'],
+  ['py', 'Python'],
+  ['python', 'Python'],
+  ['rust', 'Rust'],
+  ['sh', 'Shell'],
+  ['shell', 'Shell'],
+  ['sql', 'SQL'],
+  ['swift', 'Swift'],
+  ['text', '纯文本'],
+  ['ts', 'TypeScript'],
+  ['typescript', 'TypeScript'],
+  ['xml', 'XML'],
+]);
+
+function codeLanguageLabel(code) {
+  const languageClass = [...code.classList].find((name) => name.startsWith('language-'));
+  if (!languageClass) return '代码';
+  const language = languageClass.slice('language-'.length).toLowerCase();
+  return codeLanguageNames.get(language) || language.toUpperCase();
+}
+
+async function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const input = document.createElement('textarea');
+  input.value = text;
+  input.setAttribute('readonly', '');
+  input.style.position = 'fixed';
+  input.style.opacity = '0';
+  document.body.append(input);
+  input.select();
+  const copied = document.execCommand('copy');
+  input.remove();
+  if (!copied) throw new Error('浏览器不允许复制。');
+}
+
+document.querySelectorAll('.markdown-body pre > code').forEach((code) => {
+  const pre = code.parentElement;
+  if (!pre || pre.closest('.code-block')) return;
+  const block = document.createElement('figure');
+  block.className = 'code-block';
+  const toolbar = document.createElement('figcaption');
+  toolbar.className = 'code-block-toolbar';
+  const language = document.createElement('span');
+  language.className = 'code-block-language';
+  language.textContent = codeLanguageLabel(code);
+  const copyButton = document.createElement('button');
+  copyButton.className = 'code-copy-button';
+  copyButton.type = 'button';
+  copyButton.setAttribute('aria-label', '复制代码');
+  copyButton.innerHTML = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="13" height="13" x="9" y="9" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>复制</span>';
+  const buttonLabel = copyButton.querySelector('span');
+  copyButton.addEventListener('click', async () => {
+    copyButton.disabled = true;
+    try {
+      await copyText((code.textContent || '').replace(/\n$/, ''));
+      copyButton.dataset.state = 'copied';
+      copyButton.setAttribute('aria-label', '代码已复制');
+      if (buttonLabel) buttonLabel.textContent = '已复制';
+    } catch {
+      copyButton.dataset.state = 'failed';
+      copyButton.setAttribute('aria-label', '复制失败');
+      if (buttonLabel) buttonLabel.textContent = '复制失败';
+    }
+    window.setTimeout(() => {
+      delete copyButton.dataset.state;
+      copyButton.disabled = false;
+      copyButton.setAttribute('aria-label', '复制代码');
+      if (buttonLabel) buttonLabel.textContent = '复制';
+    }, 1600);
+  });
+  pre.tabIndex = 0;
+  pre.replaceWith(block);
+  toolbar.append(language, copyButton);
+  block.append(toolbar, pre);
+});
+
 function setDrawer(open) {
   drawer?.classList.toggle('is-open', open);
   drawerScrim?.classList.toggle('is-open', open);

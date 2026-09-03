@@ -40,6 +40,7 @@ function pageHead({ config, title, description, pathname, imagePath }) {
   <meta name="theme-color" content="#fff5ee">
   <link rel="canonical" href="${escapeHtml(canonical)}">
   <link rel="icon" href="${pathUrl(config.basePath, 'favicon.svg')}">
+  <link rel="stylesheet" href="${pathUrl(config.basePath, 'assets/highlight.css')}">
   <link rel="stylesheet" href="${pathUrl(config.basePath, 'assets/site.css')}">
   <meta property="og:type" content="article">
   <meta property="og:title" content="${escapeHtml(title)}">
@@ -196,6 +197,7 @@ async function build() {
   await rm(DIST_DIR, { recursive: true, force: true });
   await mkdir(path.join(DIST_DIR, 'assets'), { recursive: true });
   await cp(path.join(PROJECT_DIR, 'public'), DIST_DIR, { recursive: true });
+  await cp(path.join(PROJECT_DIR, 'node_modules', 'highlight.js', 'styles', 'github-dark-dimmed.min.css'), path.join(DIST_DIR, 'assets', 'highlight.css'));
   await cp(path.join(PROJECT_DIR, 'src', 'site.css'), path.join(DIST_DIR, 'assets', 'site.css'));
   await cp(path.join(PROJECT_DIR, 'src', 'app.js'), path.join(DIST_DIR, 'assets', 'app.js'));
   await writeFile(path.join(DIST_DIR, 'index.html'), indexPage(config, entries));

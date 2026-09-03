@@ -44,6 +44,9 @@ a rollback.
 - The writing server binds only to `127.0.0.1`, verifies the Host and Origin,
   and requires an in-memory per-run token for every mutation.
 - Markdown HTML is sanitized before publication.
+- Fenced Markdown code blocks are highlighted at build time and enhanced with
+  an accessible client-side copy button; long lines scroll inside the block
+  instead of widening the page.
 - Only the dedicated diary project and its content are touched; the Typecho
   archives and current Sites checkout are not modified.
 - GitHub CLI account `123asdc-it` is authenticated with `repo` and `workflow`
@@ -101,6 +104,13 @@ a rollback.
   the hero by 180px. With only one post, the unused minimum height is visible.
   No spacing change was made because the user asked why rather than asking to
   alter the layout.
+- Fenced code rendering was upgraded with `highlight.js` 11.12.0, a bundled
+  GitHub Dark Dimmed palette, language labels, and a clipboard button with
+  success/failure feedback. Sanitizer tests cover highlighted and unknown
+  languages. A temporary local-only C++ article verified desktop rendering,
+  copy feedback, and mobile containment (`390px` page width; code viewport
+  `344px`, scrollable code width `396px`) with no console errors or warnings;
+  the temporary article was removed before publication.
 
 ## Remaining work
 

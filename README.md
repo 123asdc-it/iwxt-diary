@@ -91,6 +91,26 @@ updatedAt: "2026-09-02T08:00:00.000Z"
 从 URL 导入并发布的图片会使用 `uploads/covers/...` 路径；原始 URL 不会写入
 文章文件，也不需要在浏览器中保存任何图片站账号。
 
+## 在日记里写代码
+
+正文支持 Markdown 围栏代码块。在三个反引号后写语言名称，发布后会
+自动显示语法高亮、语言标签和复制按钮：
+
+````markdown
+```cpp
+class Solution {
+public:
+    int answer() {
+        return 42;
+    }
+};
+```
+````
+
+常用的 `cpp`、`python`、`javascript`、`typescript`、`java`、`go`、`rust`、
+`bash`、`html`、`css`、`json` 和 `sql` 均支持高亮。在反引号中写一小段
+内容，例如 `` `result += 1` ``，则会显示为行内代码。
+
 可在 `site.config.json` 修改站名、副标题和作者名。
 
 ## 验证命令

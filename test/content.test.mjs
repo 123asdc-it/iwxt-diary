@@ -95,6 +95,18 @@ test('published markdown is sanitized', () => {
   assert.doesNotMatch(html, /alert\(1\)/);
 });
 
+test('fenced code blocks receive safe syntax highlighting', () => {
+  const html = renderMarkdown('```cpp\nclass Solution { public: return 0; };\n```');
+  assert.match(html, /<pre><code class="hljs language-cpp">/);
+  assert.match(html, /class="hljs-keyword"/);
+  assert.match(html, /class="hljs-title"/);
+
+  const escaped = renderMarkdown('```unknown\n<script>alert(1)<\/script>\n```');
+  assert.match(escaped, /class="hljs language-unknown"/);
+  assert.doesNotMatch(escaped, /<script/i);
+  assert.match(escaped, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
+});
+
 test('draft entries stay outside the public source and removal is recoverable', async () => {
   const saved = await saveEntry({ ...validEntry, title: `测试-${Date.now()}` });
   const postPath = path.join(POSTS_DIR, `${saved.slug}.md`);
