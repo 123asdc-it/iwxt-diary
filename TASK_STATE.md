@@ -29,7 +29,8 @@ full-page wallpaper and translucent framed layout inspired by the user's
   tag filtering.
 - Preserve the Romanticism visual contract: translucent app bar, lake hero,
   seashell surface, image post cards, glass controls, drawer navigation, serif
-  typography, dark mode, responsive layout, and original attribution.
+  typography, dark mode, responsive layout, and the original license file in
+  the public source tree.
 - Build output works both at `/` locally and under a GitHub project subpath.
 - A local publish action builds first and uses the machine's Git credential
   helper; no GitHub token is exposed to or saved by browser code.
@@ -143,6 +144,10 @@ full-page wallpaper and translucent framed layout inspired by the user's
   The two-column desktop grid collapses to one column without horizontal
   overflow, the article return bar no longer overlaps the content, and browser
   console checks found zero errors or warnings.
+- On 2026-09-04, the user requested removal of the visible “Theme
+  Romanticism 2.2 by Akashi · 静态日记版” footer line. The generated footer now
+  shows only the diary copyright line; the upstream GPLv3 license remains at
+  `public/romanticism/LICENSE.txt` in the public repository.
 
 ## Remaining work
 

@@ -101,7 +101,6 @@ function appbar(config, { homePage = false } = {}) {
 function footer(config) {
   return `<footer class="romanticism-footer">
   <strong>© ${new Date().getFullYear()} ${escapeHtml(config.title)}</strong>
-  <small>Theme <a href="https://imakashi.eu.org/blog/archives/themeRomanticism.html" target="_blank" rel="noreferrer">Romanticism 2.2</a> by <a href="https://imakashi.eu.org/" target="_blank" rel="noreferrer">Akashi</a> · 静态日记版</small>
 </footer>`;
 }
 

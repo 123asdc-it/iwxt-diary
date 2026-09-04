@@ -314,9 +314,6 @@ button { color: inherit; }
 
 .romanticism-footer { display: grid; justify-items: center; gap: 18px; padding: 42px 20px 48px; background: var(--surface); color: var(--ink); text-align: center; }
 .romanticism-footer strong { font-size: 16px; }
-.romanticism-footer small { color: var(--ink-muted); font-size: 11px; opacity: .55; }
-.romanticism-footer a { color: inherit; font-weight: 900; text-decoration: none; }
-.romanticism-footer a:hover { color: var(--accent); }
 
 /* Full-page anime wallpaper with framed glass content. */
 .romanticism-site {
