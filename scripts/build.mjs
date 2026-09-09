@@ -9,10 +9,12 @@ import {
   pathUrl,
   readEntries,
 } from './content.mjs';
+import { readCmcCatalog } from './cmc-catalog.mjs';
 
 const iconPaths = {
   archive: '<rect width="18" height="4" x="3" y="3" rx="1"/><path d="M5 7v13h14V7M10 11h4"/>',
   calendar: '<path d="M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Z"/>',
+  check: '<path d="M9 11l3 3L22 4"/><path d="M21 12a9 9 0 1 1-5.3-8.2"/>',
   circle: '<circle cx="12" cy="12" r="9"/>',
   home: '<path d="m3 11 9-8 9 8v10h-6v-6H9v6H3Z"/>',
   menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
@@ -54,6 +56,7 @@ function pageHead({ config, title, description, pathname, imagePath }) {
 
 function drawer({ config, entries, months, tags }) {
   const home = pathUrl(config.basePath);
+  const checkin = pathUrl(config.basePath, 'checkin/');
   const monthButtons = months.map((month) => {
     const count = entries.filter((entry) => entry.month === month).length;
     return `<a href="${home}#month=${encodeURIComponent(month)}"><span>${escapeHtml(month)}</span><b>${count}</b></a>`;
@@ -73,6 +76,7 @@ function drawer({ config, entries, months, tags }) {
   </div>
   <nav class="drawer-nav">
     <a href="${home}">${icon('home')}<span>主页</span></a>
+    <a href="${checkin}">${icon('check')}<span>每日打卡</span></a>
     <div class="drawer-section">
       <div class="drawer-section-title">${icon('archive')}<span>文章归档</span></div>
       <a href="${home}"><span>全部</span><b>${entries.length}</b></a>${monthButtons}
@@ -84,7 +88,7 @@ function drawer({ config, entries, months, tags }) {
 </aside>`;
 }
 
-function appbar(config, { homePage = false } = {}) {
+function appbar(config, { homePage = false, checkinPage = false } = {}) {
   const searchControl = homePage
     ? `<button class="appbar-icon" type="button" data-open-search aria-label="搜索日记">${icon('search')}</button>`
     : `<a class="appbar-icon" href="${pathUrl(config.basePath)}#search=1" aria-label="搜索日记">${icon('search')}</a>`;
@@ -92,7 +96,8 @@ function appbar(config, { homePage = false } = {}) {
   <button class="appbar-icon" type="button" data-open-drawer aria-label="打开导航菜单">${icon('menu')}</button>
   <a class="site-title" href="${pathUrl(config.basePath)}">${escapeHtml(config.title)}</a>
   <div class="appbar-spacer"></div>
-  <span class="owner-badge">${icon('circle')}公开日记</span>
+  <a class="appbar-write-button${checkinPage ? ' is-active' : ''}" href="${pathUrl(config.basePath, 'checkin/')}">${icon('check')}<span>每日打卡</span></a>
+  <span class="owner-badge">${icon('circle')}${checkinPage ? '本机记录' : '公开日记'}</span>
   ${searchControl}
   <button class="appbar-icon" type="button" data-theme-toggle aria-label="切换深色模式">${icon('moon')}<span class="theme-sun">${icon('sun')}</span></button>
 </header>`;
@@ -242,6 +247,42 @@ ${footer(config)}
 </html>`;
 }
 
+function checkinPage(config, entries, cmcCatalog) {
+  const months = [...new Set(entries.map((item) => item.month))];
+  const tags = [...new Set(entries.flatMap((item) => item.tags))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
+  return `${pageHead({ config, title: `每日打卡 · ${config.title}`, description: '在浏览器本地记录 CMC、算法题单与六级计划。', pathname: 'checkin/', imagePath: config.homeImage })}
+<body>
+<div class="romanticism-site checkin-site" data-site style="--site-wallpaper:url('${pathUrl(config.basePath, config.homeImage)}');--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">
+${experienceChrome()}
+${appbar(config, { checkinPage: true })}
+${drawer({ config, entries, months, tags })}
+<main>
+  <section class="checkin-hero glass-frame" data-hero aria-labelledby="checkin-title">
+    <div class="image-shade"></div>
+    ${heroAtmosphere()}
+    <div class="checkin-hero-copy clear-in" data-hero-copy>
+      <span class="hero-eyebrow">LOCAL STUDY LOG · 2026</span>
+      <p>CMC · 算法 · CET6</p>
+      <h1 id="checkin-title">每日打卡</h1>
+      <strong>把今天做过的事，留下可核对的痕迹。</strong>
+    </div>
+  </section>
+  <section class="checkin-surface">
+    <div class="checkin-page" data-checkin-app>
+      <p class="checkin-loading">正在载入这台设备上的打卡记录……</p>
+    </div>
+    <noscript><p class="checkin-noscript glass-panel">每日打卡需要浏览器 JavaScript 才能在本机保存记录。</p></noscript>
+  </section>
+</main>
+${footer(config)}
+<script id="cmc-course-catalog" type="application/json">${JSON.stringify(cmcCatalog).replaceAll('<', '\\u003c')}</script>
+<script type="module" src="${pathUrl(config.basePath, 'assets/app.js')}"></script>
+<script type="module" src="${pathUrl(config.basePath, 'assets/checkin.js')}"></script>
+</div>
+</body>
+</html>`;
+}
+
 function notFoundPage(config) {
   return `${pageHead({ config, title: `没有找到 · ${config.title}`, description: '没有找到这个页面。', pathname: '404.html', imagePath: 'og.png' })}
 <body><div class="romanticism-site" data-site style="--site-wallpaper:url('${pathUrl(config.basePath, config.homeImage)}');--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">${experienceChrome()}${appbar(config)}<main><section class="index-hero glass-frame" data-hero><div class="image-shade"></div>${heroAtmosphere()}<div class="index-hero-copy clear-in" data-hero-copy><span class="hero-eyebrow">LOST IN THE TIDE</span><p>404</p><h1>这里是空荡的原野……</h1><p><a class="hero-home-link" href="${pathUrl(config.basePath)}">返回日记首页</a></p></div></section></main></div><script type="module" src="${pathUrl(config.basePath, 'assets/app.js')}"></script></body></html>`;
@@ -250,14 +291,19 @@ function notFoundPage(config) {
 async function build() {
   const config = await loadSiteConfig();
   const entries = await readEntries();
+  const cmcCatalog = await readCmcCatalog();
   await rm(DIST_DIR, { recursive: true, force: true });
   await mkdir(path.join(DIST_DIR, 'assets'), { recursive: true });
   await cp(path.join(PROJECT_DIR, 'public'), DIST_DIR, { recursive: true });
   await cp(path.join(PROJECT_DIR, 'node_modules', 'highlight.js', 'styles', 'github-dark-dimmed.min.css'), path.join(DIST_DIR, 'assets', 'highlight.css'));
   await cp(path.join(PROJECT_DIR, 'src', 'site.css'), path.join(DIST_DIR, 'assets', 'site.css'));
   await cp(path.join(PROJECT_DIR, 'src', 'app.js'), path.join(DIST_DIR, 'assets', 'app.js'));
+  await cp(path.join(PROJECT_DIR, 'src', 'checkin.js'), path.join(DIST_DIR, 'assets', 'checkin.js'));
+  await cp(path.join(PROJECT_DIR, 'src', 'checkin-model.js'), path.join(DIST_DIR, 'assets', 'checkin-model.js'));
   await writeFile(path.join(DIST_DIR, 'index.html'), indexPage(config, entries));
   await writeFile(path.join(DIST_DIR, '404.html'), notFoundPage(config));
+  await mkdir(path.join(DIST_DIR, 'checkin'), { recursive: true });
+  await writeFile(path.join(DIST_DIR, 'checkin', 'index.html'), checkinPage(config, entries, cmcCatalog));
   await writeFile(path.join(DIST_DIR, '.nojekyll'), '');
 
   for (const entry of entries) {
@@ -267,7 +313,7 @@ async function build() {
   }
 
   const sitemap = entries.map((entry) => `${config.siteUrl}${pathUrl(config.basePath, `posts/${entry.slug}/`)}`).join('\n');
-  await writeFile(path.join(DIST_DIR, 'sitemap.txt'), `${config.siteUrl}${pathUrl(config.basePath)}\n${sitemap}\n`);
+  await writeFile(path.join(DIST_DIR, 'sitemap.txt'), `${config.siteUrl}${pathUrl(config.basePath)}\n${config.siteUrl}${pathUrl(config.basePath, 'checkin/')}\n${sitemap}\n`);
   await writeFile(path.join(DIST_DIR, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${config.siteUrl}${pathUrl(config.basePath, 'sitemap.txt')}\n`);
   console.log(`Built ${entries.length} published ${entries.length === 1 ? 'entry' : 'entries'} in ${DIST_DIR}`);
 }

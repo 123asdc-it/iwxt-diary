@@ -13,6 +13,31 @@ full-page wallpaper and translucent framed layout inspired by the user's
 the public site from the GitHub project URL to the user's apex domain
 `https://iwxt.cn/`.
 
+The current implementation adds a mobile-first `每日打卡` page to the existing
+static diary. It keeps the anime, sea-blue, translucent-glass design language
+and stores all check-in records in this browser's `localStorage`. The page must
+support date switching, backfilling and unchecking, editable first-week plans,
+evidence-based weekly statistics, and JSON export/import without introducing a
+backend or changing the GitHub Pages architecture.
+
+### Daily check-in implementation plan
+
+1. Add a generated `/checkin/` route plus an app-bar/drawer navigation entry.
+2. Keep the default 2026-09-14 to 2026-09-20 schedule editable, then add the
+   2026-09-21/22 vocabulary transition and the 2026-09-23 CET6 review phase.
+3. Persist versioned records locally and merge future default-template changes
+   without overwriting user edits; provide JSON download and validated import.
+4. Count CMC from recorded minutes, algorithms only from `已复现`, CET6 from
+   actual word/practice counts, and derive weekly completion and streaks from
+   effective records rather than decorative checkboxes alone.
+5. Add model tests, run syntax/test/build checks, then use a real browser for
+   persistence, import/export, date switching, desktop/mobile overflow, and
+   console-error verification before deployment.
+
+Risks: browser storage can be cleared and does not sync across devices; imported
+JSON must be validated before replacing local records; the custom domain still
+depends on the user's DNSPod cutover and GitHub certificate issuance.
+
 ## Acceptance criteria
 
 - Public output is static HTML, CSS, JavaScript, and images only; it has no PHP,
@@ -70,6 +95,29 @@ the public site from the GitHub project URL to the user's apex domain
   `568e77c3-30d9-482a-a2dc-ac4240a1609a` returned no findings.
 
 ## Verification status
+
+- The daily check-in implementation adds `src/checkin-model.js`,
+  `src/checkin.js`, `scripts/cmc-catalog.mjs`, the checked-in 124-lesson catalog
+  at `data/cmc-course-catalog.tsv`, and model coverage in
+  `test/checkin.test.mjs`. `scripts/build.mjs`, `src/site.css`, and
+  `package.json` integrate the generated route, navigation, responsive glass UI,
+  sitemap entry, scripts, and validation commands.
+- Daily check-in records are versioned in browser `localStorage`. The public
+  page contains no saved user record, account, sync API, or publishing token;
+  validated JSON export/import is the explicit backup and transfer mechanism.
+- Fresh check-in state starts CMC at lesson 6 but accepts any current lesson
+  from 1 through 124. Catalog metadata remains authoritative while imported
+  user progress is preserved. The first four algorithm weeks use concrete
+  problem IDs, topics, ratings, and links; only reproduced solutions count in
+  weekly totals.
+- Model verification currently passes 16/16 tests, including removal of stale
+  CMC blocks when the current lesson is moved directly to lesson 124. Root and simulated
+  `/iwxt-diary/` builds generate correctly prefixed check-in navigation, assets,
+  and scripts. A real-browser check covered reload persistence, date switching,
+  backfill/uncheck, effective algorithm counting, CMC rescheduling, exact lesson
+  metadata, custom task categories, JSON round-trip restore, light/dark layouts,
+  `390x844` mobile containment, `1440x1000` desktop layout, and zero console
+  errors or warnings.
 
 - `npm run check`: passed for generator, writer server, and both browser scripts.
 - `npm test`: 8/8 tests passed, including local-only drafts and remote cover
@@ -168,6 +216,9 @@ the public site from the GitHub project URL to the user's apex domain
 
 ## Remaining work
 
+- Push the daily check-in commit, wait for its GitHub Pages workflow, and verify
+  the deployed `/checkin/` artifact. The custom domain's live accessibility
+  still depends on DNS and certificate state described below.
 - The user must replace the old DNSPod apex and `www` web records with GitHub
   Pages records. After public DNS propagation, verify both hostnames, wait for
   GitHub's certificate, enable HTTPS enforcement, and perform a live browser

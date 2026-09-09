@@ -1,0 +1,664 @@
+export const CHECKIN_STORAGE_KEY = 'iwxt-diary-checkin-v1';
+export const CHECKIN_VERSION = 1;
+export const PLAN_START = '2026-09-14';
+export const PLAN_END = '2026-11-13';
+export const ALGORITHM_SOURCE_URL = 'https://leetcode.cn/discuss/post/3141566/ru-he-ke-xue-shua-ti-by-endlesscheng-q3yd/';
+export const CMC_SOURCE_URL = 'https://www.bilibili.com/cheese/play/ep1415318?csource=common_channelclass_watchedrecord_null';
+
+export const CMC_CHAPTERS = [
+  ['1–13', '极限', '13 节 · 7.36h'],
+  ['14–18', '递推数列极限', '5 节 · 2.26h'],
+  ['19–32', '一元积分', '14 节 · 5.76h'],
+  ['33–46', '中值问题', '14 节 · 10.33h'],
+  ['47–55', '二重积分', '9 节 · 4.18h'],
+  ['56–62', '三重积分', '7 节 · 2.18h'],
+  ['63–67', '曲线积分', '5 节 · 3.25h'],
+  ['68–77', '曲面积分', '10 节 · 4.30h'],
+  ['78–89', '微分方程', '12 节 · 4.00h'],
+  ['90–99', '无穷级数·常数项敛散', '10 节 · 5.72h'],
+  ['100–108', '无穷级数·幂级数与傅里叶', '9 节 · 3.92h'],
+  ['109–115', '微分不等式', '7 节 · 2.47h'],
+  ['116–124', '积分不等式', '9 节 · 2.48h'],
+];
+
+const DAY_MS = 86_400_000;
+const VALID_KINDS = new Set(['cmc', 'algorithm', 'cet6', 'contest', 'review', 'other']);
+
+export const ALGORITHM_ROUTE = [
+  { step: 0, title: '编程入门', detail: '若 C++ 基本语法与常用库函数不熟，先做官方「新」动计划 20 题' },
+  { step: 1, title: '滑动窗口', detail: '定长 → 不定长' },
+  { step: 2, title: '二分算法', detail: '先二分查找；二分答案困难时可暂跳' },
+  { step: 3, title: '常用数据结构', detail: '枚举技巧、前缀和、栈、队列、堆' },
+  { step: 4, title: '链表、树、回溯', detail: '先二叉树 DFS' },
+  { step: 5, title: '网格图', detail: '网格图 DFS' },
+  { step: 6, title: '回溯', detail: '进一步理解递归' },
+  { step: 7, title: '动态规划', detail: '题单前六章，第一轮难度上限放宽到 2000' },
+];
+
+const ALGORITHM_WEEKS = [
+  {
+    start: '2026-09-14',
+    topic: '滑动窗口与双指针',
+    section: '§1.1 定长滑动窗口基础',
+    problems: [
+      ['2026-09-15', '09:00', 1456, '定长子串中元音的最大数目', 'maximum-number-of-vowels-in-a-substring-of-given-length', 1263],
+      ['2026-09-15', '10:00', 643, '子数组最大平均数 I', 'maximum-average-subarray-i', null],
+      ['2026-09-17', '19:30', 1343, '大小为 K 且平均值大于等于阈值的子数组数目', 'number-of-sub-arrays-of-size-k-and-average-greater-than-or-equal-to-threshold', 1317],
+      ['2026-09-17', '20:15', 2090, '半径为 k 的子数组平均值', 'k-radius-subarray-averages', 1358],
+      ['2026-09-19', '09:00', 2379, '得到 K 个黑块的最少涂色次数', 'minimum-recolors-to-get-k-consecutive-black-blocks', 1360],
+      ['2026-09-19', '09:45', 2841, '几乎唯一子数组的最大和', 'maximum-sum-of-almost-unique-subarray', 1546],
+    ],
+  },
+  {
+    start: '2026-09-21',
+    topic: '滑动窗口与双指针',
+    section: '§1.1 定长 → §2.1 不定长滑窗基础',
+    problems: [
+      ['2026-09-22', '09:00', 2461, '长度为 K 子数组中的最大和', 'maximum-sum-of-distinct-subarrays-with-length-k', 1553],
+      ['2026-09-22', '10:00', 1423, '可获得的最大点数', 'maximum-points-you-can-obtain-from-cards', 1574],
+      ['2026-09-24', '19:30', 3, '无重复字符的最长子串', 'longest-substring-without-repeating-characters', null],
+      ['2026-09-24', '20:15', 3090, '每个字符最多出现两次的最长子字符串', 'maximum-length-substring-with-two-occurrences', 1329],
+      ['2026-09-26', '09:00', 1493, '删掉一个元素以后全为 1 的最长子数组', 'longest-subarray-of-1s-after-deleting-one-element', 1423],
+      ['2026-09-26', '09:45', 3634, '使数组平衡的最少移除数目', 'minimum-removals-to-balance-array', 1453],
+    ],
+  },
+  {
+    start: '2026-09-28',
+    topic: '滑动窗口与双指针',
+    section: '§2.1 不定长滑窗基础',
+    problems: [
+      ['2026-09-29', '09:00', 1208, '尽可能使字符串相等', 'get-equal-substrings-within-budget', 1497],
+      ['2026-09-29', '10:00', 904, '水果成篮', 'fruit-into-baskets', 1516],
+      ['2026-10-01', '19:30', 1695, '删除子数组的最大得分', 'maximum-erasure-value', 1529],
+      ['2026-10-01', '20:15', 2958, '最多 K 个重复元素的最长子数组', 'length-of-longest-subarray-with-at-most-k-frequency', 1535],
+      ['2026-10-03', '09:00', 2024, '考试的最大困扰度', 'maximize-the-confusion-of-an-exam', 1643],
+      ['2026-10-03', '09:45', 1004, '最大连续 1 的个数 III', 'max-consecutive-ones-iii', 1656],
+    ],
+  },
+  {
+    start: '2026-10-05',
+    topic: '滑动窗口与双指针',
+    section: '§2.2 求最短 / §2.3 求子数组个数',
+    problems: [
+      ['2026-10-06', '09:00', 209, '长度最小的子数组', 'minimum-size-subarray-sum', null],
+      ['2026-10-06', '10:00', 3795, '不同元素和至少为 K 的最短子数组长度', 'minimum-subarray-length-with-distinct-sum-at-least-k', 1505],
+      ['2026-10-08', '19:30', 713, '乘积小于 K 的子数组', 'subarray-product-less-than-k', null],
+      ['2026-10-08', '20:15', 3258, '统计满足 K 约束的子字符串数量 I', 'count-substrings-that-satisfy-k-constraint-i', null],
+      ['2026-10-10', '09:00', 1358, '包含所有三种字符的子字符串数目', 'number-of-substrings-containing-all-three-characters', 1646],
+      ['2026-10-10', '09:45', 930, '和相同的二元子数组', 'binary-subarrays-with-sum', 1592],
+    ],
+  },
+];
+
+function parseDate(date) {
+  return new Date(`${date}T00:00:00.000Z`);
+}
+
+export function isDate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value || ''))) return false;
+  const parsed = parseDate(value);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
+
+export function addDays(date, amount) {
+  const next = parseDate(date);
+  next.setUTCDate(next.getUTCDate() + amount);
+  return next.toISOString().slice(0, 10);
+}
+
+export function weekStart(date) {
+  const parsed = parseDate(date);
+  const offset = (parsed.getUTCDay() + 6) % 7;
+  return addDays(date, -offset);
+}
+
+export function weekDates(date) {
+  const start = weekStart(date);
+  return Array.from({ length: 7 }, (_, index) => addDays(start, index));
+}
+
+function clampNumber(value, minimum = 0, maximum = 1_000_000) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return 0;
+  return Math.min(maximum, Math.max(minimum, parsed));
+}
+
+function cleanText(value, maximum = 500) {
+  return typeof value === 'string' ? value.slice(0, maximum) : '';
+}
+
+function taskBase(id, kind, time, title, plannedMinutes = 0) {
+  return {
+    id,
+    kind,
+    time,
+    title,
+    plannedMinutes,
+    completed: false,
+    actualMinutes: 0,
+    note: '',
+  };
+}
+
+const KNOWN_CMC_LESSONS = new Map([
+  [6, ['利用洛必达法则', '30:23']],
+  [7, ['利用定积分的定义', '58:08']],
+  [8, ['夹逼准则', '34:25']],
+  [9, ['利用导数的定义', '17:26']],
+  [10, ['积分放缩法 + 单调有界准则', '38:32']],
+  [11, ['利用无穷级数', '17:11']],
+  [12, ['拟合法', '26:57']],
+  [13, ['极限的定义 + 斯特林公式 + 欧拉常数', '38:33']],
+  [14, ['递推数列专题·差分求通项', '30:01']],
+  [15, ['递推数列专题·做差法', '15:58']],
+  [16, ['递推数列专题·递推函数导数正负', '37:25']],
+  [17, ['递推数列专题·压缩映射', '22:46']],
+  [18, ['递推数列专题·蛛网图解法', '29:17']],
+  [19, ['有理函数积分', '26:50']],
+  [20, ['三角有理函数积分', '15:36']],
+  [21, ['无理函数积分', '44:20']],
+]);
+
+let cmcCatalog = Array.from({ length: 124 }, (_, index) => {
+  const number = index + 1;
+  const known = KNOWN_CMC_LESSONS.get(number);
+  return { number, chapter: '', title: known?.[0] || '', duration: known?.[1] || '' };
+});
+
+export function setCmcCatalog(value) {
+  if (!Array.isArray(value) || value.length !== 124 || value.some((lesson, index) => Number(lesson?.number) !== index + 1)) {
+    throw new Error('CMC 课程目录必须包含连续的 1–124 课。');
+  }
+  cmcCatalog = value.map((lesson) => ({
+    number: Number(lesson.number),
+    chapter: cleanText(lesson.chapter, 80),
+    title: cleanText(lesson.title, 200),
+    duration: cleanText(lesson.duration, 40),
+  }));
+}
+
+function cmcChapter(number) {
+  const ranges = [
+    [1, 13, '极限'], [14, 18, '递推数列极限'], [19, 32, '一元积分'], [33, 46, '中值问题'],
+    [47, 55, '二重积分'], [56, 62, '三重积分'], [63, 67, '曲线积分'], [68, 77, '曲面积分'],
+    [78, 89, '微分方程'], [90, 99, '无穷级数·常数项敛散'], [100, 108, '无穷级数·幂级数与傅里叶'],
+    [109, 115, '微分不等式'], [116, 124, '积分不等式'],
+  ];
+  return ranges.find(([start, end]) => number >= start && number <= end)?.[2] || '课程目录';
+}
+
+function cmcLesson(number) {
+  const catalogEntry = cmcCatalog[number - 1];
+  return {
+    number,
+    chapter: catalogEntry?.chapter || cmcChapter(number),
+    title: catalogEntry?.title || '',
+    duration: catalogEntry?.duration || '',
+    watched: false,
+    reproduced: false,
+    conditionsWritten: false,
+    recall: '',
+    grade: '',
+    actualMinutes: 0,
+  };
+}
+
+const CMC_BLOCKS = [
+  ['2026-09-14', '19:30', 120, 3, '第 6–8 课：标称 123 分钟；建议 1.25 倍速约 98 分钟，剩余时间做方法卡与代表例题复现。'],
+  ['2026-09-16', '19:30', 120, 4, '第 9–12 课：标称 100 分钟；建议 1.25 倍速约 80 分钟，至少复现 2 个不同方法。若有课可改为 20:45–22:15，并把 30 分钟顺延到周五。'],
+  ['2026-09-18', '09:00', 120, 4, '第 13–16 课：标称 122 分钟；建议 1.25 倍速约 98 分钟，整理“递推数列先试什么”的判断表。'],
+  ['2026-09-20', '14:30', 150, 5, '第 17–21 课：标称 139 分钟；建议 1.25 倍速约 111 分钟，闭卷复现一题并完成周复盘。'],
+  ['2026-09-21', '19:30', 120, 5, '第 2 周：一元积分收尾并进入中值问题。'],
+  ['2026-09-23', '19:30', 120, 4, '第 2 周：一元积分收尾并进入中值问题。'],
+  ['2026-09-25', '09:00', 120, 4, '第 2 周：一元积分收尾并进入中值问题。'],
+  ['2026-09-27', '14:30', 150, 4, '第 2 周：一元积分收尾并进入中值问题。'],
+  ['2026-09-28', '19:30', 120, 3, '第 3 周：中值问题高强度长课。'],
+  ['2026-09-30', '19:30', 120, 1, '第 42 课“双中值问题”约 1:52，独占学习块。'],
+  ['2026-10-02', '09:00', 120, 1, '第 43 课“泰勒中值定理的运用”约 1:46，独占学习块。'],
+  ['2026-10-04', '14:30', 150, 1, '第 44 课与本章方法复现。'],
+  ['2026-10-05', '19:30', 120, 5, '第 4 周：中值问题收尾、二重积分、三重积分。'],
+  ['2026-10-07', '19:30', 120, 5, '第 4 周：中值问题收尾、二重积分、三重积分。'],
+  ['2026-10-09', '09:00', 120, 4, '第 4 周：中值问题收尾、二重积分、三重积分。'],
+  ['2026-10-11', '14:30', 150, 4, '第 4 周：完成三重积分并做章末关联真题。'],
+  ['2026-10-12', '19:30', 120, 4, '第 5 周：曲线积分、曲面积分、微分方程开头。'],
+  ['2026-10-14', '19:30', 120, 4, '第 5 周：曲线积分、曲面积分、微分方程开头。'],
+  ['2026-10-16', '09:00', 120, 4, '第 5 周：曲线积分、曲面积分、微分方程开头。'],
+  ['2026-10-18', '14:30', 150, 4, '第 5 周：完成曲面积分并做章末关联真题。'],
+  ['2026-10-19', '19:30', 120, 5, '第 6 周：微分方程收尾、常数项级数。'],
+  ['2026-10-21', '19:30', 120, 5, '第 6 周：微分方程收尾、常数项级数。'],
+  ['2026-10-23', '09:00', 120, 5, '第 6 周：微分方程收尾、常数项级数。'],
+  ['2026-10-25', '14:30', 150, 5, '第 6 周：常数项级数与章末关联真题。'],
+  ['2026-10-26', '19:30', 120, 5, '第 7 周：级数、微分不等式、积分不等式开头。'],
+  ['2026-10-28', '19:30', 120, 5, '第 7 周：级数、微分不等式、积分不等式开头。'],
+  ['2026-10-30', '09:00', 120, 5, '第 7 周：级数、微分不等式、积分不等式开头。'],
+  ['2026-11-01', '14:30', 150, 5, '第 7 周：课程主体收尾与综合复现。'],
+  ['2026-11-02', '19:30', 150, 6, '第 119–124 课收尾；完成后进入三套完整真题。'],
+];
+
+const CMC_CHAPTER_ENDS = new Map([
+  [13, '极限'], [18, '递推数列极限'], [32, '一元积分'], [46, '中值问题'], [55, '二重积分'], [62, '三重积分'],
+  [67, '曲线积分'], [77, '曲面积分'], [89, '微分方程'], [99, '无穷级数·常数项敛散'],
+  [108, '无穷级数·幂级数与傅里叶'], [115, '微分不等式'], [124, '积分不等式'],
+]);
+
+function buildCmcTasks(startLesson = 6) {
+  let lessonNumber = startLesson;
+  const tasks = [];
+  for (const [date, time, plannedMinutes, count, guidance] of CMC_BLOCKS) {
+    const numbers = Array.from({ length: count }, () => lessonNumber++).filter((number) => number <= 124);
+    if (date === '2026-11-02' && lessonNumber <= 124) {
+      while (lessonNumber <= 124) numbers.push(lessonNumber++);
+    }
+    if (!numbers.length) continue;
+    const start = numbers[0];
+    const end = numbers.at(-1);
+    const resolvedGuidance = startLesson === 6
+      ? guidance
+      : `按当前起点顺序安排第 ${start}${end === start ? '' : `–${end}`} 课；请按实际难度选择 1.0–1.5 倍速，并为方法卡与关视频复现保留 15–30 分钟。`;
+    tasks.push({
+      date,
+      task: {
+        ...taskBase(`${date}-cmc-course`, 'cmc', time, `CMC 第 ${start}${end === start ? '' : `–${end}`} 课`, plannedMinutes),
+        cmc: { courseTitle: '大学生数学竞赛课程（全新第二代）', guidance: resolvedGuidance, lessons: numbers.map(cmcLesson) },
+      },
+    });
+    for (const number of numbers) {
+      const chapter = CMC_CHAPTER_ENDS.get(number);
+      if (!chapter) continue;
+      const reviewTime = time.startsWith('09') ? '11:15' : time.startsWith('14') ? '20:00' : '21:35';
+      tasks.push({
+        date,
+        task: taskBase(`${date}-cmc-chapter-${number}`, 'review', reviewTime, `章末关联真题 / 综合题复现 · ${chapter}`, 45),
+      });
+    }
+  }
+  return tasks;
+}
+
+function cetTask(date) {
+  const newWords = date <= '2026-09-22';
+  return {
+    ...taskBase(`${date}-cet6`, 'cet6', newWords ? '21:30' : '21:00', newWords ? '六级高频新词 100' : '六级复习 1000 词 + 刷题 45 分钟', newWords ? 35 : 45),
+    cet6: {
+      phase: newWords ? 'new' : 'review',
+      wordsTarget: newWords ? 100 : 1000,
+      wordsActual: 0,
+      practiceType: newWords ? '' : '听力',
+      practiceCount: 0,
+    },
+  };
+}
+
+function algorithmTask(date, time, number, title, slug, rating, topic, section) {
+  const plannedMinutes = time === '10:00' ? 60 : 45;
+  return {
+    ...taskBase(`${date}-leetcode-${number}`, 'algorithm', time, `${number}《${title}》`, plannedMinutes),
+    algorithm: {
+      topic,
+      section,
+      number: String(number),
+      title,
+      url: `https://leetcode.cn/problems/${slug}/`,
+      rating: rating ?? '',
+      premium: false,
+      optional: false,
+      secondPass: Boolean(rating && rating > 1700),
+      independentStart: '',
+      viewedHint: false,
+      reproduced: false,
+      nextDayRewrite: false,
+      wrongReason: '',
+      reviewDate: addDays(date, 1),
+    },
+  };
+}
+
+function contestTask(date) {
+  return {
+    ...taskBase(`${date}-contest`, 'contest', '10:30', 'LeetCode 周赛', 90),
+    contest: { solvedIndependently: 0, blockers: '' },
+  };
+}
+
+function reviewTask(date, title = '复现本周最卡的一题') {
+  return taskBase(`${date}-review`, 'review', '20:00', title, 30);
+}
+
+function ensureDay(days, date) {
+  if (!days[date]) days[date] = { tasks: [] };
+  return days[date].tasks;
+}
+
+export function defaultDays(cmcStartLesson = 6) {
+  const days = {};
+
+  for (let date = PLAN_START; date <= PLAN_END; date = addDays(date, 1)) {
+    ensureDay(days, date).push(cetTask(date));
+  }
+
+  for (const { date, task } of buildCmcTasks(cmcStartLesson)) ensureDay(days, date).push(task);
+
+  const simulations = [
+    ['2026-11-03', '真题模拟一（完整 150 分钟）'], ['2026-11-04', '真题模拟一隔日订正'],
+    ['2026-11-07', '真题模拟二（完整 150 分钟）'], ['2026-11-08', '真题模拟二隔日订正'],
+    ['2026-11-11', '真题模拟三（完整 150 分钟）'], ['2026-11-12', '真题模拟三隔日订正'],
+  ];
+  for (const [date, title] of simulations) {
+    ensureDay(days, date).push(taskBase(`${date}-cmc-paper`, 'cmc', title.includes('模拟') ? '14:30' : '19:30', title, title.includes('150') ? 150 : 90));
+  }
+
+  for (const week of ALGORITHM_WEEKS) {
+    for (const [date, time, number, title, slug, rating] of week.problems) {
+      ensureDay(days, date).push(algorithmTask(date, time, number, title, slug, rating, week.topic, week.section));
+    }
+    const sunday = addDays(week.start, 6);
+    ensureDay(days, sunday).push(contestTask(sunday), reviewTask(sunday));
+  }
+
+  Object.values(days).forEach((day) => day.tasks.sort((left, right) => left.time.localeCompare(right.time)));
+  return days;
+}
+
+export function createDefaultState(cmcStartLesson = 6) {
+  return {
+    version: CHECKIN_VERSION,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    preferences: { cmcBaselineMinutes: 0, cmcCurrentLesson: cmcStartLesson },
+    days: defaultDays(cmcStartLesson),
+  };
+}
+
+function normalizeAlgorithm(value = {}) {
+  return {
+    topic: cleanText(value.topic, 80),
+    section: cleanText(value.section, 100),
+    number: cleanText(value.number, 12),
+    title: cleanText(value.title, 160),
+    url: /^https:\/\/leetcode\.cn\/problems\//.test(value.url || '') ? cleanText(value.url, 500) : '',
+    rating: value.rating === '' ? '' : clampNumber(value.rating, 0, 5000),
+    premium: Boolean(value.premium),
+    optional: Boolean(value.optional),
+    secondPass: Boolean(value.secondPass),
+    independentStart: cleanText(value.independentStart, 32),
+    viewedHint: Boolean(value.viewedHint),
+    reproduced: Boolean(value.reproduced),
+    nextDayRewrite: Boolean(value.nextDayRewrite),
+    wrongReason: cleanText(value.wrongReason, 1000),
+    reviewDate: isDate(value.reviewDate) ? value.reviewDate : '',
+  };
+}
+
+function normalizeCmc(value = {}) {
+  const lessons = Array.isArray(value.lessons) ? value.lessons.slice(0, 30).map((lesson) => ({
+    number: clampNumber(lesson?.number, 1, 124),
+    chapter: cleanText(lesson?.chapter, 80),
+    title: cleanText(lesson?.title, 200),
+    duration: cleanText(lesson?.duration, 40),
+    watched: Boolean(lesson?.watched),
+    reproduced: Boolean(lesson?.reproduced),
+    conditionsWritten: Boolean(lesson?.conditionsWritten),
+    recall: cleanText(lesson?.recall, 500),
+    grade: ['A', 'B', 'C'].includes(lesson?.grade) ? lesson.grade : '',
+    actualMinutes: clampNumber(lesson?.actualMinutes, 0, 1440),
+  })) : [];
+  return {
+    courseTitle: cleanText(value.courseTitle, 200),
+    guidance: cleanText(value.guidance, 800),
+    lessons,
+  };
+}
+
+function normalizeTask(value = {}, fallbackId = '') {
+  const kind = VALID_KINDS.has(value.kind) ? value.kind : 'other';
+  const task = {
+    id: cleanText(value.id || fallbackId, 120),
+    kind,
+    time: /^\d{2}:\d{2}$/.test(value.time || '') ? value.time : '',
+    title: cleanText(value.title, 200) || '未命名任务',
+    plannedMinutes: clampNumber(value.plannedMinutes, 0, 1440),
+    completed: Boolean(value.completed),
+    actualMinutes: clampNumber(value.actualMinutes, 0, 1440),
+    note: cleanText(value.note, 2000),
+  };
+  if (kind === 'cmc' && value.cmc) task.cmc = normalizeCmc(value.cmc);
+  if (kind === 'algorithm') task.algorithm = normalizeAlgorithm(value.algorithm);
+  if (kind === 'cet6') {
+    task.cet6 = {
+      phase: value.cet6?.phase === 'new' ? 'new' : 'review',
+      wordsTarget: clampNumber(value.cet6?.wordsTarget, 0, 10000),
+      wordsActual: clampNumber(value.cet6?.wordsActual, 0, 10000),
+      practiceType: ['听力', '阅读', '翻译', '写作'].includes(value.cet6?.practiceType) ? value.cet6.practiceType : '',
+      practiceCount: clampNumber(value.cet6?.practiceCount, 0, 100),
+    };
+  }
+  if (kind === 'contest') {
+    task.contest = {
+      solvedIndependently: clampNumber(value.contest?.solvedIndependently, 0, 10),
+      blockers: cleanText(value.contest?.blockers, 1200),
+    };
+  }
+  return task;
+}
+
+function mergeTask(defaultTask, savedTask) {
+  if (!savedTask) return structuredClone(defaultTask);
+  const normalized = normalizeTask(savedTask, defaultTask.id);
+  const merged = { ...structuredClone(defaultTask), ...normalized, id: defaultTask.id };
+  if (defaultTask.algorithm || normalized.algorithm) merged.algorithm = { ...defaultTask.algorithm, ...normalized.algorithm };
+  if (defaultTask.cmc || normalized.cmc) {
+    const savedLessons = new Map((normalized.cmc?.lessons || []).map((lesson) => [lesson.number, lesson]));
+    merged.cmc = {
+      ...defaultTask.cmc,
+      ...normalized.cmc,
+      courseTitle: defaultTask.cmc?.courseTitle || normalized.cmc?.courseTitle || '',
+      guidance: defaultTask.cmc?.guidance || normalized.cmc?.guidance || '',
+      lessons: (defaultTask.cmc?.lessons || normalized.cmc?.lessons || []).map((lesson) => {
+        const saved = savedLessons.get(lesson.number) || {};
+        return {
+          ...lesson,
+          watched: Boolean(saved.watched),
+          reproduced: Boolean(saved.reproduced),
+          conditionsWritten: Boolean(saved.conditionsWritten),
+          recall: saved.recall || '',
+          grade: saved.grade || '',
+          actualMinutes: Number(saved.actualMinutes) || 0,
+        };
+      }),
+    };
+  }
+  if (defaultTask.cet6 || normalized.cet6) merged.cet6 = { ...defaultTask.cet6, ...normalized.cet6 };
+  if (defaultTask.contest || normalized.contest) merged.contest = { ...defaultTask.contest, ...normalized.contest };
+  return merged;
+}
+
+export function hydrateState(raw) {
+  const requestedStart = Math.round(clampNumber(raw?.preferences?.cmcCurrentLesson, 1, 124)) || 6;
+  const defaults = createDefaultState(requestedStart);
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return defaults;
+  const savedDays = raw.days && typeof raw.days === 'object' && !Array.isArray(raw.days) ? raw.days : {};
+  const days = {};
+
+  for (const [date, defaultDay] of Object.entries(defaults.days)) {
+    const savedTasks = Array.isArray(savedDays[date]?.tasks) ? savedDays[date].tasks : [];
+    const byId = new Map(savedTasks.map((task) => [task?.id, task]));
+    days[date] = { tasks: defaultDay.tasks.map((task) => mergeTask(task, byId.get(task.id))) };
+    for (const savedTask of savedTasks) {
+      if (!savedTask?.id || days[date].tasks.some((task) => task.id === savedTask.id)) continue;
+      days[date].tasks.push(normalizeTask(savedTask, `${date}-custom-${days[date].tasks.length + 1}`));
+    }
+  }
+
+  for (const [date, savedDay] of Object.entries(savedDays)) {
+    if (!isDate(date) || days[date] || !Array.isArray(savedDay?.tasks)) continue;
+    days[date] = { tasks: savedDay.tasks.slice(0, 80).map((task, index) => normalizeTask(task, `${date}-custom-${index + 1}`)) };
+  }
+
+  return {
+    version: CHECKIN_VERSION,
+    createdAt: cleanText(raw.createdAt, 40) || defaults.createdAt,
+    updatedAt: new Date().toISOString(),
+    preferences: {
+      cmcBaselineMinutes: clampNumber(raw.preferences?.cmcBaselineMinutes, 0, 60 * 1000),
+      cmcCurrentLesson: requestedStart,
+    },
+    days,
+  };
+}
+
+export function importCheckinState(text) {
+  if (typeof text !== 'string' || text.length > 2_000_000) throw new Error('备份文件过大或格式无效。');
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    throw new Error('这不是有效的 JSON 备份文件。');
+  }
+  if (parsed?.version !== CHECKIN_VERSION || !parsed?.days || typeof parsed.days !== 'object' || Array.isArray(parsed.days)) {
+    throw new Error('备份版本不匹配，或缺少打卡记录。');
+  }
+  return hydrateState(parsed);
+}
+
+export function exportCheckinState(state) {
+  const normalized = hydrateState(state);
+  normalized.updatedAt = new Date().toISOString();
+  return JSON.stringify(normalized, null, 2);
+}
+
+export function effectiveComplete(task) {
+  if (!task?.completed) return false;
+  if (task.kind === 'algorithm') return Boolean(task.algorithm?.reproduced);
+  if (task.kind === 'cmc') {
+    if (!task.cmc?.lessons?.length) return Number(task.actualMinutes) > 0;
+    return Number(task.actualMinutes) > 0
+      && task.cmc.lessons.every((lesson) => lesson.watched && lesson.conditionsWritten)
+      && task.cmc.lessons.some((lesson) => lesson.reproduced);
+  }
+  if (task.kind === 'cet6') {
+    if (task.cet6?.phase === 'new') return Number(task.cet6.wordsActual) > 0;
+    return Number(task.cet6?.wordsActual) > 0 && Number(task.cet6?.practiceCount) > 0;
+  }
+  return true;
+}
+
+export function allTasks(state) {
+  return Object.entries(state?.days || {}).flatMap(([date, day]) => (day?.tasks || []).map((task) => ({ date, task })));
+}
+
+function targetForWeek(date) {
+  const start = weekStart(date);
+  const end = addDays(start, 6);
+  const newWordDays = Array.from({ length: 7 }, (_, index) => addDays(start, index))
+    .filter((day) => day >= PLAN_START && day <= '2026-09-22').length;
+  return {
+    start,
+    end,
+    cmcMinutes: start <= '2026-10-26' && end >= PLAN_START ? 510 : 0,
+    algorithms: ALGORITHM_WEEKS.some((week) => week.start === start) ? 6 : 0,
+    newWords: newWordDays * 100,
+    reviewWords: 7 - newWordDays > 0 && end >= '2026-09-23' ? Array.from({ length: 7 }, (_, index) => addDays(start, index)).filter((day) => day >= '2026-09-23' && day <= PLAN_END).length * 1000 : 0,
+  };
+}
+
+export function checkinStats(state, selectedDate) {
+  const dates = weekDates(selectedDate);
+  const dateSet = new Set(dates);
+  const rows = allTasks(state);
+  const weekly = rows.filter(({ date }) => dateSet.has(date));
+  const effective = weekly.filter(({ task }) => effectiveComplete(task));
+  const cmcWeeklyMinutes = weekly.filter(({ task }) => task.kind === 'cmc').reduce((sum, { task }) => sum + (task.completed ? Number(task.actualMinutes) || 0 : 0), 0);
+  const cmcTotalMinutes = clampNumber(state?.preferences?.cmcBaselineMinutes, 0, 60_000)
+    + rows.filter(({ task }) => task.kind === 'cmc').reduce((sum, { task }) => sum + (task.completed ? Number(task.actualMinutes) || 0 : 0), 0);
+  const algorithmsReproduced = weekly.filter(({ task }) => task.kind === 'algorithm' && effectiveComplete(task)).length;
+  const cmcWeeklyLessons = weekly.filter(({ task }) => task.kind === 'cmc').flatMap(({ task }) => task.cmc?.lessons || []);
+  const cmcWatchedLessons = cmcWeeklyLessons.filter((lesson) => lesson.watched).length;
+  const cmcReproducedLessons = cmcWeeklyLessons.filter((lesson) => lesson.reproduced).length;
+  const cetNewTotal = rows.filter(({ task }) => task.kind === 'cet6' && task.completed && task.cet6?.phase === 'new')
+    .reduce((sum, { task }) => sum + (Number(task.cet6?.wordsActual) || 0), 0);
+  const cetWeeklyNew = weekly.filter(({ task }) => task.kind === 'cet6' && task.completed && task.cet6?.phase === 'new')
+    .reduce((sum, { task }) => sum + (Number(task.cet6?.wordsActual) || 0), 0);
+  const cetWeeklyReview = weekly.filter(({ task }) => task.kind === 'cet6' && task.completed && task.cet6?.phase === 'review')
+    .reduce((sum, { task }) => sum + (Number(task.cet6?.wordsActual) || 0), 0);
+  const cetWeeklyPractice = weekly.filter(({ task }) => task.kind === 'cet6' && task.completed && task.cet6?.phase === 'review')
+    .reduce((sum, { task }) => sum + (Number(task.cet6?.practiceCount) || 0), 0);
+  const completionRate = weekly.length ? Math.round((effective.length / weekly.length) * 100) : 0;
+
+  const today = new Date().toISOString().slice(0, 10);
+  const completedDays = new Set(Object.entries(state?.days || {})
+    .filter(([date, day]) => date <= today && day.tasks?.length && day.tasks.every(effectiveComplete))
+    .map(([date]) => date));
+  let cursor = selectedDate;
+  if (!completedDays.has(cursor)) cursor = addDays(cursor, -1);
+  let streak = 0;
+  while (cursor && completedDays.has(cursor)) {
+    streak += 1;
+    cursor = addDays(cursor, -1);
+  }
+
+  return {
+    weekStart: dates[0],
+    weekEnd: dates[6],
+    target: targetForWeek(selectedDate),
+    cmcWeeklyMinutes,
+    cmcTotalMinutes,
+    algorithmsReproduced,
+    cmcLessonTotal: cmcWeeklyLessons.length,
+    cmcWatchedLessons,
+    cmcReproducedLessons,
+    cetNewTotal,
+    cetWeeklyNew,
+    cetWeeklyReview,
+    cetWeeklyPractice,
+    completionRate,
+    streak,
+    completedTasks: effective.length,
+    totalTasks: weekly.length,
+  };
+}
+
+export function suggestedDate(today = new Date().toISOString().slice(0, 10)) {
+  if (!isDate(today)) return PLAN_START;
+  if (today < PLAN_START) return PLAN_START;
+  if (today > PLAN_END) return today;
+  return today;
+}
+
+export function makeCustomTask(date, sequence = Date.now()) {
+  return taskBase(`${date}-custom-${sequence}`, 'other', '20:00', '新任务', 30);
+}
+
+export function rescheduleCmc(state, startLesson) {
+  const nextStart = Math.round(clampNumber(startLesson, 1, 124)) || 6;
+  const savedLessons = new Map(allTasks(state)
+    .filter(({ task }) => task.kind === 'cmc' && task.cmc?.lessons)
+    .flatMap(({ task }) => task.cmc.lessons)
+    .map((lesson) => [lesson.number, lesson]));
+  const rebuilt = buildCmcTasks(nextStart);
+
+  for (const day of Object.values(state.days || {})) {
+    day.tasks = (day.tasks || []).filter((task) => !(
+      (task.kind === 'cmc' && task.cmc?.lessons) || task.id.includes('-cmc-chapter-')
+    ));
+  }
+  for (const { date, task } of rebuilt) {
+    if (!state.days[date]) state.days[date] = { tasks: [] };
+    if (task.cmc?.lessons) {
+      task.cmc.lessons = task.cmc.lessons.map((lesson) => {
+        const saved = savedLessons.get(lesson.number) || {};
+        return {
+          ...lesson,
+          watched: Boolean(saved.watched),
+          reproduced: Boolean(saved.reproduced),
+          conditionsWritten: Boolean(saved.conditionsWritten),
+          recall: saved.recall || '',
+          grade: saved.grade || '',
+          actualMinutes: Number(saved.actualMinutes) || 0,
+        };
+      });
+    }
+    state.days[date].tasks.push(task);
+  }
+  state.preferences.cmcCurrentLesson = nextStart;
+  return state;
+}

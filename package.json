@@ -10,7 +10,7 @@
     "build": "node scripts/build.mjs",
     "write": "node scripts/writer-server.mjs",
     "test": "node --test",
-    "check": "node --check scripts/content.mjs && node --check scripts/remote-images.mjs && node --check scripts/build.mjs && node --check scripts/writer-server.mjs && node --check src/app.js && node --check writer/writer.js"
+    "check": "node --check scripts/content.mjs && node --check scripts/cmc-catalog.mjs && node --check scripts/remote-images.mjs && node --check scripts/build.mjs && node --check scripts/writer-server.mjs && node --check src/app.js && node --check src/checkin-model.js && node --check src/checkin.js && node --check writer/writer.js"
   },
   "dependencies": {
     "gray-matter": "4.0.3",
