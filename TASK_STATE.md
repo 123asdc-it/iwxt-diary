@@ -115,6 +115,32 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
 
 ## Verification status
 
+- The 2026-09-10 dashboard extension adds a full Monday-first month calendar,
+  five non-overlapping day states, a live today-remaining panel derived from
+  existing task fields, and a nine-item key-date panel. The storage key and
+  version 1 JSON shape are unchanged. Concrete dates are limited to the CMC
+  personal target, official 2026 CUMCM dates, and official 2027 MCM/ICM dates;
+  other registration, payment, contest, and campus dates remain explicitly
+  pending.
+- `npm run check`, 22/22 Node tests, `npm run build`, `npm audit --omit=dev`,
+  and `git diff --check` passed. New tests cover December/January rollover,
+  leap-day layout, past/today/future states, empty-day separation, progress
+  calculations, 30/7/3-day urgency boundaries, event ranges, expiry, and a
+  simulated localStorage reload.
+- Real Playwright checks at 1440x1000 and 390x844 found exact viewport-width
+  containment and zero console errors or warnings. A custom task survived an
+  actual browser reload and date re-selection; the test record was removed
+  afterward. Light and dark mobile layouts were visually checked.
+- Commit `09a62a4` deployed successfully in GitHub Pages workflow
+  `34394288600`. Direct reads from the GitHub Pages edge returned the new
+  `KEY_DATE_EVENTS`, `monthCalendar`, `今日还差多少`, and `SELECTED DAY`
+  markers; the public JavaScript and CSS hashes match the production build.
+- DNSPod now has apex A records `185.199.108.153` and `185.199.109.153`, plus
+  `www` CNAME `123asdc-it.github.io`; the existing `_dnsauth` TXT record was
+  preserved. DNS-over-HTTPS checks through Google and Cloudflare returned the
+  new records. DNSPod's free-plan load-balancing limit rejected additional
+  `.110` and `.111` apex records, so they were not saved.
+
 - The daily check-in implementation adds `src/checkin-model.js`,
   `src/checkin.js`, `scripts/cmc-catalog.mjs`, the checked-in 124-lesson catalog
   at `data/cmc-course-catalog.tsv`, and model coverage in
@@ -241,7 +267,8 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
 
 ## Remaining work
 
-- The user must replace the old DNSPod apex and `www` web records with GitHub
-  Pages records. After public DNS propagation, verify both hostnames, wait for
-  GitHub's certificate, enable HTTPS enforcement, and perform a live browser
-  smoke test. DNSPod account changes cannot be automated from this workspace.
+- Wait for GitHub Pages to issue a certificate matching `iwxt.cn` and
+  `www.iwxt.cn`, then enable HTTPS enforcement and perform one final live HTTPS
+  browser smoke test. DNS-over-HTTPS and direct GitHub-edge HTTP already return
+  the new deployment, but this Mac's ordinary resolver may retain the old apex
+  answer until its previous TTL/cache expires.
