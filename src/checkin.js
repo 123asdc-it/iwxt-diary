@@ -3,17 +3,20 @@ import {
   ALGORITHM_SOURCE_URL,
   CMC_CHAPTERS,
   CMC_SOURCE_URL,
-  CHECKIN_STORAGE_KEY,
   addDays,
+  addMonths,
   checkinStats,
+  eventCountdowns,
   exportCheckinState,
-  hydrateState,
   importCheckinState,
   isDate,
+  loadCheckinState,
   makeCustomTask,
+  monthCalendar,
   rescheduleCmc,
   setCmcCatalog,
-  suggestedDate,
+  storeCheckinState,
+  todayRemaining,
 } from './checkin-model.js';
 
 const root = document.querySelector('[data-checkin-app]');
@@ -38,16 +41,12 @@ if (root) {
     .replaceAll("'", '&#039;');
 
   function readState() {
-    try {
-      const saved = localStorage.getItem(CHECKIN_STORAGE_KEY);
-      return hydrateState(saved ? JSON.parse(saved) : null);
-    } catch {
-      return hydrateState(null);
-    }
+    return loadCheckinState(localStorage);
   }
 
   let state = readState();
-  let selectedDate = suggestedDate(localToday());
+  let selectedDate = localToday();
+  let calendarMonth = selectedDate.slice(0, 7);
   let saveTimer = 0;
 
   function status(message, tone = 'saved') {
@@ -60,7 +59,7 @@ if (root) {
   function saveState(message = '已保存在此浏览器') {
     state.updatedAt = new Date().toISOString();
     try {
-      localStorage.setItem(CHECKIN_STORAGE_KEY, JSON.stringify(state));
+      state = storeCheckinState(localStorage, state);
       window.clearTimeout(saveTimer);
       saveTimer = window.setTimeout(() => status(message), 80);
     } catch {
@@ -271,6 +270,59 @@ if (root) {
     });
   }
 
+  function progressLine(label, metric) {
+    const hasTarget = metric.target > 0;
+    const complete = hasTarget && metric.remaining === 0;
+    return `<div class="today-progress-line${complete ? ' is-complete' : ''}">
+  <span>${escapeHtml(label)}</span>
+  <p>${hasTarget
+    ? `目标 <b>${metric.target}${escapeHtml(metric.unit)}</b> · 已完成 <b>${metric.actual}${escapeHtml(metric.unit)}</b>`
+    : '今日无安排'}</p>
+  <strong>${hasTarget ? (complete ? '已完成' : `还差 ${metric.remaining}${escapeHtml(metric.unit)}`) : '—'}</strong>
+</div>`;
+  }
+
+  function renderTodayProgress() {
+    const today = localToday();
+    const progress = todayRemaining(state, today);
+    const target = root.querySelector('[data-today-progress]');
+    if (!target) return;
+    target.innerHTML = `${progressLine('算法', progress.algorithm)}
+${progressLine(`CMC · ${progress.cmc.mode === 'lessons' ? '观看课程' : '学习时长'}`, progress.cmc)}
+${progressLine(`六级 · ${progress.cet6.wordLabel}`, progress.cet6.words)}
+${progressLine('六级 · 刷题', progress.cet6.practice)}`;
+    const label = root.querySelector('[data-today-progress-date]');
+    if (label) label.textContent = `${today.slice(5).replace('-', '.')} · ${progress.taskCount ? `${progress.taskCount} 项计划` : '当天零任务'}`;
+  }
+
+  function renderCalendar() {
+    const today = localToday();
+    const days = monthCalendar(state, calendarMonth, today);
+    const grid = root.querySelector('[data-calendar-grid]');
+    const title = root.querySelector('[data-calendar-title]');
+    if (title) title.textContent = `${calendarMonth.slice(0, 4)} 年 ${Number(calendarMonth.slice(5))} 月`;
+    if (!grid) return;
+    const labels = { complete: '全部完成', partial: '部分完成', missed: '未打卡', future: '未来日期', empty: '当天零任务' };
+    grid.innerHTML = days.map((day) => `<button type="button" class="calendar-day is-${day.status}${day.inMonth ? '' : ' is-outside'}${day.date === selectedDate ? ' is-selected' : ''}${day.date === today ? ' is-today' : ''}" data-action="select-calendar-day" data-date="${day.date}" aria-label="${day.date} · ${labels[day.status]}" aria-pressed="${day.date === selectedDate}">
+  <span>${day.day}</span><i>${labels[day.status]}</i>
+</button>`).join('');
+  }
+
+  function renderCountdowns() {
+    const list = root.querySelector('[data-countdown-list]');
+    if (!list) return;
+    const events = eventCountdowns(localToday());
+    list.innerHTML = events.map((event) => `<article class="countdown-event">
+  <header><div><strong>${escapeHtml(event.name)}</strong><small>${escapeHtml(event.subtitle)}</small></div>${event.sourceUrl ? `<a href="${escapeHtml(event.sourceUrl)}" target="_blank" rel="noreferrer noopener" aria-label="查看 ${escapeHtml(event.name)} 日期来源">来源 ↗</a>` : '<span>待公告</span>'}</header>
+  <div class="countdown-milestones">${event.milestones.map((milestone) => `<div class="countdown-milestone is-${milestone.state}">
+    <span>${escapeHtml(milestone.label)}</span>
+    <b>${milestone.date ? escapeHtml(milestone.date.replaceAll('-', '.')) : '—'}</b>
+    <strong>${escapeHtml(milestone.text)}</strong>
+    ${milestone.note ? `<small>${escapeHtml(milestone.note)}</small>` : ''}
+  </div>`).join('')}</div>
+</article>`).join('');
+  }
+
   function renderDay() {
     const tasks = selectedDay().tasks.slice().sort((left, right) => (left.time || '').localeCompare(right.time || ''));
     const date = dateObject(selectedDate);
@@ -295,10 +347,30 @@ if (root) {
         : '<div class="checkin-empty"><strong>今天还没有任务</strong><p>可以补记过去的内容，也可以添加一项新的计划。</p></div>';
     }
     renderStats();
+    renderTodayProgress();
+    renderCalendar();
   }
 
   function renderShell() {
-    root.innerHTML = `<section class="checkin-summary-grid" aria-label="本周概览">
+    root.innerHTML = `<section class="checkin-focus-grid" aria-label="打卡总览">
+  <article class="today-progress-card glass-panel">
+    <header class="focus-card-heading"><div><span class="checkin-kicker">TODAY</span><h2>今日还差多少</h2></div><small data-today-progress-date></small></header>
+    <div class="today-progress-list" data-today-progress></div>
+    <p class="focus-boundary">算法只把“已复现”计为完成；CMC 优先按课程节数；六级仅使用你填写的实际词数与刷题项。</p>
+  </article>
+  <article class="month-calendar-card glass-panel">
+    <header class="focus-card-heading calendar-heading"><div><span class="checkin-kicker">MONTH</span><h2 data-calendar-title></h2></div><div class="calendar-actions"><button type="button" data-action="previous-month" aria-label="上一月">←</button><button type="button" data-action="calendar-today">今天</button><button type="button" data-action="next-month" aria-label="下一月">→</button></div></header>
+    <div class="calendar-weekdays" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+    <div class="calendar-grid" data-calendar-grid></div>
+    <div class="calendar-legend" aria-label="月历图例"><span class="is-complete">全部完成</span><span class="is-partial">部分完成</span><span class="is-missed">未打卡</span><span class="is-empty">当天零任务</span><span class="is-future">未来</span></div>
+  </article>
+</section>
+<section class="key-dates-card glass-panel" aria-labelledby="key-dates-title">
+  <header class="focus-card-heading"><div><span class="checkin-kicker">COUNTDOWN</span><h2 id="key-dates-title">关键日期</h2></div><small>正式日期与待通知项分开显示</small></header>
+  <div class="countdown-list" data-countdown-list></div>
+  <p class="focus-boundary">红色：3 天内 · 橙色：7 天内 · 蓝色：30 天内。未获得正式公告的项目不显示猜测日期。</p>
+</section>
+<section class="checkin-summary-grid" aria-label="本周概览">
   <article class="checkin-stat glass-panel"><span>CMC · 本周</span><strong data-stat="cmc-week">0 / 8.5 h</strong><small><span data-stat="cmc-total">累计 0 / 60 h</span><br><span data-stat="cmc-mastery">观看 0/0 · 复现 0/0</span></small><i data-progress="cmc"></i></article>
   <article class="checkin-stat glass-panel"><span>算法 · 已复现</span><strong data-stat="algorithms">0 / 6–8</strong><small>看过答案不计入</small><i data-progress="algorithm"></i></article>
   <article class="checkin-stat glass-panel"><span>六级 · 本周</span><strong data-stat="cet-week">0 / 700</strong><small data-stat="cet-total">新词累计 0 / 900</small><i data-progress="cet6"></i></article>
@@ -316,7 +388,7 @@ if (root) {
         </div>
         <button class="checkin-secondary-button" type="button" data-action="today">回到今天</button>
       </div>
-      <header class="checkin-day-heading"><div><span class="checkin-kicker">TODAY · <b data-stat="week-range"></b></span><h2 data-day-title></h2><p data-day-subtitle></p></div><button class="checkin-primary-button" type="button" data-action="add-task">＋ 添加任务</button></header>
+      <header class="checkin-day-heading"><div><span class="checkin-kicker">SELECTED DAY · <b data-stat="week-range"></b></span><h2 data-day-title></h2><p data-day-subtitle></p></div><button class="checkin-primary-button" type="button" data-action="add-task">＋ 添加任务</button></header>
       <div class="checkin-task-list" data-task-list></div>
       <p class="checkin-status" data-checkin-status role="status" aria-live="polite">记录只保存在这个浏览器</p>
     </section>
@@ -355,15 +427,31 @@ if (root) {
   </aside>
 </section>`;
     renderDay();
+    renderCountdowns();
   }
 
   root.addEventListener('click', (event) => {
     const button = event.target.closest('[data-action]');
     if (!button) return;
     const action = button.dataset.action;
-    if (action === 'previous-day') selectedDate = addDays(selectedDate, -1);
-    if (action === 'next-day') selectedDate = addDays(selectedDate, 1);
-    if (action === 'today') selectedDate = suggestedDate(localToday());
+    if (action === 'previous-day') {
+      selectedDate = addDays(selectedDate, -1);
+      calendarMonth = selectedDate.slice(0, 7);
+    }
+    if (action === 'next-day') {
+      selectedDate = addDays(selectedDate, 1);
+      calendarMonth = selectedDate.slice(0, 7);
+    }
+    if (action === 'today' || action === 'calendar-today') {
+      selectedDate = localToday();
+      calendarMonth = selectedDate.slice(0, 7);
+    }
+    if (action === 'previous-month') calendarMonth = addMonths(calendarMonth, -1);
+    if (action === 'next-month') calendarMonth = addMonths(calendarMonth, 1);
+    if (action === 'select-calendar-day' && isDate(button.dataset.date)) {
+      selectedDate = button.dataset.date;
+      calendarMonth = selectedDate.slice(0, 7);
+    }
     if (action === 'add-task') {
       selectedDay().tasks.push(makeCustomTask(selectedDate, `${Date.now()}-${selectedDay().tasks.length + 1}`));
       saveState('新任务已添加并保存在此浏览器');
@@ -391,7 +479,7 @@ if (root) {
       root.querySelector('[data-import-input]')?.click();
       return;
     }
-    if (['previous-day', 'next-day', 'today', 'add-task', 'remove-task'].includes(action)) renderDay();
+    if (['previous-day', 'next-day', 'today', 'calendar-today', 'previous-month', 'next-month', 'select-calendar-day', 'add-task', 'remove-task'].includes(action)) renderDay();
   });
 
   root.addEventListener('input', (event) => {
@@ -399,6 +487,7 @@ if (root) {
     if (input.matches('[data-date-input]')) {
       if (isDate(input.value)) {
         selectedDate = input.value;
+        calendarMonth = selectedDate.slice(0, 7);
         renderDay();
       }
       return;
@@ -407,6 +496,7 @@ if (root) {
       state.preferences.cmcBaselineMinutes = Math.max(0, Number(input.value) || 0) * 60;
       saveState();
       renderStats();
+      renderTodayProgress();
       return;
     }
     const field = input.dataset.field;
@@ -422,6 +512,8 @@ if (root) {
     if (field === 'completed' && !value && task.kind === 'algorithm' && task.algorithm) task.algorithm.reproduced = false;
     saveState();
     renderStats();
+    renderTodayProgress();
+    renderCalendar();
     if (input.type === 'checkbox' || field === 'kind' || field === 'algorithm.rating') renderDay();
   });
 

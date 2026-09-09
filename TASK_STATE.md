@@ -34,6 +34,25 @@ backend or changing the GitHub Pages architecture.
    persistence, import/export, date switching, desktop/mobile overflow, and
    console-error verification before deployment.
 
+### 2026-09-10 dashboard extension plan
+
+1. Add pure, timezone-safe calendar helpers for month navigation, leap years,
+   cross-year transitions, and five distinct day states: complete, partial,
+   missed, no-task, and future.
+2. Derive today's algorithm, CMC, and CET6 targets/progress/remaining values
+   strictly from the existing task records; keep the localStorage key, schema,
+   import/export format, and existing user records unchanged.
+3. Add a maintainable key-date configuration. Only CMC's personal target and
+   dates published by official organisers are concrete; every unknown campus or
+   organiser date remains explicitly pending.
+4. Integrate the three glass panels responsively, extend model/browser tests,
+   deploy through the existing GitHub Pages workflow, and verify the public
+   asset version after deployment.
+
+Risks for this pass: local dates must not shift at UTC boundaries; an empty day
+must not be labelled missed; event announcements can change after deployment;
+GitHub cannot issue the custom-domain certificate until its DNS checks finish.
+
 Risks: browser storage can be cleared and does not sync across devices; imported
 JSON must be validated before replacing local records; the custom domain still
 depends on the user's DNSPod cutover and GitHub certificate issuance.

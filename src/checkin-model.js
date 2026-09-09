@@ -5,6 +5,108 @@ export const PLAN_END = '2026-11-13';
 export const ALGORITHM_SOURCE_URL = 'https://leetcode.cn/discuss/post/3141566/ru-he-ke-xue-shua-ti-by-endlesscheng-q3yd/';
 export const CMC_SOURCE_URL = 'https://www.bilibili.com/cheese/play/ep1415318?csource=common_channelclass_watchedrecord_null';
 
+// Key dates are intentionally data, not rendering logic. Keep unknown dates
+// explicit instead of copying a previous year's schedule into the countdown.
+// Date-only values use the organiser's local calendar date.
+export const KEY_DATE_EVENTS = [
+  {
+    id: 'cmc',
+    name: 'CMC',
+    subtitle: '个人学习计划',
+    sourceUrl: CMC_SOURCE_URL,
+    milestones: [
+      { label: '报名截止', pending: '不适用' },
+      { label: '缴费截止', pending: '不适用' },
+      { label: '完成目标', date: '2026-11-13', note: '个人计划日期' },
+    ],
+  },
+  {
+    id: 'cet6',
+    name: '六级',
+    subtitle: 'CET6',
+    sourceUrl: 'https://cet.neea.edu.cn/',
+    milestones: [
+      { label: '报名截止', pending: '待校内通知' },
+      { label: '缴费截止', pending: '待校内通知' },
+      { label: '笔试', pending: '待正式公布' },
+    ],
+  },
+  {
+    id: 'lanqiao',
+    name: '蓝桥杯',
+    subtitle: '下届赛事',
+    sourceUrl: 'https://dasai.lanqiao.cn/',
+    milestones: [
+      { label: '报名截止', pending: '待正式公布' },
+      { label: '缴费截止', pending: '待校内通知' },
+      { label: '比赛', pending: '待正式公布' },
+    ],
+  },
+  {
+    id: 'icpc',
+    name: 'ICPC',
+    subtitle: '区域赛',
+    sourceUrl: 'https://icpc.global/',
+    milestones: [
+      { label: '报名截止', pending: '待赛站公告' },
+      { label: '缴费截止', pending: '待校内通知' },
+      { label: '比赛', pending: '待赛站公告' },
+    ],
+  },
+  {
+    id: 'baidu-star',
+    name: '百度之星',
+    subtitle: '程序设计大赛',
+    milestones: [
+      { label: '报名截止', pending: '待主办方公告' },
+      { label: '缴费截止', pending: '待主办方公告' },
+      { label: '比赛', pending: '待主办方公告' },
+    ],
+  },
+  {
+    id: 'mcm',
+    name: '美赛',
+    subtitle: '2027 MCM/ICM',
+    sourceUrl: 'https://www.contest.comap.com/undergraduate/contests/mcm/',
+    milestones: [
+      { label: '报名截止', date: '2027-01-28', note: '美东时间 15:00' },
+      { label: '缴费截止', date: '2027-01-28', note: '报名时支付' },
+      { label: '比赛', date: '2027-01-28', endDate: '2027-02-01' },
+    ],
+  },
+  {
+    id: 'cumcm',
+    name: '数模',
+    subtitle: '2026 CUMCM',
+    sourceUrl: 'https://www.mcm.edu.cn/index_en.html',
+    milestones: [
+      { label: '报名截止', date: '2026-09-09', note: '北京时间 18:00' },
+      { label: '缴费截止', pending: '待校内通知' },
+      { label: '比赛', date: '2026-09-10', endDate: '2026-09-13' },
+    ],
+  },
+  {
+    id: 'nuedc',
+    name: '电赛',
+    subtitle: '全国大学生电子设计竞赛',
+    milestones: [
+      { label: '报名截止', pending: '待正式公布' },
+      { label: '缴费截止', pending: '待校内通知' },
+      { label: '比赛', pending: '待正式公布' },
+    ],
+  },
+  {
+    id: 'putonghua',
+    name: '普通话测试',
+    subtitle: '校内考点',
+    milestones: [
+      { label: '报名截止', pending: '待校内通知' },
+      { label: '缴费截止', pending: '待校内通知' },
+      { label: '考试', pending: '待校内通知' },
+    ],
+  },
+];
+
 export const CMC_CHAPTERS = [
   ['1–13', '极限', '13 节 · 7.36h'],
   ['14–18', '递推数列极限', '5 节 · 2.26h'],
@@ -23,6 +125,11 @@ export const CMC_CHAPTERS = [
 
 const DAY_MS = 86_400_000;
 const VALID_KINDS = new Set(['cmc', 'algorithm', 'cet6', 'contest', 'review', 'other']);
+
+function currentLocalDate() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+}
 
 export const ALGORITHM_ROUTE = [
   { step: 0, title: '编程入门', detail: '若 C++ 基本语法与常用库函数不熟，先做官方「新」动计划 20 题' },
@@ -104,6 +211,64 @@ export function addDays(date, amount) {
   const next = parseDate(date);
   next.setUTCDate(next.getUTCDate() + amount);
   return next.toISOString().slice(0, 10);
+}
+
+export function addMonths(month, amount) {
+  if (!/^\d{4}-\d{2}$/.test(String(month || '')) || !isDate(`${month}-01`)) return '';
+  const [year, monthNumber] = month.split('-').map(Number);
+  const parsed = new Date(Date.UTC(year, monthNumber - 1 + Number(amount || 0), 1));
+  return `${parsed.getUTCFullYear()}-${String(parsed.getUTCMonth() + 1).padStart(2, '0')}`;
+}
+
+function taskHasProgress(task) {
+  if (!task || typeof task !== 'object') return false;
+  if (task.completed || Number(task.actualMinutes) > 0 || cleanText(task.note).trim()) return true;
+  if (task.kind === 'algorithm') {
+    const value = task.algorithm || {};
+    return Boolean(value.viewedHint || value.reproduced || value.nextDayRewrite || cleanText(value.wrongReason).trim());
+  }
+  if (task.kind === 'cmc') {
+    return (task.cmc?.lessons || []).some((lesson) => (
+      lesson.watched || lesson.reproduced || lesson.conditionsWritten || Number(lesson.actualMinutes) > 0 || cleanText(lesson.recall).trim()
+    ));
+  }
+  if (task.kind === 'cet6') return Number(task.cet6?.wordsActual) > 0 || Number(task.cet6?.practiceCount) > 0;
+  if (task.kind === 'contest') return Number(task.contest?.solvedIndependently) > 0 || cleanText(task.contest?.blockers).trim();
+  return false;
+}
+
+export function dayCheckinStatus(state, date, today = currentLocalDate()) {
+  if (!isDate(date) || !isDate(today)) return 'empty';
+  if (date > today) return 'future';
+  const tasks = Array.isArray(state?.days?.[date]?.tasks) ? state.days[date].tasks : [];
+  if (!tasks.length) return 'empty';
+  const completed = tasks.filter(effectiveComplete).length;
+  if (completed === tasks.length) return 'complete';
+  if (completed > 0 || tasks.some(taskHasProgress)) return 'partial';
+  return 'missed';
+}
+
+export function monthCalendar(state, month, today = currentLocalDate()) {
+  if (!/^\d{4}-\d{2}$/.test(String(month || '')) || !isDate(`${month}-01`)) return [];
+  const first = `${month}-01`;
+  const firstDate = parseDate(first);
+  const mondayOffset = (firstDate.getUTCDay() + 6) % 7;
+  const start = addDays(first, -mondayOffset);
+  const nextMonth = addMonths(month, 1);
+  const last = addDays(`${nextMonth}-01`, -1);
+  const lastDate = parseDate(last);
+  const sundayOffset = (7 - lastDate.getUTCDay()) % 7;
+  const end = addDays(last, sundayOffset);
+  const length = Math.round((parseDate(end) - parseDate(start)) / DAY_MS) + 1;
+  return Array.from({ length }, (_, index) => {
+    const date = addDays(start, index);
+    return {
+      date,
+      day: Number(date.slice(-2)),
+      inMonth: date.startsWith(`${month}-`),
+      status: dayCheckinStatus(state, date, today),
+    };
+  });
 }
 
 export function weekStart(date) {
@@ -526,6 +691,22 @@ export function exportCheckinState(state) {
   return JSON.stringify(normalized, null, 2);
 }
 
+export function loadCheckinState(storage) {
+  try {
+    const saved = storage?.getItem?.(CHECKIN_STORAGE_KEY);
+    return hydrateState(saved ? JSON.parse(saved) : null);
+  } catch {
+    return hydrateState(null);
+  }
+}
+
+export function storeCheckinState(storage, state) {
+  if (!storage?.setItem) throw new Error('浏览器存储不可用。');
+  const stored = { ...state, updatedAt: new Date().toISOString() };
+  storage.setItem(CHECKIN_STORAGE_KEY, JSON.stringify(stored));
+  return stored;
+}
+
 export function effectiveComplete(task) {
   if (!task?.completed) return false;
   if (task.kind === 'algorithm') return Boolean(task.algorithm?.reproduced);
@@ -615,6 +796,96 @@ export function checkinStats(state, selectedDate) {
     completedTasks: effective.length,
     totalTasks: weekly.length,
   };
+}
+
+export function todayRemaining(state, date) {
+  const tasks = Array.isArray(state?.days?.[date]?.tasks) ? state.days[date].tasks : [];
+  const algorithms = tasks.filter((task) => task.kind === 'algorithm');
+  const cmcTasks = tasks.filter((task) => task.kind === 'cmc');
+  const cmcLessons = cmcTasks.flatMap((task) => task.cmc?.lessons || []);
+  const cetTasks = tasks.filter((task) => task.kind === 'cet6');
+  const reviewCetTasks = cetTasks.filter((task) => task.cet6?.phase === 'review');
+  const wordsTarget = cetTasks.reduce((sum, task) => sum + (Number(task.cet6?.wordsTarget) || 0), 0);
+  const wordsActual = cetTasks.reduce((sum, task) => sum + (Number(task.cet6?.wordsActual) || 0), 0);
+  const practiceTarget = reviewCetTasks.length;
+  const practiceActual = reviewCetTasks.reduce((sum, task) => sum + (Number(task.cet6?.practiceCount) || 0), 0);
+
+  const cmc = cmcLessons.length
+    ? {
+      mode: 'lessons',
+      unit: '节',
+      target: cmcLessons.length,
+      actual: cmcLessons.filter((lesson) => lesson.watched).length,
+    }
+    : {
+      mode: 'minutes',
+      unit: '分钟',
+      target: cmcTasks.reduce((sum, task) => sum + (Number(task.plannedMinutes) || 0), 0),
+      actual: cmcTasks.reduce((sum, task) => sum + (Number(task.actualMinutes) || 0), 0),
+    };
+  cmc.remaining = Math.max(0, cmc.target - cmc.actual);
+
+  return {
+    date,
+    taskCount: tasks.length,
+    algorithm: {
+      unit: '题',
+      target: algorithms.length,
+      actual: algorithms.filter(effectiveComplete).length,
+      remaining: Math.max(0, algorithms.length - algorithms.filter(effectiveComplete).length),
+    },
+    cmc,
+    cet6: {
+      wordLabel: cetTasks.some((task) => task.cet6?.phase === 'review') ? '复习词' : '新词',
+      words: {
+        unit: '词',
+        target: wordsTarget,
+        actual: wordsActual,
+        remaining: Math.max(0, wordsTarget - wordsActual),
+      },
+      practice: {
+        unit: '项',
+        target: practiceTarget,
+        actual: practiceActual,
+        remaining: Math.max(0, practiceTarget - practiceActual),
+      },
+    },
+  };
+}
+
+export function daysUntil(date, today = currentLocalDate()) {
+  if (!isDate(date) || !isDate(today)) return null;
+  return Math.round((parseDate(date) - parseDate(today)) / DAY_MS);
+}
+
+export function urgencyForDays(days) {
+  if (days === null || !Number.isFinite(days)) return 'pending';
+  if (days < 0) return 'ended';
+  if (days <= 3) return 'critical';
+  if (days <= 7) return 'urgent';
+  if (days <= 30) return 'soon';
+  return 'normal';
+}
+
+export function milestoneCountdown(milestone, today = currentLocalDate()) {
+  if (!milestone?.date) {
+    return { ...milestone, state: 'pending', text: milestone?.pending || '待公布', days: null };
+  }
+  const days = daysUntil(milestone.date, today);
+  const endDays = milestone.endDate ? daysUntil(milestone.endDate, today) : days;
+  if (milestone.endDate && days <= 0 && endDays >= 0) {
+    return { ...milestone, state: 'ongoing', text: `进行中 · 至 ${milestone.endDate.slice(5).replace('-', '.')} · 还有 ${endDays} 天`, days: endDays };
+  }
+  if (endDays < 0) return { ...milestone, state: 'ended', text: '已结束', days: endDays };
+  if (days === 0) return { ...milestone, state: 'critical', text: '就是今天', days };
+  return { ...milestone, state: urgencyForDays(days), text: `还有 ${days} 天`, days };
+}
+
+export function eventCountdowns(today = currentLocalDate(), events = KEY_DATE_EVENTS) {
+  return events.map((event) => ({
+    ...event,
+    milestones: event.milestones.map((milestone) => milestoneCountdown(milestone, today)),
+  }));
 }
 
 export function suggestedDate(today = new Date().toISOString().slice(0, 10)) {
