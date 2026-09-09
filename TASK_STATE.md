@@ -118,6 +118,12 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
   metadata, custom task categories, JSON round-trip restore, light/dark layouts,
   `390x844` mobile containment, `1440x1000` desktop layout, and zero console
   errors or warnings.
+- Commit `11050a4` deployed successfully through GitHub Pages workflow
+  `34391953580`. A direct request to the GitHub Pages edge for
+  `http://iwxt.cn/checkin/` returned HTTP 200 with the generated “本机记录”
+  boundary and check-in script. Public DNS-over-HTTPS still resolves both
+  `iwxt.cn` and `www.iwxt.cn` to the old server `103.113.95.133`; normal HTTPS
+  therefore still reaches its expired certificate instead of this deployment.
 
 - `npm run check`: passed for generator, writer server, and both browser scripts.
 - `npm test`: 8/8 tests passed, including local-only drafts and remote cover
@@ -216,9 +222,6 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
 
 ## Remaining work
 
-- Push the daily check-in commit, wait for its GitHub Pages workflow, and verify
-  the deployed `/checkin/` artifact. The custom domain's live accessibility
-  still depends on DNS and certificate state described below.
 - The user must replace the old DNSPod apex and `www` web records with GitHub
   Pages records. After public DNS propagation, verify both hostnames, wait for
   GitHub's certificate, enable HTTPS enforcement, and perform a live browser
