@@ -5,7 +5,8 @@ HTML、CSS、JavaScript 和图片，写作、草稿及 GitHub 凭据只留在本
 
 现有 Sites 网站和 Typecho 备份不会被此项目覆盖。
 
-公网地址：<https://123asdc-it.github.io/iwxt-diary/>
+正式公网地址：<https://iwxt.cn/>。自定义域名通过 GitHub Pages 发布；DNS
+切换与 HTTPS 证书签发完成前，页面可能暂时仍显示旧服务器内容。
 
 ## 开始写日记
 
@@ -56,7 +57,8 @@ npm run write
 ## GitHub Pages
 
 项目已连接公开仓库 <https://github.com/123asdc-it/iwxt-diary>，`main` 分支
-的每次推送都会通过 GitHub Actions 自动更新 Pages。
+的每次推送都会通过 GitHub Actions 自动更新 Pages。生产构建使用
+`https://iwxt.cn/` 根路径，不再把 `/iwxt-diary/` 写入文章和静态资源地址。
 
 如果以后 GitHub 登录失效，可在本目录重新执行：
 

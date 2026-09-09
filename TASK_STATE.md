@@ -9,7 +9,9 @@ a rollback. The current iteration adds a lightweight cinematic interaction
 layer inspired by the user's reference blog while keeping the diary's own
 anime-and-ocean Romanticism identity. The active visual pass now adopts a
 full-page wallpaper and translucent framed layout inspired by the user's
-`mccsjs.cn` and `blog.snowy.moe` references.
+`mccsjs.cn` and `blog.snowy.moe` references. The current deployment task moves
+the public site from the GitHub project URL to the user's apex domain
+`https://iwxt.cn/`.
 
 ## Acceptance criteria
 
@@ -32,6 +34,9 @@ full-page wallpaper and translucent framed layout inspired by the user's
   typography, dark mode, responsive layout, and the original license file in
   the public source tree.
 - Build output works both at `/` locally and under a GitHub project subpath.
+- The production GitHub Actions build uses `https://iwxt.cn/` at the root, so
+  canonical URLs, Open Graph images, feeds, assets, and post links contain no
+  stale `/iwxt-diary/` prefix.
 - A local publish action builds first and uses the machine's Git credential
   helper; no GitHub token is exposed to or saved by browser code.
 - Tests cover validation, draft exclusion, path generation, and recoverable
@@ -57,6 +62,9 @@ full-page wallpaper and translucent framed layout inspired by the user's
 - GitHub CLI account `123asdc-it` is authenticated with `repo` and `workflow`
   scopes. The public repository is `123asdc-it/iwxt-diary` and `origin/main`
   tracks it.
+- The apex domain `iwxt.cn` uses DNSPod nameservers. Before migration its apex
+  and `www` records pointed to the old host `103.113.95.133`, which served a
+  ChineseStack placeholder with an expired, mismatched TLS certificate.
 - The user explicitly authorized Codex-only execution. The CCG Opus planner was
   unavailable because the configured Claude profile is not logged in; session
   `568e77c3-30d9-482a-a2dc-ac4240a1609a` returned no findings.
@@ -148,9 +156,17 @@ full-page wallpaper and translucent framed layout inspired by the user's
   Romanticism 2.2 by Akashi · 静态日记版” footer line. The generated footer now
   shows only the diary copyright line; the upstream GPLv3 license remains at
   `public/romanticism/LICENSE.txt` in the public repository.
+- On 2026-09-10, the production workflow was prepared for the apex domain
+  `https://iwxt.cn/`: `SITE_BASE_PATH` is empty and `SITE_URL` is the custom
+  domain. Syntax checks, 8/8 tests, the production build, dependency audit, and
+  stale-prefix scans passed. Local Playwright checks loaded both the homepage
+  and post at root paths with zero console errors or warnings.
 
 ## Remaining work
 
-- No implementation work remains for this wallpaper-and-glass pass. Possible
-  later additions such as a dedicated archive timeline, automatic article
-  table of contents, or music player should be handled as separate features.
+- Bind `iwxt.cn` in the GitHub Pages repository settings after the root-domain
+  build is deployed.
+- The user must replace the old DNSPod apex and `www` web records with GitHub
+  Pages records. After public DNS propagation, verify both hostnames, wait for
+  GitHub's certificate, enable HTTPS enforcement, and perform a live browser
+  smoke test. DNSPod account changes cannot be automated from this workspace.
