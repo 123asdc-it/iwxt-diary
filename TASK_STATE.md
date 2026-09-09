@@ -161,11 +161,13 @@ the public site from the GitHub project URL to the user's apex domain
   domain. Syntax checks, 8/8 tests, the production build, dependency audit, and
   stale-prefix scans passed. Local Playwright checks loaded both the homepage
   and post at root paths with zero console errors or warnings.
+- GitHub Pages workflow `34389681149` successfully deployed commit `fb2c2a8`.
+  The repository Pages setting now has `cname: iwxt.cn`; HTTPS enforcement is
+  intentionally off until DNSPod points the domain to GitHub and GitHub issues
+  a matching certificate.
 
 ## Remaining work
 
-- Bind `iwxt.cn` in the GitHub Pages repository settings after the root-domain
-  build is deployed.
 - The user must replace the old DNSPod apex and `www` web records with GitHub
   Pages records. After public DNS propagation, verify both hostnames, wait for
   GitHub's certificate, enable HTTPS enforcement, and perform a live browser
