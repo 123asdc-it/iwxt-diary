@@ -348,5 +348,15 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
   itself timed out after fonts loaded, so crop verification is based on the
   inspected source image plus browser geometry/computed-style checks rather
   than a saved browser screenshot.
-- Remaining: commit and push the scoped changes, wait for the Pages workflow,
-  and run a live HTTPS custom-domain smoke check before reporting publication.
+- Commit `a379c23` deployed successfully in GitHub Pages workflow
+  `34478349723`. The public article and cover return HTTP 200 from GitHub's
+  edge, and the live cover hash matches the 82,450-byte local asset.
+- A fresh live HTTPS Playwright session at 390 x 844 confirmed a secure context,
+  exact 390 px document containment, the selected cover URL with `15% 50%`
+  positioning, the repost/source boundary, the final paragraph, and zero
+  console errors or warnings. TLS verification returned a valid `iwxt.cn`
+  certificate issued by Let's Encrypt and expiring 2026-12-08.
+- Remaining external boundary: the supplied screenshots did not contain the
+  original Douyin video URL, and the visible screenshot account differs from
+  the user-specified repost attribution. The article exposes both facts rather
+  than claiming independently verified original authorship.
