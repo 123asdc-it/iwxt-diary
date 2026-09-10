@@ -144,7 +144,7 @@ button { color: inherit; }
   place-items: center;
   width: 100%;
   color: white;
-  background-position: calc(50% + var(--hero-pan-x, 0px)) calc(50% + var(--hero-pan-y, 0px));
+  background-position: calc(var(--cover-focus-x, 50%) + var(--hero-pan-x, 0px)) calc(50% + var(--hero-pan-y, 0px));
   background-repeat: no-repeat;
   background-size: cover;
   isolation: isolate;
@@ -198,7 +198,7 @@ button { color: inherit; }
   padding: 34px;
   border: 1px solid var(--border);
   border-radius: 14px;
-  background-position: center;
+  background-position: var(--cover-focus-x, 50%) center;
   background-size: cover;
   color: white;
   cursor: pointer;

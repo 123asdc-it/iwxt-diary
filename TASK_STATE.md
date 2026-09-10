@@ -311,3 +311,42 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
   browser smoke test. DNS-over-HTTPS and direct GitHub-edge HTTP already return
   the new deployment, but this Mac's ordinary resolver may retain the old apex
   answer until its previous TTL/cache expires.
+
+## 2026-09-10 repost publication
+
+- Add a public essay reconstructed from five user-supplied screenshots under
+  the title `0:5，还不是结局`, with attribution to the user-specified Douyin
+  account `兔丸星球`.
+- Preserve the source boundary in the article: the original video URL was not
+  supplied, the screenshots display the page account `大器新能源`, and the
+  competition details have not been independently verified.
+- Only normalize obvious punctuation, duplicated lines, and typographical
+  errors; do not recast the story as an original diary entry.
+- After the user rejected the generated draft cover, use the selected SFW
+  anime tennis wallpaper `Wallhaven 5d8xw9` instead. Keep its source link and
+  ownership notice in the article, and store an optimized 1600 x 900 WebP
+  locally under `public/uploads/covers/` so the public page does not depend on
+  a remote image hotlink.
+- Verify content validation, tests, production build, desktop/mobile article
+  layout, text continuity, horizontal overflow, and browser console output;
+  then deploy through the existing GitHub Pages workflow and verify the live
+  custom-domain article.
+- Added the article source at
+  `content/posts/2026-09-10-zero-five-is-not-the-end.md` and stored the selected
+  cover as an 82,450-byte, 1600 x 900 WebP under
+  `public/uploads/covers/`. The rejected generated-cover copy is not part of
+  the repository.
+- Added a bounded per-entry `coverFocusX` value with a centered default, build
+  output for cards and article heroes, and writer preservation for later
+  edits. This article uses `15%` so the left-side tennis character remains in
+  view on narrow screens; existing articles continue to use `50%`.
+- Local verification passed syntax checks, 23/23 Node tests, the production
+  build, generated-markup focus checks, and `git diff --check`. Playwright at
+  390 x 844 confirmed the selected local cover, `15% 50%` computed positioning,
+  exact 390 px document containment, complete source/credit blocks, continuous
+  final paragraphs, and zero console errors or warnings. Screenshot capture
+  itself timed out after fonts loaded, so crop verification is based on the
+  inspected source image plus browser geometry/computed-style checks rather
+  than a saved browser screenshot.
+- Remaining: commit and push the scoped changes, wait for the Pages workflow,
+  and run a live HTTPS custom-domain smoke check before reporting publication.

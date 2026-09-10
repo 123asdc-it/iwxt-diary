@@ -44,6 +44,14 @@ test('entry validation rejects invalid dates and covers', () => {
   assert.throws(() => validateEntry({ ...validEntry, cover: '../../secret' }), /封面/);
 });
 
+test('cover focus defaults to center and accepts a bounded horizontal position', () => {
+  assert.equal(validateEntry(validEntry).coverFocusX, 50);
+  assert.equal(validateEntry({ ...validEntry, coverFocusX: 15 }).coverFocusX, 15);
+  assert.throws(() => validateEntry({ ...validEntry, coverFocusX: -1 }), /焦点/);
+  assert.throws(() => validateEntry({ ...validEntry, coverFocusX: 101 }), /焦点/);
+  assert.throws(() => validateEntry({ ...validEntry, coverFocusX: 12.5 }), /焦点/);
+});
+
 test('remote cover URLs reject local network targets', async () => {
   await assert.rejects(validateRemoteImageUrl('file:///tmp/private.png'), /http/);
   await assert.rejects(validateRemoteImageUrl('http://127.0.0.1/private.png'), /本机或局域网/);

@@ -100,6 +100,7 @@ async function saveHomeImage(reset = false) {
 }
 
 function currentPayload(status) {
+  const currentEntry = entries.find((entry) => entry.slug === fields.slug.value);
   return {
     slug: fields.slug.value,
     title: fields.title.value,
@@ -107,6 +108,7 @@ function currentPayload(status) {
     tags: fields.tags.value.split(/[，,]/).map((tag) => tag.trim()).filter(Boolean),
     summary: fields.summary.value,
     cover: fields.cover.value,
+    coverFocusX: currentEntry?.coverFocusX ?? 50,
     coverUrl: fields.coverUrl.value,
     content: fields.content.value,
     status,

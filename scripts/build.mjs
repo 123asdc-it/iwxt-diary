@@ -161,7 +161,7 @@ function indexPage(config, entries) {
   const tags = [...new Set(entries.flatMap((entry) => entry.tags))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
   const cards = entries.map((entry) => {
     const searchText = [entry.title, entry.summary, entry.displayDate, ...entry.tags, entry.content].join(' ').toLocaleLowerCase('zh-CN');
-    return `<a class="romanticism-post-card reveal-on-scroll" href="${pathUrl(config.basePath, `posts/${entry.slug}/`)}" data-entry-card data-tilt-card data-reveal data-month="${escapeHtml(entry.month)}" data-tags="${escapeHtml(entry.tags.join('|'))}" data-search="${escapeHtml(searchText)}" style="background-image:url('${pathUrl(config.basePath, entry.cover)}')">
+    return `<a class="romanticism-post-card reveal-on-scroll" href="${pathUrl(config.basePath, `posts/${entry.slug}/`)}" data-entry-card data-tilt-card data-reveal data-month="${escapeHtml(entry.month)}" data-tags="${escapeHtml(entry.tags.join('|'))}" data-search="${escapeHtml(searchText)}" style="background-image:url('${pathUrl(config.basePath, entry.cover)}');--cover-focus-x:${entry.coverFocusX}%">
   <span class="post-card-shade"></span>
   <span class="post-card-copy">
     <strong>${escapeHtml(entry.title)}</strong>
@@ -225,7 +225,7 @@ ${experienceChrome()}
 ${appbar(config)}
 ${drawer({ config, entries, months, tags })}
 <main>
-  <section class="post-hero glass-frame" data-hero style="background-image:url('${pathUrl(config.basePath, entry.cover)}')" aria-labelledby="post-title">
+  <section class="post-hero glass-frame" data-hero style="background-image:url('${pathUrl(config.basePath, entry.cover)}');--cover-focus-x:${entry.coverFocusX}%" aria-labelledby="post-title">
     <div class="image-shade"></div>
     ${heroAtmosphere()}
     <div class="post-hero-copy clear-in" data-hero-copy><span class="hero-eyebrow">DIARY ENTRY</span><h1 id="post-title">${escapeHtml(entry.title)}</h1><p>${escapeHtml(config.author)} · ${escapeHtml(entry.displayDate)} · ${escapeHtml(entry.tags.join('、'))}</p></div>

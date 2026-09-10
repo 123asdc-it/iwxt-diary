@@ -89,6 +89,9 @@ export function validateEntry(input, { requireSlug = false } = {}) {
   const summary = typeof input?.summary === 'string' ? input.summary.trim() : '';
   const content = typeof input?.content === 'string' ? input.content.trim() : '';
   const cover = typeof input?.cover === 'string' ? input.cover.trim().replace(/^\/+/, '') : '';
+  const coverFocusX = input?.coverFocusX == null || input.coverFocusX === ''
+    ? 50
+    : Number(input.coverFocusX);
   const slug = typeof input?.slug === 'string' ? input.slug.trim() : '';
   const tags = Array.isArray(input?.tags)
     ? [...new Set(input.tags.filter((tag) => typeof tag === 'string').map((tag) => tag.trim()).filter(Boolean))]
@@ -106,6 +109,9 @@ export function validateEntry(input, { requireSlug = false } = {}) {
     || publicCoverPattern.test(cover)
     || (status === 'draft' && draftCoverPattern.test(cover));
   if (!validCover) throw new Error('请选择内置封面，或导入有效的图片 URL。');
+  if (!Number.isInteger(coverFocusX) || coverFocusX < 0 || coverFocusX > 100) {
+    throw new Error('封面水平焦点需要是 0 到 100 之间的整数。');
+  }
   if (requireSlug && !slugPattern.test(slug)) throw new Error('日记标识无效。');
 
   const createdAt = isoString(input?.createdAt, now);
@@ -118,6 +124,7 @@ export function validateEntry(input, { requireSlug = false } = {}) {
     tags,
     summary: summary || content.replace(/\s+/g, ' ').slice(0, 120),
     cover,
+    coverFocusX,
     content,
     createdAt,
     updatedAt,
@@ -155,6 +162,7 @@ export function serializeEntry(entry) {
     ...entry.tags.map((tag) => `  - ${JSON.stringify(tag)}`),
     `summary: ${JSON.stringify(entry.summary)}`,
     `cover: ${JSON.stringify(entry.cover)}`,
+    `coverFocusX: ${entry.coverFocusX}`,
     `createdAt: ${JSON.stringify(entry.createdAt)}`,
     `updatedAt: ${JSON.stringify(entry.updatedAt)}`,
     '---',
@@ -223,6 +231,7 @@ export async function saveEntry(input) {
   const entry = validateEntry({
     ...input,
     slug,
+    coverFocusX: input?.coverFocusX ?? previous?.coverFocusX,
     createdAt: previous?.createdAt || now,
     updatedAt: now,
   }, { requireSlug: true });
