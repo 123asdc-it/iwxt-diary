@@ -239,13 +239,28 @@ document.querySelectorAll('.markdown-body pre > code').forEach((code) => {
   block.append(toolbar, pre);
 });
 
+function hydrateDrawerImages() {
+  const cover = drawer?.querySelector('[data-drawer-cover-image]');
+  if (!cover || cover.dataset.imagesLoaded === 'true') return;
+  const coverImage = cover.dataset.drawerCoverImage;
+  const avatarImage = cover.dataset.drawerAvatarImage;
+  if (coverImage) cover.style.setProperty('--drawer-cover', `url(${JSON.stringify(coverImage)})`);
+  if (avatarImage) cover.style.setProperty('--drawer-avatar', `url(${JSON.stringify(avatarImage)})`);
+  cover.dataset.imagesLoaded = 'true';
+}
+
 function setDrawer(open) {
+  if (open) hydrateDrawerImages();
   drawer?.classList.toggle('is-open', open);
   drawerScrim?.classList.toggle('is-open', open);
   if (drawerScrim) drawerScrim.tabIndex = open ? 0 : -1;
 }
 
-document.querySelectorAll('[data-open-drawer]').forEach((button) => button.addEventListener('click', () => setDrawer(true)));
+document.querySelectorAll('[data-open-drawer]').forEach((button) => {
+  button.addEventListener('pointerenter', hydrateDrawerImages, { once: true });
+  button.addEventListener('focus', hydrateDrawerImages, { once: true });
+  button.addEventListener('click', () => setDrawer(true));
+});
 document.querySelectorAll('[data-close-drawer]').forEach((button) => button.addEventListener('click', () => setDrawer(false)));
 
 function updateHash() {

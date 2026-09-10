@@ -49,6 +49,25 @@ backend or changing the GitHub Pages architecture.
    deploy through the existing GitHub Pages workflow, and verify the public
    asset version after deployment.
 
+### 2026-09-10 first-load performance plan
+
+1. Preserve the selected anime wallpaper while replacing the 2559 x 1439,
+   3.38 MB PNG served to visitors with a visually checked 1920 x 1080 WebP.
+   Keep the original PNG only as a local, ignored backup.
+2. Preload the active wallpaper from the generated page head so the browser can
+   start it before the stylesheet has been parsed.
+3. Do not fetch the closed navigation drawer's decorative cover until the user
+   opens the drawer; retain a lightweight colour placeholder and accessible
+   controls while the image arrives.
+4. Run syntax, tests, build and diff checks, then use a fresh Playwright session
+   to verify cold-cache transfer size, desktop/mobile rendering, drawer loading,
+   HTTPS requests, overflow, and console output before deploying.
+
+Performance risks for this pass: the wallpaper crop and colour must remain
+recognisable after conversion; lazy drawer imagery must not flash as unreadable
+content; future locally imported wallpapers are not automatically recompressed
+by this narrow change and still need an explicit optimisation step.
+
 Risks for this pass: local dates must not shift at UTC boundaries; an empty day
 must not be labelled missed; event announcements can change after deployment;
 GitHub cannot issue the custom-domain certificate until its DNS checks finish.
@@ -114,6 +133,21 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
   `568e77c3-30d9-482a-a2dc-ac4240a1609a` returned no findings.
 
 ## Verification status
+
+- The 2026-09-10 first-load pass replaces the 2559 x 1439, 3,382,944-byte
+  wallpaper PNG with a visually checked 1920 x 1080, 117,724-byte WebP while
+  retaining the source PNG in ignored local backup storage. Generated pages
+  preload the active wallpaper, and the closed drawer now defers its 280 KB
+  decorative cover until pointer, keyboard, or click intent.
+- Local verification passed `npm run check`, all 22 Node tests, the production
+  root build, generated-markup and old-asset absence checks, and
+  `git diff --check`. Fresh Playwright sessions confirmed that the initial
+  request set omits `sidebar.webp`, opening the drawer fetches and displays it,
+  the desktop and 390 x 844 layouts preserve the selected art, mobile width is
+  exactly 390 px without overflow, the check-in page reports `已载入本机记录`,
+  dark mode works, and the console has zero errors or warnings. Live deployment
+  and cold-cache verification remain to be completed after this change is
+  pushed.
 
 - The 2026-09-10 dashboard extension adds a full Monday-first month calendar,
   five non-overlapping day states, a live today-remaining panel derived from

@@ -34,6 +34,7 @@ function pageHead({ config, title, description, pathname, imagePath }) {
   const canonicalPath = pathUrl(config.basePath, pathname);
   const canonical = `${config.siteUrl}${canonicalPath}`;
   const image = `${config.siteUrl}${pathUrl(config.basePath, imagePath)}`;
+  const wallpaper = pathUrl(config.basePath, config.homeImage);
   return `<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -43,6 +44,7 @@ function pageHead({ config, title, description, pathname, imagePath }) {
   <meta name="theme-color" content="#fff5ee">
   <link rel="canonical" href="${escapeHtml(canonical)}">
   <link rel="icon" href="${pathUrl(config.basePath, 'favicon.svg')}">
+  <link rel="preload" as="image" href="${wallpaper}" fetchpriority="high">
   <link rel="stylesheet" href="${pathUrl(config.basePath, 'assets/highlight.css')}">
   <link rel="stylesheet" href="${pathUrl(config.basePath, 'assets/site.css')}">
   <meta property="og:type" content="article">
@@ -68,7 +70,7 @@ function drawer({ config, entries, months, tags }) {
 
   return `<button class="drawer-scrim" type="button" data-close-drawer aria-label="关闭导航菜单" tabindex="-1"></button>
 <aside class="romanticism-drawer" data-drawer aria-label="网站导航">
-  <div class="drawer-cover" style="--drawer-cover:url('${pathUrl(config.basePath, 'romanticism/sidebar.webp')}');--drawer-avatar:url('${pathUrl(config.basePath, 'romanticism/user.jpg')}')">
+  <div class="drawer-cover" data-drawer-cover-image="${pathUrl(config.basePath, 'romanticism/sidebar.webp')}" data-drawer-avatar-image="${pathUrl(config.basePath, 'romanticism/user.jpg')}">
     <span class="drawer-avatar" aria-hidden="true"></span>
     <strong>${escapeHtml(config.title)}</strong>
     <span>${escapeHtml(config.tagline)}</span>

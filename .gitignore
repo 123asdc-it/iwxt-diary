@@ -11,3 +11,4 @@ content/trash/*
 !content/trash/.gitkeep
 content/draft-assets/*
 !content/draft-assets/.gitkeep
+content/original-assets/
