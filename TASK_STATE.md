@@ -145,9 +145,14 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
   request set omits `sidebar.webp`, opening the drawer fetches and displays it,
   the desktop and 390 x 844 layouts preserve the selected art, mobile width is
   exactly 390 px without overflow, the check-in page reports `已载入本机记录`,
-  dark mode works, and the console has zero errors or warnings. Live deployment
-  and cold-cache verification remain to be completed after this change is
-  pushed.
+  dark mode works, and the console has zero errors or warnings.
+- Commit `3b858e7` deployed successfully in GitHub Pages workflow
+  `34436090788`. The live HTML references the new 117,724-byte WebP and the old
+  PNG returns HTTP 404. A fresh HTTPS Playwright session measured 446,741 bytes
+  across page resources and a 1.151-second load, versus the preceding
+  3,992,211-byte, 14.765-second cold sample. The live initial request omits the
+  drawer cover, opening the drawer fetches it, the page is a secure context,
+  and the console remains free of errors and warnings.
 
 - The 2026-09-10 dashboard extension adds a full Monday-first month calendar,
   five non-overlapping day states, a live today-remaining panel derived from
