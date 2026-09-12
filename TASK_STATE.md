@@ -360,3 +360,40 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
   original Douyin video URL, and the visible screenshot account differs from
   the user-specified repost attribution. The article exposes both facts rather
   than claiming independently verified original authorship.
+
+## 2026-09-12 approximate competition windows
+
+- Extend the existing `关键日期` panel instead of changing the version 1
+  localStorage plan data. Add `外研社·国才杯` and `全国大学生统计建模大赛`,
+  and replace empty competition dates with useful month-level planning windows.
+- Keep exact dates, official month ranges, estimates, and pending campus items
+  visually and semantically distinct. Estimated windows must not be converted
+  into fake day-level countdowns.
+- Use the organisers' published 2026 schedules as evidence: FLTRP lists
+  April–October school contests, September–November provincial contests, and
+  October–December national contests; the statistics contest lists a March
+  launch, May submission, mid-June provincial round, and July–August national
+  round. Use the latter only as a labelled 2027 planning estimate.
+- Add model coverage for official/estimated windows, update the explanatory UI
+  and responsive styling, then run syntax, tests, build, desktop/mobile browser
+  checks, deployment, and live HTTPS verification.
+
+Risks: organiser and university notices can move dates; ICPC stations and
+campus selection are not a single national date; a month-level estimate is for
+planning only and must be replaced when the user supplies a concrete notice.
+
+- Implemented 11 key-date cards. Added official 2026 FLTRP school/provincial/
+  national ranges and labelled 2027 statistical-modeling planning windows.
+  Added approximate next-cycle windows for CET6, Lanqiao, ICPC, Baidu Star,
+  and NUEDC while retaining exact MCM/CUMCM dates and pending campus-only items.
+- `milestoneCountdown` now returns `window` or `estimated` states for month-level
+  ranges and never assigns them a day count. The UI shows official ranges in
+  green, estimates in purple, and explains that estimates are replaceable
+  planning windows.
+- Local verification passed `npm run check`, 24/24 Node tests, the production
+  build, and `git diff --check`. Playwright at 1440 x 1000 and 390 x 844 found
+  all 11 cards, the two requested competitions, no overflowing milestone/card
+  content, exact viewport-width containment, working dark-mode colours, and
+  zero console errors or warnings.
+- Remaining: deploy the change and verify the two new cards plus responsive
+  containment on the live HTTPS page.

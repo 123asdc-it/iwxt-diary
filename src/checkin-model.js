@@ -5,9 +5,10 @@ export const PLAN_END = '2026-11-13';
 export const ALGORITHM_SOURCE_URL = 'https://leetcode.cn/discuss/post/3141566/ru-he-ke-xue-shua-ti-by-endlesscheng-q3yd/';
 export const CMC_SOURCE_URL = 'https://www.bilibili.com/cheese/play/ep1415318?csource=common_channelclass_watchedrecord_null';
 
-// Key dates are intentionally data, not rendering logic. Keep unknown dates
-// explicit instead of copying a previous year's schedule into the countdown.
-// Date-only values use the organiser's local calendar date.
+// Key dates are intentionally data, not rendering logic. Exact dates use the
+// organiser's local calendar date. Month-level windows stay separate from the
+// day countdown: `estimated: true` marks a planning estimate, while a window
+// without that flag is an official organiser range.
 export const KEY_DATE_EVENTS = [
   {
     id: 'cmc',
@@ -23,44 +24,67 @@ export const KEY_DATE_EVENTS = [
   {
     id: 'cet6',
     name: '六级',
-    subtitle: 'CET6',
+    subtitle: '2026 下半年 CET6',
     sourceUrl: 'https://cet.neea.edu.cn/',
     milestones: [
-      { label: '报名截止', pending: '待校内通知' },
-      { label: '缴费截止', pending: '待校内通知' },
-      { label: '笔试', pending: '待正式公布' },
+      { label: '报名', window: '2026.09–10', estimated: true, note: '具体以校内通知为准' },
+      { label: '缴费', pending: '待校内通知' },
+      { label: '笔试', window: '2026.12', estimated: true, note: '教育考试院常规考月' },
+    ],
+  },
+  {
+    id: 'fltrp',
+    name: '外研社·国才杯',
+    subtitle: '2026 外语能力大赛',
+    sourceUrl: 'https://2u4u.fltrp.com/c/2026-04-27/541737.shtml',
+    milestones: [
+      { label: '校赛', window: '2026.04–10', note: '官方赛期；校内日期待通知' },
+      { label: '省赛', window: '2026.09–11', note: '官方赛期' },
+      { label: '国赛', window: '2026.10–12', note: '官方赛期' },
     ],
   },
   {
     id: 'lanqiao',
     name: '蓝桥杯',
-    subtitle: '下届赛事',
+    subtitle: '第 18 届·预计赛季',
     sourceUrl: 'https://dasai.lanqiao.cn/',
     milestones: [
-      { label: '报名截止', pending: '待正式公布' },
-      { label: '缴费截止', pending: '待校内通知' },
-      { label: '比赛', pending: '待正式公布' },
+      { label: '报名', window: '2026.10–2027.03', estimated: true, note: '参照第 17 届官方节奏' },
+      { label: '省赛', window: '2027.04', estimated: true, note: '待第 18 届公告' },
+      { label: '国赛', window: '2027.06', estimated: true, note: '待第 18 届公告' },
     ],
   },
   {
     id: 'icpc',
     name: 'ICPC',
-    subtitle: '区域赛',
+    subtitle: '2027 校队·区域赛路线',
     sourceUrl: 'https://icpc.global/',
     milestones: [
-      { label: '报名截止', pending: '待赛站公告' },
-      { label: '缴费截止', pending: '待校内通知' },
-      { label: '比赛', pending: '待赛站公告' },
+      { label: '组队选拔', window: '2027.03–06', estimated: true, note: '待华师校队通知' },
+      { label: '赛站报名', window: '2027.07–09', estimated: true, note: '各赛站分别公告' },
+      { label: '区域赛', window: '2027.09–12', estimated: true, note: '参照亚洲区常规赛季' },
     ],
   },
   {
     id: 'baidu-star',
     name: '百度之星',
-    subtitle: '程序设计大赛',
+    subtitle: '2027 预计赛季',
+    sourceUrl: 'https://astar.baidu.com/',
     milestones: [
-      { label: '报名截止', pending: '待主办方公告' },
-      { label: '缴费截止', pending: '待主办方公告' },
-      { label: '比赛', pending: '待主办方公告' },
+      { label: '报名/校赛', window: '2027.06–07', estimated: true, note: '参照 2026 赛季' },
+      { label: '资格赛', window: '2027.07–09', estimated: true, note: '待百度正式公告' },
+      { label: '总决赛', window: '2027.09–10', estimated: true, note: '待百度正式公告' },
+    ],
+  },
+  {
+    id: 'statistical-modeling',
+    name: '统计建模',
+    subtitle: '2027 全国大学生大赛·预计',
+    sourceUrl: 'https://tjjmds.ai-learning.net/dstz/37119.jhtml',
+    milestones: [
+      { label: '组队/论文', window: '2027.03–05', estimated: true, note: '参照 2026 官方赛程' },
+      { label: '省赛', window: '2027.06', estimated: true, note: '参照上届六月中旬' },
+      { label: '国赛', window: '2027.07–08', estimated: true, note: '待 2027 正式通知' },
     ],
   },
   {
@@ -88,11 +112,12 @@ export const KEY_DATE_EVENTS = [
   {
     id: 'nuedc',
     name: '电赛',
-    subtitle: '全国大学生电子设计竞赛',
+    subtitle: '2027 全国大学生电子设计竞赛',
+    sourceUrl: 'https://www.nuedc-training.com.cn/',
     milestones: [
-      { label: '报名截止', pending: '待正式公布' },
-      { label: '缴费截止', pending: '待校内通知' },
-      { label: '比赛', pending: '待正式公布' },
+      { label: '组队备赛', window: '2027.03–05', estimated: true, note: '校内选拔待通知' },
+      { label: '报名', window: '2027.05–06', estimated: true, note: '待赛区和学校通知' },
+      { label: '比赛', window: '2027.07–08', estimated: true, note: '参照 2025 全国赛时段' },
     ],
   },
   {
@@ -868,6 +893,14 @@ export function urgencyForDays(days) {
 }
 
 export function milestoneCountdown(milestone, today = currentLocalDate()) {
+  if (milestone?.window) {
+    return {
+      ...milestone,
+      state: milestone.estimated ? 'estimated' : 'window',
+      text: milestone.estimated ? '预计赛期' : '官方赛期',
+      days: null,
+    };
+  }
   if (!milestone?.date) {
     return { ...milestone, state: 'pending', text: milestone?.pending || '待公布', days: null };
   }

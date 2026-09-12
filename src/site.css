@@ -669,10 +669,18 @@ select:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 55%, 
 .countdown-milestone.is-critical > strong { color: #b83f58; }
 .countdown-milestone.is-ongoing { background: rgb(74 179 130 / 15%); }
 .countdown-milestone.is-ongoing > strong { color: #318963; }
+.countdown-milestone.is-window { background: rgb(74 179 130 / 12%); }
+.countdown-milestone.is-window > strong { color: #318963; }
+.countdown-milestone.is-estimated { background: rgb(139 104 201 / 14%); }
+.countdown-milestone.is-estimated > b,
+.countdown-milestone.is-window > b { line-height: 1.25; white-space: normal; }
+.countdown-milestone.is-estimated > strong { color: #7950b7; }
 .is-dark .countdown-milestone.is-soon > strong { color: #85c7ff; }
 .is-dark .countdown-milestone.is-urgent > strong { color: #ffd08a; }
 .is-dark .countdown-milestone.is-critical > strong { color: #ff9caf; }
-.is-dark .countdown-milestone.is-ongoing > strong { color: #7cdbb5; }
+.is-dark .countdown-milestone.is-ongoing > strong,
+.is-dark .countdown-milestone.is-window > strong { color: #7cdbb5; }
+.is-dark .countdown-milestone.is-estimated > strong { color: #c4a7ff; }
 .checkin-summary-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
 .checkin-stat { position: relative; min-width: 0; overflow: hidden; padding: 18px 17px 19px; border-radius: 20px; }
 .checkin-stat::before { position: absolute; top: -34px; right: -28px; width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--accent) 30%, transparent), transparent 70%); content: ''; }

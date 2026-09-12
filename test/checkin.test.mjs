@@ -218,6 +218,22 @@ test('countdowns cover 30/7/3-day thresholds, today, ongoing ranges and expiry',
   assert.equal(eventCountdowns('2026-09-10').find((event) => event.id === 'cumcm').milestones[2].state, 'ongoing');
 });
 
+test('official and estimated month windows stay out of day-level countdowns', () => {
+  const official = milestoneCountdown({ label: '省赛', window: '2026.09–11' }, '2026-09-12');
+  assert.equal(official.state, 'window');
+  assert.equal(official.text, '官方赛期');
+  assert.equal(official.days, null);
+
+  const estimated = milestoneCountdown({ label: '国赛', window: '2027.07–08', estimated: true }, '2026-09-12');
+  assert.equal(estimated.state, 'estimated');
+  assert.equal(estimated.text, '预计赛期');
+  assert.equal(estimated.days, null);
+
+  const events = eventCountdowns('2026-09-12');
+  assert.equal(events.some((event) => event.id === 'fltrp'), true);
+  assert.equal(events.some((event) => event.id === 'statistical-modeling'), true);
+});
+
 test('localStorage round-trip keeps user data after a simulated page refresh', () => {
   const values = new Map();
   const storage = {

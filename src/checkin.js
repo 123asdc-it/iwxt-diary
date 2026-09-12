@@ -316,7 +316,7 @@ ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
   <header><div><strong>${escapeHtml(event.name)}</strong><small>${escapeHtml(event.subtitle)}</small></div>${event.sourceUrl ? `<a href="${escapeHtml(event.sourceUrl)}" target="_blank" rel="noreferrer noopener" aria-label="查看 ${escapeHtml(event.name)} 日期来源">来源 ↗</a>` : '<span>待公告</span>'}</header>
   <div class="countdown-milestones">${event.milestones.map((milestone) => `<div class="countdown-milestone is-${milestone.state}">
     <span>${escapeHtml(milestone.label)}</span>
-    <b>${milestone.date ? escapeHtml(milestone.date.replaceAll('-', '.')) : '—'}</b>
+    <b>${milestone.date ? escapeHtml(milestone.date.replaceAll('-', '.')) : milestone.window ? escapeHtml(milestone.window) : '—'}</b>
     <strong>${escapeHtml(milestone.text)}</strong>
     ${milestone.note ? `<small>${escapeHtml(milestone.note)}</small>` : ''}
   </div>`).join('')}</div>
@@ -366,9 +366,9 @@ ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
   </article>
 </section>
 <section class="key-dates-card glass-panel" aria-labelledby="key-dates-title">
-  <header class="focus-card-heading"><div><span class="checkin-kicker">COUNTDOWN</span><h2 id="key-dates-title">关键日期</h2></div><small>正式日期与待通知项分开显示</small></header>
+  <header class="focus-card-heading"><div><span class="checkin-kicker">COUNTDOWN</span><h2 id="key-dates-title">关键日期</h2></div><small>精确日期、官方赛期与预计窗口分开显示</small></header>
   <div class="countdown-list" data-countdown-list></div>
-  <p class="focus-boundary">红色：3 天内 · 橙色：7 天内 · 蓝色：30 天内。未获得正式公告的项目不显示猜测日期。</p>
+  <p class="focus-boundary">红色：3 天内 · 橙色：7 天内 · 蓝色：30 天内。紫色“预计赛期”只用于规划，不按某一天倒计时；收到学校或主办方通知后再替换。</p>
 </section>
 <section class="checkin-summary-grid" aria-label="本周概览">
   <article class="checkin-stat glass-panel"><span>CMC · 本周</span><strong data-stat="cmc-week">0 / 8.5 h</strong><small><span data-stat="cmc-total">累计 0 / 60 h</span><br><span data-stat="cmc-mastery">观看 0/0 · 复现 0/0</span></small><i data-progress="cmc"></i></article>
