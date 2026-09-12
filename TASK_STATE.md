@@ -395,5 +395,10 @@ planning only and must be replaced when the user supplies a concrete notice.
   all 11 cards, the two requested competitions, no overflowing milestone/card
   content, exact viewport-width containment, working dark-mode colours, and
   zero console errors or warnings.
-- Remaining: deploy the change and verify the two new cards plus responsive
-  containment on the live HTTPS page.
+- Deployment commit `c8414fd` completed successfully in GitHub Pages workflow
+  `34673974095`. Live HTTPS assets match the local production build hashes.
+  A 390 x 844 live-browser check confirmed all 11 cards, both requested
+  competitions, 17 estimated windows, 3 official windows, no horizontal
+  overflow, and zero console errors or warnings.
+- Remaining: replace estimated month ranges when the user provides organiser or
+  campus notices with concrete dates.
