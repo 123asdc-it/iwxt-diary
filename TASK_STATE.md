@@ -424,4 +424,12 @@ planning only and must be replaced when the user supplies a concrete notice.
   and `git diff --check`. Playwright at 1440 x 1000 and 390 x 844 confirmed all
   precise dates and times, a two-column FLTRP layout, no element or page-width
   overflow, and zero console errors or warnings.
-- Remaining: deploy the update and independently verify the live HTTPS page.
+- Deployment commit `1b12947` completed successfully in GitHub Pages workflow
+  `34758273950`; the live `checkin-model.js` and `checkin.js` hashes match the
+  local production build. Live HTTPS verification at 390 x 844 confirmed all
+  four FLTRP milestones, the updated Baidu card, and the three exact-date daily
+  tasks, with no horizontal overflow or console errors/warnings.
+- Remaining evidence boundary: the supplied screenshot does not show its year;
+  the two FLTRP events are recorded as 2026 because the notice was supplied in
+  the active 2026 season. Change the year if the hidden notice header says
+  otherwise. Baidu's national-final date remains pending final confirmation.
