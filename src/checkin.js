@@ -314,7 +314,7 @@ ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
     const events = eventCountdowns(localToday());
     list.innerHTML = events.map((event) => `<article class="countdown-event">
   <header><div><strong>${escapeHtml(event.name)}</strong><small>${escapeHtml(event.subtitle)}</small></div>${event.sourceUrl ? `<a href="${escapeHtml(event.sourceUrl)}" target="_blank" rel="noreferrer noopener" aria-label="查看 ${escapeHtml(event.name)} 日期来源">来源 ↗</a>` : '<span>待公告</span>'}</header>
-  <div class="countdown-milestones">${event.milestones.map((milestone) => `<div class="countdown-milestone is-${milestone.state}">
+  <div class="countdown-milestones${event.milestones.length > 3 ? ' is-paired' : ''}">${event.milestones.map((milestone) => `<div class="countdown-milestone is-${milestone.state}">
     <span>${escapeHtml(milestone.label)}</span>
     <b>${milestone.date ? escapeHtml(milestone.date.replaceAll('-', '.')) : milestone.window ? escapeHtml(milestone.window) : '—'}</b>
     <strong>${escapeHtml(milestone.text)}</strong>

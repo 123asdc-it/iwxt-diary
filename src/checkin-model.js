@@ -38,7 +38,8 @@ export const KEY_DATE_EVENTS = [
     subtitle: '2026 外语能力大赛',
     sourceUrl: 'https://2u4u.fltrp.com/c/2026-04-27/541737.shtml',
     milestones: [
-      { label: '校赛', window: '2026.04–10', note: '官方赛期；校内日期待通知' },
+      { label: '综合能力校赛', date: '2026-10-11', note: '校内通知 · 09:30–11:00' },
+      { label: '笔译校赛', date: '2026-10-11', note: '校内通知 · 16:00–18:00' },
       { label: '省赛', window: '2026.09–11', note: '官方赛期' },
       { label: '国赛', window: '2026.10–12', note: '官方赛期' },
     ],
@@ -68,12 +69,12 @@ export const KEY_DATE_EVENTS = [
   {
     id: 'baidu-star',
     name: '百度之星',
-    subtitle: '2027 预计赛季',
-    sourceUrl: 'https://astar.baidu.com/',
+    subtitle: '2026 第 22 届',
+    sourceUrl: 'https://star.baidu.com/#/program-design-match2026?tab=1',
     milestones: [
-      { label: '报名/校赛', window: '2027.06–07', estimated: true, note: '参照 2026 赛季' },
-      { label: '资格赛', window: '2027.07–09', estimated: true, note: '待百度正式公告' },
-      { label: '总决赛', window: '2027.09–10', estimated: true, note: '待百度正式公告' },
+      { label: '报名截止', date: '2026-09-19', note: '平台约 12:00；校内审核可能提前' },
+      { label: '第二场初赛', date: '2026-09-19', note: '14:00–17:00 · 线上' },
+      { label: '总决赛', pending: '待百度最终公告' },
     ],
   },
   {
@@ -524,6 +525,15 @@ export function defaultDays(cmcStartLesson = 6) {
 
   for (let date = PLAN_START; date <= PLAN_END; date = addDays(date, 1)) {
     ensureDay(days, date).push(cetTask(date));
+  }
+
+  const confirmedEvents = [
+    ['2026-09-19', '14:00', 'baidu-star-round-2', '百度之星第 22 届第二场初赛（线上）', 180],
+    ['2026-10-11', '09:30', 'fltrp-comprehensive', '外研社·国才杯综合能力校赛', 90],
+    ['2026-10-11', '16:00', 'fltrp-translation', '外研社·国才杯笔译校赛', 120],
+  ];
+  for (const [date, time, id, title, minutes] of confirmedEvents) {
+    ensureDay(days, date).push(taskBase(`${date}-event-${id}`, 'other', time, title, minutes));
   }
 
   for (const { date, task } of buildCmcTasks(cmcStartLesson)) ensureDay(days, date).push(task);

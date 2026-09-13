@@ -656,6 +656,7 @@ select:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 55%, 
 .countdown-event > header a,
 .countdown-event > header > span { flex: none; color: var(--accent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: 8px; font-weight: 900; text-decoration: none; }
 .countdown-milestones { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; margin-top: 10px; }
+.countdown-milestones.is-paired { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .countdown-milestone { display: grid; min-width: 0; gap: 2px; padding: 7px 6px; border-radius: 9px; background: rgb(128 128 128 / 7%); font-family: ui-sans-serif, system-ui, sans-serif; }
 .countdown-milestone > span { color: var(--ink-muted); font-size: 7px; font-weight: 900; }
 .countdown-milestone > b { overflow: hidden; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }

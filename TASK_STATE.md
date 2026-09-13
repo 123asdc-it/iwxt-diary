@@ -402,3 +402,26 @@ planning only and must be replaced when the user supplies a concrete notice.
   overflow, and zero console errors or warnings.
 - Remaining: replace estimated month ranges when the user provides organiser or
   campus notices with concrete dates.
+
+## 2026-09-13 concrete FLTRP and Baidu Star dates
+
+- Treat the user-supplied campus-notice screenshot as the authority for the two
+  FLTRP school events. Because it belongs to the current 2026 season, record
+  both on 2026-10-11: comprehensive ability 09:30–11:00 and translation
+  16:00–18:00. Retain the organiser's official provincial and national month
+  ranges as separate nodes.
+- Replace the obsolete 2027 Baidu Star estimate with the confirmed 2026 second
+  preliminary: registration closes around 12:00 on 2026-09-19, subject to an
+  earlier campus review deadline, and the online contest runs 14:00–17:00.
+  Keep the national final pending because the available notices are not fully
+  consistent about whether its date is final.
+- Add a paired two-column milestone layout only for events with more than three
+  nodes, so the FLTRP times remain readable without changing other cards.
+- Add the Baidu preliminary and both FLTRP contests to their exact daily task
+  lists. Hydration merges these new default tasks into an existing version-1
+  local record while preserving tasks and evidence already saved by the user.
+- Verification passed `npm run check`, 25/25 Node tests, the production build,
+  and `git diff --check`. Playwright at 1440 x 1000 and 390 x 844 confirmed all
+  precise dates and times, a two-column FLTRP layout, no element or page-width
+  overflow, and zero console errors or warnings.
+- Remaining: deploy the update and independently verify the live HTTPS page.

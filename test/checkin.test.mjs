@@ -54,6 +54,22 @@ test('first week uses exact algorithm problems and CMC lessons from the catalog'
   assert.match(state.days['2026-09-18'].tasks.find((task) => task.id.includes('cmc-chapter-13')).title, /极限/);
 });
 
+test('confirmed competitions appear in their exact daily task lists', () => {
+  const state = createDefaultState();
+  const baidu = state.days['2026-09-19'].tasks.find((task) => task.id === '2026-09-19-event-baidu-star-round-2');
+  assert.deepEqual({ time: baidu.time, title: baidu.title, plannedMinutes: baidu.plannedMinutes }, {
+    time: '14:00',
+    title: '百度之星第 22 届第二场初赛（线上）',
+    plannedMinutes: 180,
+  });
+
+  const fltrp = state.days['2026-10-11'].tasks.filter((task) => task.id.includes('-event-fltrp-'));
+  assert.deepEqual(fltrp.map(({ time, title, plannedMinutes }) => ({ time, title, plannedMinutes })), [
+    { time: '09:30', title: '外研社·国才杯综合能力校赛', plannedMinutes: 90 },
+    { time: '16:00', title: '外研社·国才杯笔译校赛', plannedMinutes: 120 },
+  ]);
+});
+
 test('algorithm weekly completion only counts reproduced work', () => {
   const state = createDefaultState();
   const tasks = state.days['2026-09-15'].tasks.filter((task) => task.kind === 'algorithm');
@@ -232,6 +248,25 @@ test('official and estimated month windows stay out of day-level countdowns', ()
   const events = eventCountdowns('2026-09-12');
   assert.equal(events.some((event) => event.id === 'fltrp'), true);
   assert.equal(events.some((event) => event.id === 'statistical-modeling'), true);
+});
+
+test('concrete campus notices replace broad FLTRP and Baidu Star estimates', () => {
+  const events = eventCountdowns('2026-09-13');
+  const fltrp = events.find((event) => event.id === 'fltrp');
+  assert.deepEqual(fltrp.milestones.slice(0, 2).map(({ label, date, note, days }) => ({ label, date, note, days })), [
+    { label: '综合能力校赛', date: '2026-10-11', note: '校内通知 · 09:30–11:00', days: 28 },
+    { label: '笔译校赛', date: '2026-10-11', note: '校内通知 · 16:00–18:00', days: 28 },
+  ]);
+  assert.equal(fltrp.milestones[2].state, 'window');
+  assert.equal(fltrp.milestones[3].state, 'window');
+
+  const baidu = events.find((event) => event.id === 'baidu-star');
+  assert.equal(baidu.subtitle, '2026 第 22 届');
+  assert.deepEqual(baidu.milestones.slice(0, 2).map(({ label, date, days }) => ({ label, date, days })), [
+    { label: '报名截止', date: '2026-09-19', days: 6 },
+    { label: '第二场初赛', date: '2026-09-19', days: 6 },
+  ]);
+  assert.equal(baidu.milestones[2].state, 'pending');
 });
 
 test('localStorage round-trip keeps user data after a simulated page refresh', () => {
