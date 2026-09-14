@@ -1,6 +1,7 @@
 import {
   ALGORITHM_ROUTE,
   ALGORITHM_SOURCE_URL,
+  CET6_NEW_END,
   CMC_CHAPTERS,
   CMC_SOURCE_URL,
   addDays,
@@ -99,7 +100,8 @@ if (root) {
       task.algorithm = { topic: '滑动窗口与双指针', section: '用户补充', number: '', title: '', url: '', rating: '', premium: false, optional: false, secondPass: false, independentStart: '', viewedHint: false, reproduced: false, nextDayRewrite: false, wrongReason: '', reviewDate: addDays(selectedDate, 1) };
     }
     if (task.kind === 'cet6' && !task.cet6) {
-      task.cet6 = { phase: selectedDate <= '2026-09-22' ? 'new' : 'review', wordsTarget: selectedDate <= '2026-09-22' ? 100 : 1000, wordsActual: 0, practiceType: selectedDate <= '2026-09-22' ? '' : '听力', practiceCount: 0 };
+      const newWords = selectedDate <= CET6_NEW_END;
+      task.cet6 = { phase: newWords ? 'new' : 'review', wordsTarget: newWords ? 100 : 1000, wordsActual: 0, practiceType: newWords ? '' : '听力', practiceCount: 0 };
     }
     if (task.kind === 'contest' && !task.contest) task.contest = { solvedIndependently: 0, blockers: '' };
     if (task.kind === 'sprint' && !task.sprint) task.sprint = { instructions: '', checklist: [], reproducedTarget: 0, reproducedActual: 0, submittedTarget: 0, submittedActual: 0, acceptedActual: 0, blockers: '' };
@@ -271,8 +273,9 @@ ${checks ? `<div class="checkin-toggle-row sprint-checklist">${checks}</div>` : 
       'cmc-total': sprintWeek ? '本周 CMC 暂停，赛后恢复' : `累计 ${cmcTotalHours} / 60 h`,
       'cmc-mastery': sprintWeek ? `独立复现 ${stats.sprintReproduced}/${stats.target.sprintReproductions}` : `观看 ${stats.cmcWatchedLessons}/${stats.cmcLessonTotal} · 复现 ${stats.cmcReproducedLessons}/${stats.cmcLessonTotal}`,
       algorithms: sprintWeek ? `${stats.sprintReproduced} / ${stats.target.sprintReproductions}` : `${stats.algorithmsReproduced} / ${stats.target.algorithms ? '6–8' : '—'}`,
-      'cet-week': phaseIsNew ? `${stats.cetWeeklyNew} / ${stats.target.newWords}` : `${stats.cetWeeklyReview} 词`,
-      'cet-total': phaseIsNew ? `新词累计 ${stats.cetNewTotal} / 900` : `本周刷题 ${stats.cetWeeklyPractice} 次`,
+      'cet-label': sprintWeek ? '六级 · 下周恢复' : '六级 · 本周',
+      'cet-week': sprintWeek ? '9.21 起' : phaseIsNew ? `${stats.cetWeeklyNew} / ${stats.target.newWords}` : `${stats.cetWeeklyReview} 词`,
+      'cet-total': sprintWeek ? '本周暂停，不记欠账' : phaseIsNew ? `新词累计 ${stats.cetNewTotal} / 900` : `本周刷题 ${stats.cetWeeklyPractice} 次`,
       completion: `${stats.completionRate}%`,
       'completion-detail': `${stats.completedTasks} / ${stats.totalTasks} 项有效完成`,
       streak: `${stats.streak} 天`,
@@ -292,8 +295,8 @@ ${checks ? `<div class="checkin-toggle-row sprint-checklist">${checks}</div>` : 
       element.style.setProperty('--value', `${Math.min(100, (actual / target) * 100)}%`);
     });
     root.querySelectorAll('[data-progress="cet6"]').forEach((element) => {
-      const target = phaseIsNew ? stats.target.newWords || 100 : stats.target.reviewWords || 1000;
-      const actual = phaseIsNew ? stats.cetWeeklyNew : stats.cetWeeklyReview;
+      const target = sprintWeek ? 1 : phaseIsNew ? stats.target.newWords || 100 : stats.target.reviewWords || 1000;
+      const actual = sprintWeek ? 0 : phaseIsNew ? stats.cetWeeklyNew : stats.cetWeeklyReview;
       element.style.setProperty('--value', `${Math.min(100, (actual / target) * 100)}%`);
     });
   }
@@ -316,9 +319,7 @@ ${checks ? `<div class="checkin-toggle-row sprint-checklist">${checks}</div>` : 
     const target = root.querySelector('[data-today-progress]');
     if (!target) return;
     target.innerHTML = progress.sprint.target > 0
-      ? `${progressLine('百度之星冲刺', progress.sprint)}
-${progressLine(`六级 · ${progress.cet6.wordLabel}`, progress.cet6.words)}
-${progressLine('六级 · 刷题', progress.cet6.practice)}`
+      ? progressLine('百度之星冲刺', progress.sprint)
       : `${progressLine('算法', progress.algorithm)}
 ${progressLine(`CMC · ${progress.cmc.mode === 'lessons' ? '观看课程' : '学习时长'}`, progress.cmc)}
 ${progressLine(`六级 · ${progress.cet6.wordLabel}`, progress.cet6.words)}
@@ -366,8 +367,8 @@ ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
       daySubtitle.textContent = selectedDate < '2026-09-14'
         ? '计划还没有开始，你仍然可以在这里补充任务。'
         : selectedDate <= '2026-09-20'
-          ? '百度之星冲刺周 · CMC 暂停，9 月 21 日恢复 · 六级新词 100'
-        : selectedDate <= '2026-09-22'
+          ? '百度之星冲刺周 · 其他学习主线暂停，9 月 21 日恢复'
+        : selectedDate <= CET6_NEW_END
           ? '六级新词阶段 · 每天目标 100 个'
           : selectedDate <= '2026-11-13'
             ? '六级复习阶段 · 1000 词 + 45 分钟刷题'
@@ -390,7 +391,7 @@ ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
   <article class="today-progress-card glass-panel">
     <header class="focus-card-heading"><div><span class="checkin-kicker">TODAY</span><h2>今日还差多少</h2></div><small data-today-progress-date></small></header>
     <div class="today-progress-list" data-today-progress></div>
-    <p class="focus-boundary">算法只把“关掉题解后独立复现”计入；9 月 14–20 日显示百度之星冲刺，CMC 暂停且不记欠账；六级使用实际词数。</p>
+    <p class="focus-boundary">算法只把“关掉题解后独立复现”计入；9 月 14–20 日只保留百度之星冲刺和固定时点提醒，其他学习主线暂停且不记欠账。</p>
   </article>
   <article class="month-calendar-card glass-panel">
     <header class="focus-card-heading calendar-heading"><div><span class="checkin-kicker">MONTH</span><h2 data-calendar-title></h2></div><div class="calendar-actions"><button type="button" data-action="previous-month" aria-label="上一月">←</button><button type="button" data-action="calendar-today">今天</button><button type="button" data-action="next-month" aria-label="下一月">→</button></div></header>
@@ -407,7 +408,7 @@ ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
 <section class="checkin-summary-grid" aria-label="本周概览">
   <article class="checkin-stat glass-panel"><span data-stat="primary-label">CMC · 本周</span><strong data-stat="cmc-week">0 / 8.5 h</strong><small><span data-stat="cmc-total">累计 0 / 60 h</span><br><span data-stat="cmc-mastery">观看 0/0 · 复现 0/0</span></small><i data-progress="cmc"></i></article>
   <article class="checkin-stat glass-panel"><span>算法 · 已复现</span><strong data-stat="algorithms">0 / 6–8</strong><small>看过答案不计入</small><i data-progress="algorithm"></i></article>
-  <article class="checkin-stat glass-panel"><span>六级 · 本周</span><strong data-stat="cet-week">0 / 700</strong><small data-stat="cet-total">新词累计 0 / 900</small><i data-progress="cet6"></i></article>
+  <article class="checkin-stat glass-panel"><span data-stat="cet-label">六级 · 本周</span><strong data-stat="cet-week">0 / 700</strong><small data-stat="cet-total">新词累计 0 / 900</small><i data-progress="cet6"></i></article>
   <article class="checkin-stat glass-panel"><span>有效完成率</span><strong data-stat="completion">0%</strong><small data-stat="completion-detail">0 / 0 项有效完成</small></article>
   <article class="checkin-stat glass-panel"><span>连续达标</span><strong data-stat="streak">0 天</strong><small>当天计划全部有效完成</small></article>
 </section>
@@ -428,7 +429,7 @@ ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
     </section>
     <section class="checkin-rules glass-panel">
       <span class="checkin-kicker">执行规则</span><h2>质量优先，不为凑数看答案</h2>
-      <div class="rules-grid"><p><b>算法</b>独立思考 25 分钟 → 必要时看提示 / 题解 → 关掉后复现 → 次日重写。模拟赛与正式赛填写 AC 数、未过题和卡点即可。</p><p><b>CMC</b>9 月 14–20 日为百度之星冲刺周，本周 CMC 暂停且不记欠账；9 月 21 日从原课程进度恢复。</p><p><b>六级</b>9 月 14–22 日每天新词 100；9 月 23 日起每天复习 1000 词，并做 45 分钟听力 / 阅读 / 翻译 / 写作。</p></div>
+      <div class="rules-grid"><p><b>算法</b>独立思考 25 分钟 → 必要时看提示 / 题解 → 关掉后复现 → 次日重写。模拟赛与正式赛填写 AC 数、未过题和卡点即可。</p><p><b>本周</b>9 月 14–20 日专注百度之星，CMC、日常算法和六级暂停且不记欠账；9 月 17 日普通话预约等固定时点提醒仍保留。</p><p><b>六级</b>9 月 21–29 日每天新词 100；9 月 30 日起每天复习 1000 词，并做 45 分钟听力 / 阅读 / 翻译 / 写作。</p></div>
     </section>
   </div>
   <aside class="checkin-side-column">

@@ -165,6 +165,9 @@ const DAY_MS = 86_400_000;
 const VALID_KINDS = new Set(['cmc', 'algorithm', 'cet6', 'contest', 'sprint', 'review', 'other']);
 const BAIDU_SPRINT_START = '2026-09-14';
 const BAIDU_SPRINT_END = '2026-09-20';
+export const CET6_NEW_START = '2026-09-21';
+export const CET6_NEW_END = '2026-09-29';
+export const CET6_REVIEW_START = '2026-09-30';
 
 function currentLocalDate() {
   const now = new Date();
@@ -494,7 +497,7 @@ function buildCmcTasks(startLesson = 6) {
 }
 
 function cetTask(date) {
-  const newWords = date <= '2026-09-22';
+  const newWords = date >= CET6_NEW_START && date <= CET6_NEW_END;
   return {
     ...taskBase(`${date}-cet6`, 'cet6', newWords ? '21:30' : '21:00', newWords ? '六级高频新词 100' : '六级复习 1000 词 + 刷题 45 分钟', newWords ? 35 : 45),
     cet6: {
@@ -629,7 +632,7 @@ function ensureDay(days, date) {
 export function defaultDays(cmcStartLesson = 6) {
   const days = {};
 
-  for (let date = PLAN_START; date <= PLAN_END; date = addDays(date, 1)) {
+  for (let date = CET6_NEW_START; date <= PLAN_END; date = addDays(date, 1)) {
     ensureDay(days, date).push(cetTask(date));
   }
 
@@ -828,7 +831,7 @@ function supersededDefaultTask(task, date) {
   if (!task?.id?.startsWith(`${date}-`)) return false;
   if (/-(cmc-course|cmc-chapter-\d+|cmc-paper)$/.test(task.id)) return true;
   if (date >= BAIDU_SPRINT_START && date <= BAIDU_SPRINT_END) {
-    return /-(leetcode-\d+|contest|review)$/.test(task.id);
+    return /-(leetcode-\d+|contest|review|cet6)$/.test(task.id);
   }
   return false;
 }
@@ -989,7 +992,9 @@ function targetForWeek(date) {
   const start = weekStart(date);
   const end = addDays(start, 6);
   const newWordDays = Array.from({ length: 7 }, (_, index) => addDays(start, index))
-    .filter((day) => day >= PLAN_START && day <= '2026-09-22').length;
+    .filter((day) => day >= CET6_NEW_START && day <= CET6_NEW_END).length;
+  const reviewDays = Array.from({ length: 7 }, (_, index) => addDays(start, index))
+    .filter((day) => day >= CET6_REVIEW_START && day <= PLAN_END).length;
   return {
     start,
     end,
@@ -1000,7 +1005,7 @@ function targetForWeek(date) {
       ? baiduSprintTasks().reduce((sum, [, task]) => sum + (Number(task.sprint?.reproducedTarget) || 0), 0)
       : 0,
     newWords: newWordDays * 100,
-    reviewWords: 7 - newWordDays > 0 && end >= '2026-09-23' ? Array.from({ length: 7 }, (_, index) => addDays(start, index)).filter((day) => day >= '2026-09-23' && day <= PLAN_END).length * 1000 : 0,
+    reviewWords: reviewDays * 1000,
   };
 }
 

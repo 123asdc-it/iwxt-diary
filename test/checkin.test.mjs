@@ -42,12 +42,12 @@ test('CMC catalog contains 124 continuous lessons and the verified total duratio
   assert.equal(catalog.reduce((sum, lesson) => sum + lesson.durationSeconds, 0), 209506);
 });
 
-test('Baidu Star sprint week replaces untouched CMC and LeetCode defaults but keeps CET6', () => {
+test('Baidu Star sprint week pauses all regular study tracks until Monday', () => {
   const state = createDefaultState();
   for (const date of ['2026-09-14', '2026-09-15', '2026-09-16', '2026-09-17', '2026-09-18', '2026-09-19', '2026-09-20']) {
     assert.equal(state.days[date].tasks.some((task) => task.kind === 'cmc'), false);
     assert.equal(state.days[date].tasks.some((task) => task.kind === 'algorithm'), false);
-    assert.equal(state.days[date].tasks.filter((task) => task.kind === 'cet6').length, 1);
+    assert.equal(state.days[date].tasks.some((task) => task.kind === 'cet6'), false);
   }
   assert.equal(state.days['2026-09-20'].tasks.some((task) => task.id.endsWith('-contest')), false);
   const timed = state.days['2026-09-15'].tasks.find((task) => task.id.endsWith('-sprint-timed-training'));
@@ -67,8 +67,12 @@ test('CMC resumes on September 21 with the original lesson sequence and catalog 
   assert.equal(mondayCmc.cmc.lessons[0].title, '6利用洛必达法则');
   assert.equal(mondayCmc.cmc.lessons[2].duration, '34分25秒');
   assert.match(mondayCmc.cmc.guidance, /顺延 7 天/);
+  const mondayCet6 = state.days['2026-09-21'].tasks.find((task) => task.kind === 'cet6');
+  assert.deepEqual({ phase: mondayCet6.cet6.phase, target: mondayCet6.cet6.wordsTarget }, { phase: 'new', target: 100 });
   const tuesdayAlgorithms = state.days['2026-09-22'].tasks.filter((task) => task.kind === 'algorithm');
   assert.deepEqual(tuesdayAlgorithms.map((task) => task.algorithm.number), ['2461', '1423']);
+  assert.equal(state.days['2026-09-29'].tasks.find((task) => task.kind === 'cet6').cet6.phase, 'new');
+  assert.equal(state.days['2026-09-30'].tasks.find((task) => task.kind === 'cet6').cet6.phase, 'review');
 });
 
 test('confirmed competitions appear in their exact daily task lists', () => {
@@ -184,21 +188,29 @@ test('v1 migration removes only untouched superseded defaults and preserves prog
     { id: '2026-09-15-leetcode-1456', kind: 'algorithm', time: '09:00', title: '旧默认题一', completed: false, actualMinutes: 0, note: '', algorithm: { reproduced: false, viewedHint: false } },
     { id: '2026-09-15-leetcode-643', kind: 'algorithm', time: '10:00', title: '旧默认题二', completed: true, actualMinutes: 52, note: '已有进度要保留', algorithm: { reproduced: true, wrongReason: '边界' } },
     { id: '2026-09-15-custom-keep', kind: 'other', time: '18:00', title: '我的自定义任务', completed: true, actualMinutes: 20, note: '不能丢' },
+    { id: '2026-09-15-cet6', kind: 'cet6', time: '21:30', title: '旧六级默认任务', completed: false, actualMinutes: 0, note: '', cet6: { phase: 'new', wordsTarget: 100, wordsActual: 0, practiceCount: 0 } },
+  );
+  raw.days['2026-09-16'].tasks.push(
+    { id: '2026-09-16-cet6', kind: 'cet6', time: '21:30', title: '旧六级已填写任务', completed: true, actualMinutes: 30, note: '六级记录也不能丢', cet6: { phase: 'new', wordsTarget: 100, wordsActual: 80, practiceCount: 0 } },
   );
   const hydrated = hydrateState(raw);
   const tasks = hydrated.days['2026-09-15'].tasks;
   assert.equal(tasks.some((task) => task.id === '2026-09-15-leetcode-1456'), false);
+  assert.equal(tasks.some((task) => task.id === '2026-09-15-cet6'), false);
   const preserved = tasks.find((task) => task.note === '已有进度要保留');
   assert.equal(preserved.planExcluded, true);
   assert.match(preserved.planNote, /不计入本周欠账/);
   assert.equal(tasks.some((task) => task.id === '2026-09-15-custom-keep' && task.note === '不能丢'), true);
+  const preservedCet6 = hydrated.days['2026-09-16'].tasks.find((task) => task.note === '六级记录也不能丢');
+  assert.equal(preservedCet6.planExcluded, true);
+  assert.equal(preservedCet6.cet6.wordsActual, 80);
   const stats = checkinStats(hydrated, '2026-09-15');
   const sprintWeek = new Set(['2026-09-14', '2026-09-15', '2026-09-16', '2026-09-17', '2026-09-18', '2026-09-19', '2026-09-20']);
   const activeWeekTasks = Object.entries(hydrated.days)
     .filter(([date]) => sprintWeek.has(date))
     .flatMap(([, day]) => day.tasks)
     .filter((task) => !task.planExcluded);
-  assert.equal(stats.totalTasks, 22);
+  assert.equal(stats.totalTasks, 15);
   assert.equal(stats.totalTasks, activeWeekTasks.length);
 });
 
@@ -235,6 +247,8 @@ test('sprint completion requires checklist and independent reproduction targets'
   assert.equal(stats.target.cmcMinutes, 0);
   assert.equal(stats.target.sprintTasks, 13);
   assert.equal(stats.target.sprintReproductions, 8);
+  assert.equal(stats.target.newWords, 0);
+  assert.equal(stats.target.reviewWords, 0);
   assert.equal(stats.sprintCompleted, 1);
 
   const formal = state.days['2026-09-19'].tasks.find((item) => item.id === '2026-09-19-event-baidu-star-round-2');
@@ -303,7 +317,7 @@ test('today remaining derives algorithms, CMC lessons and CET6 fields from recor
 });
 
 test('review-phase CET6 exposes one brush-up item without inventing a numeric target', () => {
-  const date = '2026-09-23';
+  const date = '2026-09-30';
   const state = {
     days: {
       [date]: {

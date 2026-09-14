@@ -23,8 +23,9 @@ backend or changing the GitHub Pages architecture.
 ### Daily check-in implementation plan
 
 1. Add a generated `/checkin/` route plus an app-bar/drawer navigation entry.
-2. Keep the default 2026-09-14 to 2026-09-20 schedule editable, then add the
-   2026-09-21/22 vocabulary transition and the 2026-09-23 CET6 review phase.
+2. Keep the default 2026-09-14 to 2026-09-20 schedule editable, pause regular
+   study tracks during the Baidu Star sprint, then resume CET6 new words on
+   2026-09-21 and begin its review phase on 2026-09-30.
 3. Persist versioned records locally and merge future default-template changes
    without overwriting user edits; provide JSON download and validated import.
 4. Count CMC from recorded minutes, algorithms only from `已复现`, CET6 from
@@ -70,10 +71,9 @@ by this narrow change and still need an explicit optimisation step.
 
 ### 2026-09-14 Baidu Star sprint and confirmed vocabulary contest plan
 
-1. Replace only the untouched default CMC/algorithm tasks dated 2026-09-14 to
-   2026-09-20 with the supplied Baidu Star execution cards; retain CET6 100 new
-   words every day, cancel that Sunday's LeetCode contest, and resume the shifted
-   CMC lesson sequence on 2026-09-21.
+1. Replace the untouched default CMC/algorithm/CET6 tasks dated 2026-09-14 to
+   2026-09-20 with the supplied Baidu Star execution cards; cancel that Sunday's
+   LeetCode contest, and resume the shifted regular study lines on 2026-09-21.
 2. Add auditable sprint fields for timed sessions, checklists, independent
    reproduction, submitted/accepted counts, and blockers without inventing
    problem IDs or links.
@@ -90,6 +90,17 @@ by this narrow change and still need an explicit optimisation step.
 Risks for this pass: old browser records must not be erased; removed defaults
 must not count as missed work; the Baicizhan screenshot confirms 10 October 24
 but not its within-day start time; organiser schedules may still change.
+
+### 2026-09-14 single-focus revision
+
+1. Keep 2026-09-14 through 2026-09-20 focused on the Baidu Star sprint; pause
+   CMC, routine LeetCode and CET6 defaults without turning them into overdue work.
+2. Preserve the fixed 2026-09-17 Putonghua booking reminder because postponing
+   a time-sensitive administrative action could make the user miss its window.
+3. Resume CMC, algorithms and CET6 on Monday 2026-09-21. Shift the nine-day CET6
+   new-word block to 2026-09-21 through 2026-09-29, then start review on 2026-09-30.
+4. Remove only untouched legacy CET6 defaults in the sprint week; retain any
+   filled legacy record as excluded history so browser-local work is not lost.
 
 Risks for this pass: local dates must not shift at UTC boundaries; an empty day
 must not be labelled missed; event announcements can change after deployment;
@@ -157,9 +168,10 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
 
 ## Verification status
 
-- The 2026-09-14 plan revision replaces the active week's untouched CMC and
-  LeetCode defaults with 13 Baidu Star sprint cards plus the retained daily
-  CET6 task. CMC lesson 6 resumes on 2026-09-21, the 2026-09-20 LeetCode weekly
+- The 2026-09-14 plan revision replaces the active week's untouched CMC,
+  LeetCode and CET6 defaults with 13 Baidu Star sprint cards plus the fixed
+  2026-09-17 Putonghua reminder. CMC lesson 6 and CET6 new words resume on
+  2026-09-21, the 2026-09-20 LeetCode weekly
   contest is absent, and the 2026-09-19 14:00–17:00 formal round has writable
   accepted-count and blocker fields without being counted as a reproduced
   practice problem.
@@ -177,6 +189,15 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
   two check-in JavaScript assets returned the Baidu Star sprint template, the
   2026-09-19 formal-round card, the FLTRP deadline, and the confirmed
   2026-10-24 Baicizhan preliminary metadata.
+
+- The single-focus revision removes all untouched CET6 defaults from
+  2026-09-14 through 2026-09-20, preserves filled ones as excluded history,
+  resumes the 100-new-word phase on 2026-09-21, and moves review to 2026-09-30.
+  `npm run check`, all 31 Node tests, `npm run build`, `npm audit --omit=dev`,
+  and `git diff --check` pass. A fresh 390 x 844 Playwright run confirmed that
+  the sprint week shows no CET6 debt, 2026-09-21 shows both CMC and CET6,
+  document width remains exactly 390 px, and the console has zero errors or
+  warnings. No screenshots were produced for this revision.
 
 - The 2026-09-10 first-load pass replaces the 2559 x 1439, 3,382,944-byte
   wallpaper PNG with a visually checked 1920 x 1080, 117,724-byte WebP while
