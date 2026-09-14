@@ -198,6 +198,10 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
   the sprint week shows no CET6 debt, 2026-09-21 shows both CMC and CET6,
   document width remains exactly 390 px, and the console has zero errors or
   warnings. No screenshots were produced for this revision.
+- Commit `380ed01` deployed successfully in GitHub Pages workflow
+  `34815190817`. Direct production reads confirmed the three CET6 phase
+  boundaries, sprint-week legacy-task migration, the “下周恢复” summary, and
+  the updated execution rules in the live check-in JavaScript assets.
 
 - The 2026-09-10 first-load pass replaces the 2559 x 1439, 3,382,944-byte
   wallpaper PNG with a visually checked 1920 x 1080, 117,724-byte WebP while
