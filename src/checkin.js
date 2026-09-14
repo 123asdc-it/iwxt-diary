@@ -91,7 +91,7 @@ if (root) {
   }
 
   function categoryLabel(kind) {
-    return ({ cmc: 'CMC', algorithm: '算法', cet6: '六级', contest: '周赛', review: '复盘', other: '其他' })[kind] || '其他';
+    return ({ cmc: 'CMC', algorithm: '算法', cet6: '六级', contest: '周赛', sprint: '百度冲刺', review: '复盘', other: '其他' })[kind] || '其他';
   }
 
   function ensureTaskKind(task) {
@@ -102,6 +102,7 @@ if (root) {
       task.cet6 = { phase: selectedDate <= '2026-09-22' ? 'new' : 'review', wordsTarget: selectedDate <= '2026-09-22' ? 100 : 1000, wordsActual: 0, practiceType: selectedDate <= '2026-09-22' ? '' : '听力', practiceCount: 0 };
     }
     if (task.kind === 'contest' && !task.contest) task.contest = { solvedIndependently: 0, blockers: '' };
+    if (task.kind === 'sprint' && !task.sprint) task.sprint = { instructions: '', checklist: [], reproducedTarget: 0, reproducedActual: 0, submittedTarget: 0, submittedActual: 0, acceptedActual: 0, blockers: '' };
   }
 
   function inputField({ id, label, field, value = '', type = 'text', min, max, step, placeholder = '', className = '' }) {
@@ -201,6 +202,25 @@ if (root) {
 </div>`;
   }
 
+  function sprintDetails(task, fieldId) {
+    const sprint = task.sprint || {};
+    const checks = (sprint.checklist || []).map((item, index) => checkbox(
+      `${fieldId}-sprint-check-${index}`,
+      item.label,
+      `sprint.checklist.${index}.done`,
+      item.done,
+      true,
+    )).join('');
+    return `<div class="sprint-brief"><strong>执行卡</strong><p>${escapeHtml(sprint.instructions || '按时间完成并留下可核验记录。')}</p></div>
+${checks ? `<div class="checkin-toggle-row sprint-checklist">${checks}</div>` : ''}
+<div class="checkin-fields sprint-metrics">
+  ${Number(sprint.reproducedTarget) > 0 ? inputField({ id: `${fieldId}-reproduced`, label: `关掉题解后独立复现（目标 ${sprint.reproducedTarget}）`, field: 'sprint.reproducedActual', value: sprint.reproducedActual, type: 'number', min: 0, max: 20 }) : ''}
+  ${Number(sprint.submittedTarget) > 0 ? inputField({ id: `${fieldId}-submitted`, label: `认真提交（目标 ${sprint.submittedTarget}）`, field: 'sprint.submittedActual', value: sprint.submittedActual, type: 'number', min: 0, max: 20 }) : ''}
+  ${inputField({ id: `${fieldId}-accepted`, label: 'AC 数（模拟 / 正式赛可填）', field: 'sprint.acceptedActual', value: sprint.acceptedActual, type: 'number', min: 0, max: 20 })}
+  <label class="checkin-field span-two" for="${fieldId}-sprint-blockers"><span>未过题 / 错因 / 卡点</span><textarea id="${fieldId}-sprint-blockers" rows="3" data-field="sprint.blockers" placeholder="不需要编造题号，只记录自己遇到的关键卡点">${escapeHtml(sprint.blockers)}</textarea></label>
+</div>`;
+  }
+
   function taskCard(task, index) {
     const fieldId = `task-${index}-${task.id.replace(/[^a-z0-9-]/gi, '-')}`;
     const detail = task.kind === 'algorithm'
@@ -211,12 +231,14 @@ if (root) {
         ? cetDetails(task, fieldId)
         : task.kind === 'contest'
           ? contestDetails(task, fieldId)
+          : task.kind === 'sprint'
+            ? sprintDetails(task, fieldId)
           : '';
     const custom = task.id.includes('-custom-');
     const kindControl = custom
-      ? `<select class="task-kind task-kind-select kind-${escapeHtml(task.kind)}" data-field="kind" aria-label="任务类别">${['other', 'cmc', 'algorithm', 'cet6', 'contest', 'review'].map((kind) => `<option value="${kind}"${task.kind === kind ? ' selected' : ''}>${categoryLabel(kind)}</option>`).join('')}</select>`
+      ? `<select class="task-kind task-kind-select kind-${escapeHtml(task.kind)}" data-field="kind" aria-label="任务类别">${['other', 'cmc', 'algorithm', 'cet6', 'contest', 'sprint', 'review'].map((kind) => `<option value="${kind}"${task.kind === kind ? ' selected' : ''}>${categoryLabel(kind)}</option>`).join('')}</select>`
       : `<span class="task-kind kind-${escapeHtml(task.kind)}">${escapeHtml(categoryLabel(task.kind))}</span>`;
-    return `<article class="checkin-task${task.completed ? ' is-checked' : ''}" data-task-id="${escapeHtml(task.id)}">
+    return `<article class="checkin-task${task.completed ? ' is-checked' : ''}${task.planExcluded ? ' is-plan-excluded' : ''}" data-task-id="${escapeHtml(task.id)}">
   <div class="task-check-column">
     <label class="task-main-check" for="${fieldId}-done"><input id="${fieldId}-done" type="checkbox" data-field="completed"${task.completed ? ' checked' : ''}><span aria-hidden="true"></span><b>${task.completed ? '已打卡' : '打卡'}</b></label>
   </div>
@@ -227,6 +249,7 @@ if (root) {
       <input class="task-title-input" aria-label="任务名称" data-field="title" value="${escapeHtml(task.title)}">
       ${custom ? '<button class="task-remove" type="button" data-action="remove-task" aria-label="移除这个自定义任务">移除</button>' : ''}
     </div>
+    ${task.planExcluded ? `<p class="plan-excluded-note">${escapeHtml(task.planNote || '旧计划记录已保留，但不计入当前计划。')}</p>` : ''}
     ${detail}
     <div class="task-record-row">
       ${inputField({ id: `${fieldId}-minutes`, label: '实际用时（分钟）', field: 'actualMinutes', value: task.actualMinutes, type: 'number', min: 0, max: 1440 })}
@@ -241,11 +264,13 @@ if (root) {
     const cmcWeekHours = (stats.cmcWeeklyMinutes / 60).toFixed(1).replace('.0', '');
     const cmcTotalHours = (stats.cmcTotalMinutes / 60).toFixed(1).replace('.0', '');
     const phaseIsNew = stats.target.newWords > 0;
+    const sprintWeek = stats.target.sprintTasks > 0;
     const values = {
-      'cmc-week': `${cmcWeekHours} / ${stats.target.cmcMinutes ? '8.5' : '—'} h`,
-      'cmc-total': `累计 ${cmcTotalHours} / 60 h`,
-      'cmc-mastery': `观看 ${stats.cmcWatchedLessons}/${stats.cmcLessonTotal} · 复现 ${stats.cmcReproducedLessons}/${stats.cmcLessonTotal}`,
-      algorithms: `${stats.algorithmsReproduced} / ${stats.target.algorithms ? '6–8' : '—'}`,
+      'primary-label': sprintWeek ? '百度之星 · 冲刺周' : 'CMC · 本周',
+      'cmc-week': sprintWeek ? `${stats.sprintCompleted} / ${stats.sprintTaskTotal} 项` : `${cmcWeekHours} / ${stats.target.cmcMinutes ? '8.5' : '—'} h`,
+      'cmc-total': sprintWeek ? '本周 CMC 暂停，赛后恢复' : `累计 ${cmcTotalHours} / 60 h`,
+      'cmc-mastery': sprintWeek ? `独立复现 ${stats.sprintReproduced}/${stats.target.sprintReproductions}` : `观看 ${stats.cmcWatchedLessons}/${stats.cmcLessonTotal} · 复现 ${stats.cmcReproducedLessons}/${stats.cmcLessonTotal}`,
+      algorithms: sprintWeek ? `${stats.sprintReproduced} / ${stats.target.sprintReproductions}` : `${stats.algorithmsReproduced} / ${stats.target.algorithms ? '6–8' : '—'}`,
       'cet-week': phaseIsNew ? `${stats.cetWeeklyNew} / ${stats.target.newWords}` : `${stats.cetWeeklyReview} 词`,
       'cet-total': phaseIsNew ? `新词累计 ${stats.cetNewTotal} / 900` : `本周刷题 ${stats.cetWeeklyPractice} 次`,
       completion: `${stats.completionRate}%`,
@@ -257,11 +282,14 @@ if (root) {
       root.querySelectorAll(`[data-stat="${name}"]`).forEach((element) => { element.textContent = value; });
     }
     root.querySelectorAll('[data-progress="cmc"]').forEach((element) => {
-      const target = stats.target.cmcMinutes || 510;
-      element.style.setProperty('--value', `${Math.min(100, (stats.cmcWeeklyMinutes / target) * 100)}%`);
+      const target = sprintWeek ? stats.sprintTaskTotal || 1 : stats.target.cmcMinutes || 510;
+      const actual = sprintWeek ? stats.sprintCompleted : stats.cmcWeeklyMinutes;
+      element.style.setProperty('--value', `${Math.min(100, (actual / target) * 100)}%`);
     });
     root.querySelectorAll('[data-progress="algorithm"]').forEach((element) => {
-      element.style.setProperty('--value', `${Math.min(100, (stats.algorithmsReproduced / 6) * 100)}%`);
+      const target = sprintWeek ? stats.target.sprintReproductions || 1 : 6;
+      const actual = sprintWeek ? stats.sprintReproduced : stats.algorithmsReproduced;
+      element.style.setProperty('--value', `${Math.min(100, (actual / target) * 100)}%`);
     });
     root.querySelectorAll('[data-progress="cet6"]').forEach((element) => {
       const target = phaseIsNew ? stats.target.newWords || 100 : stats.target.reviewWords || 1000;
@@ -287,7 +315,11 @@ if (root) {
     const progress = todayRemaining(state, today);
     const target = root.querySelector('[data-today-progress]');
     if (!target) return;
-    target.innerHTML = `${progressLine('算法', progress.algorithm)}
+    target.innerHTML = progress.sprint.target > 0
+      ? `${progressLine('百度之星冲刺', progress.sprint)}
+${progressLine(`六级 · ${progress.cet6.wordLabel}`, progress.cet6.words)}
+${progressLine('六级 · 刷题', progress.cet6.practice)}`
+      : `${progressLine('算法', progress.algorithm)}
 ${progressLine(`CMC · ${progress.cmc.mode === 'lessons' ? '观看课程' : '学习时长'}`, progress.cmc)}
 ${progressLine(`六级 · ${progress.cet6.wordLabel}`, progress.cet6.words)}
 ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
@@ -333,6 +365,8 @@ ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
     if (daySubtitle) {
       daySubtitle.textContent = selectedDate < '2026-09-14'
         ? '计划还没有开始，你仍然可以在这里补充任务。'
+        : selectedDate <= '2026-09-20'
+          ? '百度之星冲刺周 · CMC 暂停，9 月 21 日恢复 · 六级新词 100'
         : selectedDate <= '2026-09-22'
           ? '六级新词阶段 · 每天目标 100 个'
           : selectedDate <= '2026-11-13'
@@ -356,7 +390,7 @@ ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
   <article class="today-progress-card glass-panel">
     <header class="focus-card-heading"><div><span class="checkin-kicker">TODAY</span><h2>今日还差多少</h2></div><small data-today-progress-date></small></header>
     <div class="today-progress-list" data-today-progress></div>
-    <p class="focus-boundary">算法只把“已复现”计为完成；CMC 优先按课程节数；六级仅使用你填写的实际词数与刷题项。</p>
+    <p class="focus-boundary">算法只把“关掉题解后独立复现”计入；9 月 14–20 日显示百度之星冲刺，CMC 暂停且不记欠账；六级使用实际词数。</p>
   </article>
   <article class="month-calendar-card glass-panel">
     <header class="focus-card-heading calendar-heading"><div><span class="checkin-kicker">MONTH</span><h2 data-calendar-title></h2></div><div class="calendar-actions"><button type="button" data-action="previous-month" aria-label="上一月">←</button><button type="button" data-action="calendar-today">今天</button><button type="button" data-action="next-month" aria-label="下一月">→</button></div></header>
@@ -371,7 +405,7 @@ ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
   <p class="focus-boundary">红色：3 天内 · 橙色：7 天内 · 蓝色：30 天内。紫色“预计赛期”只用于规划，不按某一天倒计时；收到学校或主办方通知后再替换。</p>
 </section>
 <section class="checkin-summary-grid" aria-label="本周概览">
-  <article class="checkin-stat glass-panel"><span>CMC · 本周</span><strong data-stat="cmc-week">0 / 8.5 h</strong><small><span data-stat="cmc-total">累计 0 / 60 h</span><br><span data-stat="cmc-mastery">观看 0/0 · 复现 0/0</span></small><i data-progress="cmc"></i></article>
+  <article class="checkin-stat glass-panel"><span data-stat="primary-label">CMC · 本周</span><strong data-stat="cmc-week">0 / 8.5 h</strong><small><span data-stat="cmc-total">累计 0 / 60 h</span><br><span data-stat="cmc-mastery">观看 0/0 · 复现 0/0</span></small><i data-progress="cmc"></i></article>
   <article class="checkin-stat glass-panel"><span>算法 · 已复现</span><strong data-stat="algorithms">0 / 6–8</strong><small>看过答案不计入</small><i data-progress="algorithm"></i></article>
   <article class="checkin-stat glass-panel"><span>六级 · 本周</span><strong data-stat="cet-week">0 / 700</strong><small data-stat="cet-total">新词累计 0 / 900</small><i data-progress="cet6"></i></article>
   <article class="checkin-stat glass-panel"><span>有效完成率</span><strong data-stat="completion">0%</strong><small data-stat="completion-detail">0 / 0 项有效完成</small></article>
@@ -394,7 +428,7 @@ ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
     </section>
     <section class="checkin-rules glass-panel">
       <span class="checkin-kicker">执行规则</span><h2>质量优先，不为凑数看答案</h2>
-      <div class="rules-grid"><p><b>算法</b>独立思考 25 分钟 → 必要时看提示 / 题解 → 关掉后复现 → 次日重写。前一题不能复现，后一题可以顺延。</p><p><b>CMC</b>夜雨 60 小时非数学 A；每周目标 8.5 小时，11 月 1 日前完成，再进入真题阶段直到 11 月 13 日。</p><p><b>六级</b>9 月 14–22 日每天新词 100；9 月 23 日起每天复习 1000 词，并做 45 分钟听力 / 阅读 / 翻译 / 写作。</p></div>
+      <div class="rules-grid"><p><b>算法</b>独立思考 25 分钟 → 必要时看提示 / 题解 → 关掉后复现 → 次日重写。模拟赛与正式赛填写 AC 数、未过题和卡点即可。</p><p><b>CMC</b>9 月 14–20 日为百度之星冲刺周，本周 CMC 暂停且不记欠账；9 月 21 日从原课程进度恢复。</p><p><b>六级</b>9 月 14–22 日每天新词 100；9 月 23 日起每天复习 1000 词，并做 45 分钟听力 / 阅读 / 翻译 / 写作。</p></div>
     </section>
   </div>
   <aside class="checkin-side-column">

@@ -68,6 +68,29 @@ recognisable after conversion; lazy drawer imagery must not flash as unreadable
 content; future locally imported wallpapers are not automatically recompressed
 by this narrow change and still need an explicit optimisation step.
 
+### 2026-09-14 Baidu Star sprint and confirmed vocabulary contest plan
+
+1. Replace only the untouched default CMC/algorithm tasks dated 2026-09-14 to
+   2026-09-20 with the supplied Baidu Star execution cards; retain CET6 100 new
+   words every day, cancel that Sunday's LeetCode contest, and resume the shifted
+   CMC lesson sequence on 2026-09-21.
+2. Add auditable sprint fields for timed sessions, checklists, independent
+   reproduction, submitted/accepted counts, and blockers without inventing
+   problem IDs or links.
+3. Migrate version-1 local records in place: preserve completed/annotated legacy
+   defaults and custom tasks, mark preserved superseded defaults as excluded from
+   sprint-week debt, and remove only untouched superseded defaults.
+4. Add the confirmed Baicizhan vocabulary preliminary date and eligibility state,
+   plus the confirmed FLTRP registration deadline and campus-session times, while
+   leaving still-unannounced times explicitly pending.
+5. Extend model tests for the sprint template, 2026-09-21 CMC resumption, and
+   historical-record preservation; then run checks/build, deploy, and verify the
+   production script at `https://iwxt.cn/checkin/`.
+
+Risks for this pass: old browser records must not be erased; removed defaults
+must not count as missed work; the Baicizhan screenshot confirms 10 October 24
+but not its within-day start time; organiser schedules may still change.
+
 Risks for this pass: local dates must not shift at UTC boundaries; an empty day
 must not be labelled missed; event announcements can change after deployment;
 GitHub cannot issue the custom-domain certificate until its DNS checks finish.
@@ -133,6 +156,22 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
   `568e77c3-30d9-482a-a2dc-ac4240a1609a` returned no findings.
 
 ## Verification status
+
+- The 2026-09-14 plan revision replaces the active week's untouched CMC and
+  LeetCode defaults with 13 Baidu Star sprint cards plus the retained daily
+  CET6 task. CMC lesson 6 resumes on 2026-09-21, the 2026-09-20 LeetCode weekly
+  contest is absent, and the 2026-09-19 14:00–17:00 formal round has writable
+  accepted-count and blocker fields without being counted as a reproduced
+  practice problem.
+- The localStorage key and schema version remain `iwxt-diary-checkin-v1` and
+  version 1. Hydration removes only untouched superseded defaults, preserves
+  custom tasks, keeps progressed old defaults as visibly excluded historical
+  records, and reapplies saved CMC lesson evidence by global lesson number.
+- `npm run check`, all 31 Node tests, `npm run build`, `npm audit --omit=dev`,
+  and `git diff --check` pass. A fresh local Playwright session verified that
+  independent-reproduction, accepted-count, and blocker fields survive reload;
+  the 390 x 844 layout has a 390 px document width and the console reports zero
+  errors or warnings. No screenshots were produced for this pass.
 
 - The 2026-09-10 first-load pass replaces the 2559 x 1439, 3,382,944-byte
   wallpaper PNG with a visually checked 1920 x 1080, 117,724-byte WebP while

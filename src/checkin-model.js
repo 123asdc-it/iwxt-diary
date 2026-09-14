@@ -38,10 +38,22 @@ export const KEY_DATE_EVENTS = [
     subtitle: '2026 外语能力大赛',
     sourceUrl: 'https://2u4u.fltrp.com/c/2026-04-27/541737.shtml',
     milestones: [
-      { label: '综合能力校赛', date: '2026-10-11', note: '校内通知 · 09:30–11:00' },
-      { label: '笔译校赛', date: '2026-10-11', note: '校内通知 · 16:00–18:00' },
+      { label: '官网报名截止', date: '2026-10-04', note: '23:59 · 综合能力 / 笔译' },
+      { label: '综合能力校赛', date: '2026-10-11', note: '华师 · 09:30–11:00 · 以报名群最新通知为准' },
+      { label: '笔译校赛', date: '2026-10-11', note: '华师 · 16:00–18:00 · 以报名群最新通知为准' },
       { label: '省赛', window: '2026.09–11', note: '官方赛期' },
       { label: '国赛', window: '2026.10–12', note: '官方赛期' },
+    ],
+  },
+  {
+    id: 'baicizhan-vocabulary',
+    name: '全国大学生英语单词大赛',
+    subtitle: '百词斩 · 本科及以上非英专组',
+    sourceUrl: 'https://www.baicizhan.com/little_class/article/1033/share_view',
+    milestones: [
+      { label: '参赛资格', status: '审核通过', note: '已获得正赛参赛资格' },
+      { label: '初赛', date: '2026-10-24', note: '具体时间待报名结束分组后公布' },
+      { label: '当日时间', pending: '待分组公布' },
     ],
   },
   {
@@ -150,7 +162,9 @@ export const CMC_CHAPTERS = [
 ];
 
 const DAY_MS = 86_400_000;
-const VALID_KINDS = new Set(['cmc', 'algorithm', 'cet6', 'contest', 'review', 'other']);
+const VALID_KINDS = new Set(['cmc', 'algorithm', 'cet6', 'contest', 'sprint', 'review', 'other']);
+const BAIDU_SPRINT_START = '2026-09-14';
+const BAIDU_SPRINT_END = '2026-09-20';
 
 function currentLocalDate() {
   const now = new Date();
@@ -260,13 +274,25 @@ function taskHasProgress(task) {
   }
   if (task.kind === 'cet6') return Number(task.cet6?.wordsActual) > 0 || Number(task.cet6?.practiceCount) > 0;
   if (task.kind === 'contest') return Number(task.contest?.solvedIndependently) > 0 || cleanText(task.contest?.blockers).trim();
+  if (task.kind === 'sprint') {
+    const value = task.sprint || {};
+    return Number(value.reproducedActual) > 0
+      || Number(value.submittedActual) > 0
+      || Number(value.acceptedActual) > 0
+      || cleanText(value.blockers).trim()
+      || (value.checklist || []).some((item) => item.done);
+  }
   return false;
+}
+
+function activeTasks(tasks) {
+  return (tasks || []).filter((task) => !task.planExcluded);
 }
 
 export function dayCheckinStatus(state, date, today = currentLocalDate()) {
   if (!isDate(date) || !isDate(today)) return 'empty';
   if (date > today) return 'future';
-  const tasks = Array.isArray(state?.days?.[date]?.tasks) ? state.days[date].tasks : [];
+  const tasks = activeTasks(Array.isArray(state?.days?.[date]?.tasks) ? state.days[date].tasks : []);
   if (!tasks.length) return 'empty';
   const completed = tasks.filter(effectiveComplete).length;
   if (completed === tasks.length) return 'complete';
@@ -436,6 +462,7 @@ function buildCmcTasks(startLesson = 6) {
   let lessonNumber = startLesson;
   const tasks = [];
   for (const [date, time, plannedMinutes, count, guidance] of CMC_BLOCKS) {
+    const scheduledDate = addDays(date, 7);
     const numbers = Array.from({ length: count }, () => lessonNumber++).filter((number) => number <= 124);
     if (date === '2026-11-02' && lessonNumber <= 124) {
       while (lessonNumber <= 124) numbers.push(lessonNumber++);
@@ -444,12 +471,12 @@ function buildCmcTasks(startLesson = 6) {
     const start = numbers[0];
     const end = numbers.at(-1);
     const resolvedGuidance = startLesson === 6
-      ? guidance
+      ? `${guidance} 本周计划已因百度之星冲刺顺延 7 天。`
       : `按当前起点顺序安排第 ${start}${end === start ? '' : `–${end}`} 课；请按实际难度选择 1.0–1.5 倍速，并为方法卡与关视频复现保留 15–30 分钟。`;
     tasks.push({
-      date,
+      date: scheduledDate,
       task: {
-        ...taskBase(`${date}-cmc-course`, 'cmc', time, `CMC 第 ${start}${end === start ? '' : `–${end}`} 课`, plannedMinutes),
+        ...taskBase(`${scheduledDate}-cmc-course`, 'cmc', time, `CMC 第 ${start}${end === start ? '' : `–${end}`} 课`, plannedMinutes),
         cmc: { courseTitle: '大学生数学竞赛课程（全新第二代）', guidance: resolvedGuidance, lessons: numbers.map(cmcLesson) },
       },
     });
@@ -458,8 +485,8 @@ function buildCmcTasks(startLesson = 6) {
       if (!chapter) continue;
       const reviewTime = time.startsWith('09') ? '11:15' : time.startsWith('14') ? '20:00' : '21:35';
       tasks.push({
-        date,
-        task: taskBase(`${date}-cmc-chapter-${number}`, 'review', reviewTime, `章末关联真题 / 综合题复现 · ${chapter}`, 45),
+        date: scheduledDate,
+        task: taskBase(`${scheduledDate}-cmc-chapter-${number}`, 'review', reviewTime, `章末关联真题 / 综合题复现 · ${chapter}`, 45),
       });
     }
   }
@@ -515,6 +542,85 @@ function reviewTask(date, title = '复现本周最卡的一题') {
   return taskBase(`${date}-review`, 'review', '20:00', title, 30);
 }
 
+function sprintTask(date, id, time, title, plannedMinutes, options = {}) {
+  return {
+    ...taskBase(`${date}-sprint-${id}`, 'sprint', time, title, plannedMinutes),
+    sprint: {
+      instructions: cleanText(options.instructions, 800),
+      checklist: (options.checklist || []).map((label) => ({ label, done: false })),
+      reproducedTarget: Number(options.reproducedTarget) || 0,
+      reproducedActual: 0,
+      submittedTarget: Number(options.submittedTarget) || 0,
+      submittedActual: 0,
+      acceptedActual: 0,
+      blockers: '',
+    },
+  };
+}
+
+function baiduSprintTasks() {
+  return [
+    ['2026-09-14', sprintTask('2026-09-14', 'registration-check', '19:00', '百度之星报名 / 缴费核验', 20, {
+      instructions: '只核对自己的报名链路，不在页面保存账号或密码。',
+      checklist: ['确认报名状态', '确认缴费状态', '确认第二场初赛场次'],
+    })],
+    ['2026-09-14', sprintTask('2026-09-14', 'platform-public-set', '19:30', '平台测试 + 公开初赛题分层训练', 150, {
+      instructions: '通读一套公开初赛题，先按难度排序，再完成并独立复现最容易的 2 题。',
+      checklist: ['完成平台 / OJ 测试', '通读一套公开初赛题', '按预估难度完成排序'],
+      reproducedTarget: 2,
+    })],
+    ['2026-09-15', sprintTask('2026-09-15', 'timed-training', '09:00', '公开初赛题限时训练 + 订正', 150, {
+      instructions: '2 小时限时训练，随后用 30 分钟订正；至少认真提交 2 题并关掉题解独立复现 1 题。',
+      checklist: ['完成 2 小时限时训练', '完成 30 分钟订正'],
+      submittedTarget: 2,
+      reproducedTarget: 1,
+    })],
+    ['2026-09-16', sprintTask('2026-09-16', 'weak-topic', '19:30', '枚举 / 模拟 / 排序 / 前缀和 / 哈希弱项训练', 150, {
+      instructions: '无晚课时 19:30–22:00；有晚课时改为 20:45–22:15。选择最弱的一项训练，复现 2 题并记录错因。',
+      checklist: ['确认当天最弱专题', '完成针对性训练'],
+      reproducedTarget: 2,
+    })],
+    ['2026-09-17', sprintTask('2026-09-17', 'half-mock', '19:30', '百度之星半场模拟 + 复盘', 150, {
+      instructions: '先通读全卷并排序，再开始作答；赛后独立复现 1–2 题。',
+      checklist: ['先通读并排序题目', '完成半场模拟', '完成赛后复盘'],
+      reproducedTarget: 1,
+    })],
+    ['2026-09-17', taskBase('2026-09-17-putonghua-booking', 'other', '', '普通话测试预约', 15)],
+    ['2026-09-18', sprintTask('2026-09-18', 'full-mock', '09:00', '百度之星完整 3 小时模拟', 180, {
+      instructions: '09:00–12:00 完整模拟，比赛时段内禁用题解。',
+      checklist: ['完成完整 3 小时模拟', '模拟期间未使用题解'],
+    })],
+    ['2026-09-18', sprintTask('2026-09-18', 'closest-ac-review', '19:30', '只复盘最接近 AC 的题', 60, {
+      instructions: '只处理白天模拟中最接近 AC 的一题，关掉题解后独立复现。',
+      reproducedTarget: 1,
+    })],
+    ['2026-09-18', sprintTask('2026-09-18', 'equipment-check', '20:30', '正式赛账号与设备检查', 30, {
+      checklist: ['账号可登录', '报名与缴费无误', 'OJ 可正常提交', 'C++17 环境可用', '网络稳定', '电源与充电器就绪'],
+    })],
+    ['2026-09-19', sprintTask('2026-09-19', 'warm-up', '09:30', '赛前轻量热身', 60, {
+      instructions: '只做轻量热身，不在赛前消耗过多精力。',
+      checklist: ['完成轻量热身', '停止继续加量并留出休息时间'],
+    })],
+    ['2026-09-19', sprintTask('2026-09-19', 'login-check', '13:00', '13:20 前登录与设备复检', 20, {
+      checklist: ['13:20 前完成登录', '网络 / 电源 / 编译环境复检完成'],
+    })],
+    ['2026-09-19', {
+      ...sprintTask('2026-09-19', 'baidu-star-round-2', '14:00', '百度之星第 22 届第二场初赛（线上）', 180, {
+        instructions: '14:00–17:00 正式参赛。赛后只填写 AC 数、未过题与关键卡点。',
+        checklist: ['完成 14:00–17:00 正式参赛'],
+      }),
+      id: '2026-09-19-event-baidu-star-round-2',
+    }],
+    ['2026-09-20', sprintTask('2026-09-20', 'closest-ac-fixes', '10:00', '补最接近 AC 的 1–2 题', 120, {
+      instructions: '优先补正式赛里最接近 AC 的题；完成仍以关掉题解后独立复现计数。',
+      reproducedTarget: 1,
+    })],
+    ['2026-09-20', sprintTask('2026-09-20', 'weekly-review', '20:00', '百度之星冲刺周复盘', 30, {
+      checklist: ['记录本周有效复现数', '整理高频卡点', '确定下周恢复的 CMC 与算法主线'],
+    })],
+  ];
+}
+
 function ensureDay(days, date) {
   if (!days[date]) days[date] = { tasks: [] };
   return days[date].tasks;
@@ -528,26 +634,35 @@ export function defaultDays(cmcStartLesson = 6) {
   }
 
   const confirmedEvents = [
-    ['2026-09-19', '14:00', 'baidu-star-round-2', '百度之星第 22 届第二场初赛（线上）', 180],
     ['2026-10-11', '09:30', 'fltrp-comprehensive', '外研社·国才杯综合能力校赛', 90],
     ['2026-10-11', '16:00', 'fltrp-translation', '外研社·国才杯笔译校赛', 120],
   ];
   for (const [date, time, id, title, minutes] of confirmedEvents) {
     ensureDay(days, date).push(taskBase(`${date}-event-${id}`, 'other', time, title, minutes));
   }
+  const vocabularyPreliminary = taskBase(
+    '2026-10-24-event-baicizhan-vocabulary-preliminary',
+    'other',
+    '',
+    '百词斩全国大学生英语单词大赛初赛',
+  );
+  vocabularyPreliminary.note = '具体时间待报名结束分组后公布';
+  ensureDay(days, '2026-10-24').push(vocabularyPreliminary);
+
+  for (const [date, task] of baiduSprintTasks()) ensureDay(days, date).push(task);
 
   for (const { date, task } of buildCmcTasks(cmcStartLesson)) ensureDay(days, date).push(task);
 
   const simulations = [
-    ['2026-11-03', '真题模拟一（完整 150 分钟）'], ['2026-11-04', '真题模拟一隔日订正'],
-    ['2026-11-07', '真题模拟二（完整 150 分钟）'], ['2026-11-08', '真题模拟二隔日订正'],
-    ['2026-11-11', '真题模拟三（完整 150 分钟）'], ['2026-11-12', '真题模拟三隔日订正'],
+    ['2026-11-10', '真题模拟一（完整 150 分钟）'], ['2026-11-11', '真题模拟一订正'],
+    ['2026-11-12', '真题模拟二（完整 150 分钟）'], ['2026-11-13', '真题模拟二订正'],
   ];
   for (const [date, title] of simulations) {
     ensureDay(days, date).push(taskBase(`${date}-cmc-paper`, 'cmc', title.includes('模拟') ? '14:30' : '19:30', title, title.includes('150') ? 150 : 90));
   }
 
   for (const week of ALGORITHM_WEEKS) {
+    if (week.start === BAIDU_SPRINT_START) continue;
     for (const [date, time, number, title, slug, rating] of week.problems) {
       ensureDay(days, date).push(algorithmTask(date, time, number, title, slug, rating, week.topic, week.section));
     }
@@ -609,6 +724,22 @@ function normalizeCmc(value = {}) {
   };
 }
 
+function normalizeSprint(value = {}) {
+  return {
+    instructions: cleanText(value.instructions, 800),
+    checklist: Array.isArray(value.checklist) ? value.checklist.slice(0, 20).map((item) => ({
+      label: cleanText(item?.label, 160) || '待核验事项',
+      done: Boolean(item?.done),
+    })) : [],
+    reproducedTarget: clampNumber(value.reproducedTarget, 0, 20),
+    reproducedActual: clampNumber(value.reproducedActual, 0, 20),
+    submittedTarget: clampNumber(value.submittedTarget, 0, 20),
+    submittedActual: clampNumber(value.submittedActual, 0, 20),
+    acceptedActual: clampNumber(value.acceptedActual, 0, 20),
+    blockers: cleanText(value.blockers, 2000),
+  };
+}
+
 function normalizeTask(value = {}, fallbackId = '') {
   const kind = VALID_KINDS.has(value.kind) ? value.kind : 'other';
   const task = {
@@ -620,6 +751,8 @@ function normalizeTask(value = {}, fallbackId = '') {
     completed: Boolean(value.completed),
     actualMinutes: clampNumber(value.actualMinutes, 0, 1440),
     note: cleanText(value.note, 2000),
+    planExcluded: Boolean(value.planExcluded),
+    planNote: cleanText(value.planNote, 300),
   };
   if (kind === 'cmc' && value.cmc) task.cmc = normalizeCmc(value.cmc);
   if (kind === 'algorithm') task.algorithm = normalizeAlgorithm(value.algorithm);
@@ -638,13 +771,14 @@ function normalizeTask(value = {}, fallbackId = '') {
       blockers: cleanText(value.contest?.blockers, 1200),
     };
   }
+  if (kind === 'sprint') task.sprint = normalizeSprint(value.sprint);
   return task;
 }
 
 function mergeTask(defaultTask, savedTask) {
   if (!savedTask) return structuredClone(defaultTask);
   const normalized = normalizeTask(savedTask, defaultTask.id);
-  const merged = { ...structuredClone(defaultTask), ...normalized, id: defaultTask.id };
+  const merged = { ...structuredClone(defaultTask), ...normalized, id: defaultTask.id, kind: defaultTask.kind, planExcluded: false, planNote: '' };
   if (defaultTask.algorithm || normalized.algorithm) merged.algorithm = { ...defaultTask.algorithm, ...normalized.algorithm };
   if (defaultTask.cmc || normalized.cmc) {
     const savedLessons = new Map((normalized.cmc?.lessons || []).map((lesson) => [lesson.number, lesson]));
@@ -669,7 +803,73 @@ function mergeTask(defaultTask, savedTask) {
   }
   if (defaultTask.cet6 || normalized.cet6) merged.cet6 = { ...defaultTask.cet6, ...normalized.cet6 };
   if (defaultTask.contest || normalized.contest) merged.contest = { ...defaultTask.contest, ...normalized.contest };
+  if (defaultTask.sprint || normalized.sprint) {
+    const savedChecks = new Map((normalized.sprint?.checklist || []).map((item) => [item.label, item.done]));
+    merged.sprint = {
+      ...defaultTask.sprint,
+      ...normalized.sprint,
+      instructions: defaultTask.sprint?.instructions || normalized.sprint?.instructions || '',
+      checklist: (defaultTask.sprint?.checklist || normalized.sprint?.checklist || []).map((item) => ({
+        ...item,
+        done: Boolean(savedChecks.get(item.label)),
+      })),
+      reproducedTarget: defaultTask.sprint?.reproducedTarget || 0,
+      submittedTarget: defaultTask.sprint?.submittedTarget || 0,
+    };
+  }
   return merged;
+}
+
+function cmcLessonNumbers(task) {
+  return (task?.cmc?.lessons || []).map((lesson) => Number(lesson.number)).join(',');
+}
+
+function supersededDefaultTask(task, date) {
+  if (!task?.id?.startsWith(`${date}-`)) return false;
+  if (/-(cmc-course|cmc-chapter-\d+|cmc-paper)$/.test(task.id)) return true;
+  if (date >= BAIDU_SPRINT_START && date <= BAIDU_SPRINT_END) {
+    return /-(leetcode-\d+|contest|review)$/.test(task.id);
+  }
+  return false;
+}
+
+function preservedLegacyTask(task, date, sequence) {
+  const legacy = normalizeTask(task, `${date}-legacy-${sequence}`);
+  legacy.id = `${legacy.id}-legacy-plan-v1-${sequence}`.slice(0, 120);
+  legacy.planExcluded = true;
+  legacy.planNote = '计划调整前已有进度：记录已保留，但不计入本周欠账或完成率。';
+  return legacy;
+}
+
+function applySavedCmcLessonProgress(days, savedDays) {
+  const savedLessons = new Map();
+  for (const savedDay of Object.values(savedDays)) {
+    for (const task of savedDay?.tasks || []) {
+      for (const lesson of task?.cmc?.lessons || []) {
+        if (lesson.watched || lesson.reproduced || lesson.conditionsWritten || Number(lesson.actualMinutes) > 0 || cleanText(lesson.recall).trim()) {
+          savedLessons.set(Number(lesson.number), lesson);
+        }
+      }
+    }
+  }
+  for (const day of Object.values(days)) {
+    for (const task of activeTasks(day.tasks)) {
+      if (!task.cmc?.lessons) continue;
+      task.cmc.lessons = task.cmc.lessons.map((lesson) => {
+        const saved = savedLessons.get(lesson.number);
+        if (!saved) return lesson;
+        return {
+          ...lesson,
+          watched: Boolean(saved.watched),
+          reproduced: Boolean(saved.reproduced),
+          conditionsWritten: Boolean(saved.conditionsWritten),
+          recall: cleanText(saved.recall, 500),
+          grade: ['A', 'B', 'C'].includes(saved.grade) ? saved.grade : '',
+          actualMinutes: clampNumber(saved.actualMinutes, 0, 1440),
+        };
+      });
+    }
+  }
 }
 
 export function hydrateState(raw) {
@@ -682,17 +882,32 @@ export function hydrateState(raw) {
   for (const [date, defaultDay] of Object.entries(defaults.days)) {
     const savedTasks = Array.isArray(savedDays[date]?.tasks) ? savedDays[date].tasks : [];
     const byId = new Map(savedTasks.map((task) => [task?.id, task]));
-    days[date] = { tasks: defaultDay.tasks.map((task) => mergeTask(task, byId.get(task.id))) };
+    const legacy = [];
+    days[date] = { tasks: defaultDay.tasks.map((task) => {
+      const saved = byId.get(task.id);
+      const changedCmcBlock = task.cmc?.lessons?.length && saved?.cmc?.lessons?.length
+        && cmcLessonNumbers(task) !== cmcLessonNumbers(saved);
+      if (changedCmcBlock && taskHasProgress(saved)) legacy.push(preservedLegacyTask(saved, date, legacy.length + 1));
+      return mergeTask(task, changedCmcBlock ? null : saved);
+    }) };
     for (const savedTask of savedTasks) {
-      if (!savedTask?.id || days[date].tasks.some((task) => task.id === savedTask.id)) continue;
+      if (!savedTask?.id || byId.get(savedTask.id) !== savedTask) continue;
+      if (days[date].tasks.some((task) => task.id === savedTask.id)) continue;
+      if (supersededDefaultTask(savedTask, date)) {
+        if (taskHasProgress(savedTask)) legacy.push(preservedLegacyTask(savedTask, date, legacy.length + 1));
+        continue;
+      }
       days[date].tasks.push(normalizeTask(savedTask, `${date}-custom-${days[date].tasks.length + 1}`));
     }
+    days[date].tasks.push(...legacy);
   }
 
   for (const [date, savedDay] of Object.entries(savedDays)) {
     if (!isDate(date) || days[date] || !Array.isArray(savedDay?.tasks)) continue;
     days[date] = { tasks: savedDay.tasks.slice(0, 80).map((task, index) => normalizeTask(task, `${date}-custom-${index + 1}`)) };
   }
+
+  applySavedCmcLessonProgress(days, savedDays);
 
   return {
     version: CHECKIN_VERSION,
@@ -743,6 +958,7 @@ export function storeCheckinState(storage, state) {
 }
 
 export function effectiveComplete(task) {
+  if (task?.planExcluded) return false;
   if (!task?.completed) return false;
   if (task.kind === 'algorithm') return Boolean(task.algorithm?.reproduced);
   if (task.kind === 'cmc') {
@@ -754,6 +970,13 @@ export function effectiveComplete(task) {
   if (task.kind === 'cet6') {
     if (task.cet6?.phase === 'new') return Number(task.cet6.wordsActual) > 0;
     return Number(task.cet6?.wordsActual) > 0 && Number(task.cet6?.practiceCount) > 0;
+  }
+  if (task.kind === 'sprint') {
+    const sprint = task.sprint || {};
+    const checksComplete = !(sprint.checklist || []).length || sprint.checklist.every((item) => item.done);
+    return checksComplete
+      && Number(sprint.reproducedActual) >= Number(sprint.reproducedTarget || 0)
+      && Number(sprint.submittedActual) >= Number(sprint.submittedTarget || 0);
   }
   return true;
 }
@@ -770,8 +993,12 @@ function targetForWeek(date) {
   return {
     start,
     end,
-    cmcMinutes: start <= '2026-10-26' && end >= PLAN_START ? 510 : 0,
-    algorithms: ALGORITHM_WEEKS.some((week) => week.start === start) ? 6 : 0,
+    cmcMinutes: start === BAIDU_SPRINT_START ? 0 : start <= '2026-11-09' && end >= '2026-09-21' ? 510 : 0,
+    algorithms: start === BAIDU_SPRINT_START ? 0 : ALGORITHM_WEEKS.some((week) => week.start === start) ? 6 : 0,
+    sprintTasks: start === BAIDU_SPRINT_START ? baiduSprintTasks().filter(([, task]) => task.kind === 'sprint').length : 0,
+    sprintReproductions: start === BAIDU_SPRINT_START
+      ? baiduSprintTasks().reduce((sum, [, task]) => sum + (Number(task.sprint?.reproducedTarget) || 0), 0)
+      : 0,
     newWords: newWordDays * 100,
     reviewWords: 7 - newWordDays > 0 && end >= '2026-09-23' ? Array.from({ length: 7 }, (_, index) => addDays(start, index)).filter((day) => day >= '2026-09-23' && day <= PLAN_END).length * 1000 : 0,
   };
@@ -781,12 +1008,15 @@ export function checkinStats(state, selectedDate) {
   const dates = weekDates(selectedDate);
   const dateSet = new Set(dates);
   const rows = allTasks(state);
-  const weekly = rows.filter(({ date }) => dateSet.has(date));
+  const weekly = rows.filter(({ date, task }) => dateSet.has(date) && !task.planExcluded);
   const effective = weekly.filter(({ task }) => effectiveComplete(task));
   const cmcWeeklyMinutes = weekly.filter(({ task }) => task.kind === 'cmc').reduce((sum, { task }) => sum + (task.completed ? Number(task.actualMinutes) || 0 : 0), 0);
   const cmcTotalMinutes = clampNumber(state?.preferences?.cmcBaselineMinutes, 0, 60_000)
     + rows.filter(({ task }) => task.kind === 'cmc').reduce((sum, { task }) => sum + (task.completed ? Number(task.actualMinutes) || 0 : 0), 0);
   const algorithmsReproduced = weekly.filter(({ task }) => task.kind === 'algorithm' && effectiveComplete(task)).length;
+  const sprintTasks = weekly.filter(({ task }) => task.kind === 'sprint');
+  const sprintCompleted = sprintTasks.filter(({ task }) => effectiveComplete(task)).length;
+  const sprintReproduced = sprintTasks.reduce((sum, { task }) => sum + (Number(task.sprint?.reproducedActual) || 0), 0);
   const cmcWeeklyLessons = weekly.filter(({ task }) => task.kind === 'cmc').flatMap(({ task }) => task.cmc?.lessons || []);
   const cmcWatchedLessons = cmcWeeklyLessons.filter((lesson) => lesson.watched).length;
   const cmcReproducedLessons = cmcWeeklyLessons.filter((lesson) => lesson.reproduced).length;
@@ -802,7 +1032,10 @@ export function checkinStats(state, selectedDate) {
 
   const today = new Date().toISOString().slice(0, 10);
   const completedDays = new Set(Object.entries(state?.days || {})
-    .filter(([date, day]) => date <= today && day.tasks?.length && day.tasks.every(effectiveComplete))
+    .filter(([date, day]) => {
+      const tasks = activeTasks(day.tasks);
+      return date <= today && tasks.length && tasks.every(effectiveComplete);
+    })
     .map(([date]) => date));
   let cursor = selectedDate;
   if (!completedDays.has(cursor)) cursor = addDays(cursor, -1);
@@ -819,6 +1052,9 @@ export function checkinStats(state, selectedDate) {
     cmcWeeklyMinutes,
     cmcTotalMinutes,
     algorithmsReproduced,
+    sprintTaskTotal: sprintTasks.length,
+    sprintCompleted,
+    sprintReproduced,
     cmcLessonTotal: cmcWeeklyLessons.length,
     cmcWatchedLessons,
     cmcReproducedLessons,
@@ -834,8 +1070,9 @@ export function checkinStats(state, selectedDate) {
 }
 
 export function todayRemaining(state, date) {
-  const tasks = Array.isArray(state?.days?.[date]?.tasks) ? state.days[date].tasks : [];
+  const tasks = activeTasks(Array.isArray(state?.days?.[date]?.tasks) ? state.days[date].tasks : []);
   const algorithms = tasks.filter((task) => task.kind === 'algorithm');
+  const sprintTasks = tasks.filter((task) => task.kind === 'sprint');
   const cmcTasks = tasks.filter((task) => task.kind === 'cmc');
   const cmcLessons = cmcTasks.flatMap((task) => task.cmc?.lessons || []);
   const cetTasks = tasks.filter((task) => task.kind === 'cet6');
@@ -868,6 +1105,12 @@ export function todayRemaining(state, date) {
       target: algorithms.length,
       actual: algorithms.filter(effectiveComplete).length,
       remaining: Math.max(0, algorithms.length - algorithms.filter(effectiveComplete).length),
+    },
+    sprint: {
+      unit: '项',
+      target: sprintTasks.length,
+      actual: sprintTasks.filter(effectiveComplete).length,
+      remaining: Math.max(0, sprintTasks.length - sprintTasks.filter(effectiveComplete).length),
     },
     cmc,
     cet6: {
@@ -903,6 +1146,9 @@ export function urgencyForDays(days) {
 }
 
 export function milestoneCountdown(milestone, today = currentLocalDate()) {
+  if (milestone?.status) {
+    return { ...milestone, state: 'confirmed', text: milestone.status, days: null };
+  }
   if (milestone?.window) {
     return {
       ...milestone,
@@ -952,7 +1198,7 @@ export function rescheduleCmc(state, startLesson) {
 
   for (const day of Object.values(state.days || {})) {
     day.tasks = (day.tasks || []).filter((task) => !(
-      (task.kind === 'cmc' && task.cmc?.lessons) || task.id.includes('-cmc-chapter-')
+      !task.planExcluded && ((task.kind === 'cmc' && task.cmc?.lessons) || task.id.includes('-cmc-chapter-'))
     ));
   }
   for (const { date, task } of rebuilt) {
