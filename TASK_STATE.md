@@ -172,6 +172,11 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
   independent-reproduction, accepted-count, and blocker fields survive reload;
   the 390 x 844 layout has a 390 px document width and the console reports zero
   errors or warnings. No screenshots were produced for this pass.
+- Commit `a05b9cf` deployed successfully in GitHub Pages workflow
+  `34800015123`. Direct production reads from `https://iwxt.cn/checkin/` and its
+  two check-in JavaScript assets returned the Baidu Star sprint template, the
+  2026-09-19 formal-round card, the FLTRP deadline, and the confirmed
+  2026-10-24 Baicizhan preliminary metadata.
 
 - The 2026-09-10 first-load pass replaces the 2559 x 1439, 3,382,944-byte
   wallpaper PNG with a visually checked 1920 x 1080, 117,724-byte WebP while
