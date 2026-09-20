@@ -102,6 +102,17 @@ but not its within-day start time; organiser schedules may still change.
 4. Remove only untouched legacy CET6 defaults in the sprint week; retain any
    filled legacy record as excluded history so browser-local work is not lost.
 
+### 2026-09-20 key-date readability pass
+
+1. Keep every competition date and its evidence status unchanged; this pass is
+   visual only and must not alter localStorage, countdown logic, or task records.
+2. Replace the dense three-column desktop wall with a two-column reading layout,
+   then enlarge card spacing, typography, milestone padding, and line height.
+3. Keep tablets at two columns and phones at one event per row with two roomy
+   milestone columns, allowing the final odd milestone to span the card width.
+4. Verify desktop and mobile widths, dark mode, source links, console output,
+   and public GitHub Pages assets before calling the change complete.
+
 Risks for this pass: local dates must not shift at UTC boundaries; an empty day
 must not be labelled missed; event announcements can change after deployment;
 GitHub cannot issue the custom-domain certificate until its DNS checks finish.
@@ -202,6 +213,14 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
   `34815190817`. Direct production reads confirmed the three CET6 phase
   boundaries, sprint-week legacy-task migration, the “下周恢复” summary, and
   the updated execution rules in the live check-in JavaScript assets.
+
+- The 2026-09-20 readability pass changes only `src/site.css`: desktop key-date
+  cards now use two event columns and two milestone columns with larger type,
+  padding, gaps, and line height; mobile uses one event column and lets an odd
+  final milestone span the card. All 31 Node tests, syntax/build/audit/diff
+  checks pass. Playwright at 1440 x 1000 and 390 x 844 visually verified the
+  cards in light and dark modes; mobile scroll/client widths are both 390 px,
+  and the console reports zero errors or warnings.
 
 - The 2026-09-10 first-load pass replaces the 2559 x 1439, 3,382,944-byte
   wallpaper PNG with a visually checked 1920 x 1080, 117,724-byte WebP while
