@@ -221,6 +221,10 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
   checks pass. Playwright at 1440 x 1000 and 390 x 844 visually verified the
   cards in light and dark modes; mobile scroll/client widths are both 390 px,
   and the console reports zero errors or warnings.
+- Commit `b6c23a7` deployed successfully in GitHub Pages workflow
+  `35491325842`. Live CSS reads contain the two-column grid, larger card
+  padding, and odd-final-milestone span rule. A public-browser check resolved
+  two 537 px event columns with 22 px card padding and zero console messages.
 
 - The 2026-09-10 first-load pass replaces the 2559 x 1439, 3,382,944-byte
   wallpaper PNG with a visually checked 1920 x 1080, 117,724-byte WebP while
