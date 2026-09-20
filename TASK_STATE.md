@@ -255,6 +255,11 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
   390 x 844 confirmed the September 20 ended/rest state, zero sprint cards,
   restored CMC and CET6 cards on September 21, exact 390 px page containment,
   and zero console errors or warnings. No screenshots were produced.
+- Commit `ba551e7` deployed successfully in GitHub Pages workflow
+  `35495088686`. Direct live asset reads contain the corrected September 19
+  sprint boundary and ended-state copy. A fresh HTTPS Playwright check at
+  390 x 844 confirmed the ended/rest view, secure context, exact page-width
+  containment, and zero console errors or warnings.
 
 - The 2026-09-10 first-load pass replaces the 2559 x 1439, 3,382,944-byte
   wallpaper PNG with a visually checked 1920 x 1080, 117,724-byte WebP while
