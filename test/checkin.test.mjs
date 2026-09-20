@@ -49,6 +49,7 @@ test('Baidu Star sprint week pauses all regular study tracks until Monday', () =
     assert.equal(state.days[date].tasks.some((task) => task.kind === 'algorithm'), false);
     assert.equal(state.days[date].tasks.some((task) => task.kind === 'cet6'), false);
   }
+  assert.equal(state.days['2026-09-20'].tasks.length, 0);
   assert.equal(state.days['2026-09-20'].tasks.some((task) => task.id.endsWith('-contest')), false);
   const timed = state.days['2026-09-15'].tasks.find((task) => task.id.endsWith('-sprint-timed-training'));
   assert.deepEqual({ time: timed.time, minutes: timed.plannedMinutes, submitted: timed.sprint.submittedTarget, reproduced: timed.sprint.reproducedTarget }, {
@@ -193,6 +194,10 @@ test('v1 migration removes only untouched superseded defaults and preserves prog
   raw.days['2026-09-16'].tasks.push(
     { id: '2026-09-16-cet6', kind: 'cet6', time: '21:30', title: '旧六级已填写任务', completed: true, actualMinutes: 30, note: '六级记录也不能丢', cet6: { phase: 'new', wordsTarget: 100, wordsActual: 80, practiceCount: 0 } },
   );
+  raw.days['2026-09-20'].tasks.push(
+    { id: '2026-09-20-sprint-closest-ac-fixes', kind: 'sprint', time: '10:00', title: '旧赛后补题任务', completed: false, actualMinutes: 0, note: '', sprint: { instructions: '', checklist: [], reproducedTarget: 1, reproducedActual: 0, submittedTarget: 0, submittedActual: 0, acceptedActual: 0, blockers: '' } },
+    { id: '2026-09-20-sprint-weekly-review', kind: 'sprint', time: '20:00', title: '旧冲刺周复盘', completed: true, actualMinutes: 25, note: '赛后感受已经写过', sprint: { instructions: '', checklist: [], reproducedTarget: 0, reproducedActual: 0, submittedTarget: 0, submittedActual: 0, acceptedActual: 0, blockers: '以后先检查边界' } },
+  );
   const hydrated = hydrateState(raw);
   const tasks = hydrated.days['2026-09-15'].tasks;
   assert.equal(tasks.some((task) => task.id === '2026-09-15-leetcode-1456'), false);
@@ -204,13 +209,19 @@ test('v1 migration removes only untouched superseded defaults and preserves prog
   const preservedCet6 = hydrated.days['2026-09-16'].tasks.find((task) => task.note === '六级记录也不能丢');
   assert.equal(preservedCet6.planExcluded, true);
   assert.equal(preservedCet6.cet6.wordsActual, 80);
+  const sundayTasks = hydrated.days['2026-09-20'].tasks;
+  assert.equal(sundayTasks.some((task) => task.id === '2026-09-20-sprint-closest-ac-fixes'), false);
+  const preservedReview = sundayTasks.find((task) => task.note === '赛后感受已经写过');
+  assert.equal(preservedReview.planExcluded, true);
+  assert.equal(preservedReview.note, '赛后感受已经写过');
+  assert.equal(preservedReview.sprint.blockers, '以后先检查边界');
   const stats = checkinStats(hydrated, '2026-09-15');
   const sprintWeek = new Set(['2026-09-14', '2026-09-15', '2026-09-16', '2026-09-17', '2026-09-18', '2026-09-19', '2026-09-20']);
   const activeWeekTasks = Object.entries(hydrated.days)
     .filter(([date]) => sprintWeek.has(date))
     .flatMap(([, day]) => day.tasks)
     .filter((task) => !task.planExcluded);
-  assert.equal(stats.totalTasks, 15);
+  assert.equal(stats.totalTasks, 13);
   assert.equal(stats.totalTasks, activeWeekTasks.length);
 });
 
@@ -245,8 +256,8 @@ test('sprint completion requires checklist and independent reproduction targets'
   assert.equal(effectiveComplete(task), true);
   const stats = checkinStats(state, '2026-09-15');
   assert.equal(stats.target.cmcMinutes, 0);
-  assert.equal(stats.target.sprintTasks, 13);
-  assert.equal(stats.target.sprintReproductions, 8);
+  assert.equal(stats.target.sprintTasks, 11);
+  assert.equal(stats.target.sprintReproductions, 7);
   assert.equal(stats.target.newWords, 0);
   assert.equal(stats.target.reviewWords, 0);
   assert.equal(stats.sprintCompleted, 1);

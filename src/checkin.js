@@ -21,6 +21,8 @@ import {
 } from './checkin-model.js';
 
 const root = document.querySelector('[data-checkin-app]');
+const BAIDU_CONTEST_END = '2026-09-19';
+const BAIDU_POST_CONTEST_DAY = '2026-09-20';
 
 if (root) {
   const catalogNode = document.querySelector('#cmc-course-catalog');
@@ -91,7 +93,8 @@ if (root) {
     return new Date(`${date}T12:00:00`);
   }
 
-  function categoryLabel(kind) {
+  function categoryLabel(kind, date = '') {
+    if (kind === 'sprint' && date === BAIDU_POST_CONTEST_DAY) return '赛后记录';
     return ({ cmc: 'CMC', algorithm: '算法', cet6: '六级', contest: '周赛', sprint: '百度冲刺', review: '复盘', other: '其他' })[kind] || '其他';
   }
 
@@ -239,7 +242,7 @@ ${checks ? `<div class="checkin-toggle-row sprint-checklist">${checks}</div>` : 
     const custom = task.id.includes('-custom-');
     const kindControl = custom
       ? `<select class="task-kind task-kind-select kind-${escapeHtml(task.kind)}" data-field="kind" aria-label="任务类别">${['other', 'cmc', 'algorithm', 'cet6', 'contest', 'sprint', 'review'].map((kind) => `<option value="${kind}"${task.kind === kind ? ' selected' : ''}>${categoryLabel(kind)}</option>`).join('')}</select>`
-      : `<span class="task-kind kind-${escapeHtml(task.kind)}">${escapeHtml(categoryLabel(task.kind))}</span>`;
+      : `<span class="task-kind kind-${escapeHtml(task.kind)}">${escapeHtml(categoryLabel(task.kind, selectedDate))}</span>`;
     return `<article class="checkin-task${task.completed ? ' is-checked' : ''}${task.planExcluded ? ' is-plan-excluded' : ''}" data-task-id="${escapeHtml(task.id)}">
   <div class="task-check-column">
     <label class="task-main-check" for="${fieldId}-done"><input id="${fieldId}-done" type="checkbox" data-field="completed"${task.completed ? ' checked' : ''}><span aria-hidden="true"></span><b>${task.completed ? '已打卡' : '打卡'}</b></label>
@@ -267,13 +270,15 @@ ${checks ? `<div class="checkin-toggle-row sprint-checklist">${checks}</div>` : 
     const cmcTotalHours = (stats.cmcTotalMinutes / 60).toFixed(1).replace('.0', '');
     const phaseIsNew = stats.target.newWords > 0;
     const sprintWeek = stats.target.sprintTasks > 0;
+    const postContestDay = sprintWeek && selectedDate === BAIDU_POST_CONTEST_DAY;
     const values = {
-      'primary-label': sprintWeek ? '百度之星 · 冲刺周' : 'CMC · 本周',
+      'primary-label': postContestDay ? '百度之星 · 已结束' : sprintWeek ? '百度之星 · 冲刺周' : 'CMC · 本周',
       'cmc-week': sprintWeek ? `${stats.sprintCompleted} / ${stats.sprintTaskTotal} 项` : `${cmcWeekHours} / ${stats.target.cmcMinutes ? '8.5' : '—'} h`,
-      'cmc-total': sprintWeek ? '本周 CMC 暂停，赛后恢复' : `累计 ${cmcTotalHours} / 60 h`,
+      'cmc-total': postContestDay ? '今日休整，明日恢复学习主线' : sprintWeek ? '本周 CMC 暂停，赛后恢复' : `累计 ${cmcTotalHours} / 60 h`,
       'cmc-mastery': sprintWeek ? `独立复现 ${stats.sprintReproduced}/${stats.target.sprintReproductions}` : `观看 ${stats.cmcWatchedLessons}/${stats.cmcLessonTotal} · 复现 ${stats.cmcReproducedLessons}/${stats.cmcLessonTotal}`,
+      'algorithm-label': postContestDay ? '百度之星 · 本周复现' : sprintWeek ? '百度冲刺 · 独立复现' : '算法 · 已复现',
       algorithms: sprintWeek ? `${stats.sprintReproduced} / ${stats.target.sprintReproductions}` : `${stats.algorithmsReproduced} / ${stats.target.algorithms ? '6–8' : '—'}`,
-      'cet-label': sprintWeek ? '六级 · 下周恢复' : '六级 · 本周',
+      'cet-label': postContestDay ? '六级 · 明日恢复' : sprintWeek ? '六级 · 下周恢复' : '六级 · 本周',
       'cet-week': sprintWeek ? '9.21 起' : phaseIsNew ? `${stats.cetWeeklyNew} / ${stats.target.newWords}` : `${stats.cetWeeklyReview} 词`,
       'cet-total': sprintWeek ? '本周暂停，不记欠账' : phaseIsNew ? `新词累计 ${stats.cetNewTotal} / 900` : `本周刷题 ${stats.cetWeeklyPractice} 次`,
       completion: `${stats.completionRate}%`,
@@ -313,13 +318,23 @@ ${checks ? `<div class="checkin-toggle-row sprint-checklist">${checks}</div>` : 
 </div>`;
   }
 
+  function statusProgressLine(label, detail, badge) {
+    return `<div class="today-progress-line is-complete">
+  <span>${escapeHtml(label)}</span>
+  <p>${escapeHtml(detail)}</p>
+  <strong>${escapeHtml(badge)}</strong>
+</div>`;
+  }
+
   function renderTodayProgress() {
     const today = localToday();
     const progress = todayRemaining(state, today);
     const target = root.querySelector('[data-today-progress]');
     if (!target) return;
-    target.innerHTML = progress.sprint.target > 0
-      ? progressLine('百度之星冲刺', progress.sprint)
+    target.innerHTML = today === BAIDU_POST_CONTEST_DAY
+      ? statusProgressLine('百度之星已结束', '今天不再安排冲刺任务，9 月 21 日恢复日常计划。', '已结束')
+      : progress.sprint.target > 0
+        ? progressLine(today <= BAIDU_CONTEST_END ? '百度之星冲刺' : '百度之星记录', progress.sprint)
       : `${progressLine('算法', progress.algorithm)}
 ${progressLine(`CMC · ${progress.cmc.mode === 'lessons' ? '观看课程' : '学习时长'}`, progress.cmc)}
 ${progressLine(`六级 · ${progress.cet6.wordLabel}`, progress.cet6.words)}
@@ -366,8 +381,10 @@ ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
     if (daySubtitle) {
       daySubtitle.textContent = selectedDate < '2026-09-14'
         ? '计划还没有开始，你仍然可以在这里补充任务。'
-        : selectedDate <= '2026-09-20'
-          ? '百度之星冲刺周 · 其他学习主线暂停，9 月 21 日恢复'
+        : selectedDate <= BAIDU_CONTEST_END
+          ? '百度之星冲刺期 · 其他学习主线暂停，9 月 21 日恢复'
+        : selectedDate === BAIDU_POST_CONTEST_DAY
+          ? '百度之星已结束 · 今日休整，9 月 21 日恢复日常计划'
         : selectedDate <= CET6_NEW_END
           ? '六级新词阶段 · 每天目标 100 个'
           : selectedDate <= '2026-11-13'
@@ -379,7 +396,9 @@ ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
     if (list) {
       list.innerHTML = tasks.length
         ? tasks.map(taskCard).join('')
-        : '<div class="checkin-empty"><strong>今天还没有任务</strong><p>可以补记过去的内容，也可以添加一项新的计划。</p></div>';
+        : selectedDate === BAIDU_POST_CONTEST_DAY
+          ? '<div class="checkin-empty"><strong>百度之星已经结束</strong><p>今天不再安排冲刺任务；需要补充个人赛后记录时，可以手动添加。</p></div>'
+          : '<div class="checkin-empty"><strong>今天还没有任务</strong><p>可以补记过去的内容，也可以添加一项新的计划。</p></div>';
     }
     renderStats();
     renderTodayProgress();
@@ -391,7 +410,7 @@ ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
   <article class="today-progress-card glass-panel">
     <header class="focus-card-heading"><div><span class="checkin-kicker">TODAY</span><h2>今日还差多少</h2></div><small data-today-progress-date></small></header>
     <div class="today-progress-list" data-today-progress></div>
-    <p class="focus-boundary">算法只把“关掉题解后独立复现”计入；9 月 14–20 日只保留百度之星冲刺和固定时点提醒，其他学习主线暂停且不记欠账。</p>
+    <p class="focus-boundary">算法只把“关掉题解后独立复现”计入；百度之星冲刺已于 9 月 19 日结束，9 月 20 日不安排冲刺任务，9 月 21 日恢复学习主线。</p>
   </article>
   <article class="month-calendar-card glass-panel">
     <header class="focus-card-heading calendar-heading"><div><span class="checkin-kicker">MONTH</span><h2 data-calendar-title></h2></div><div class="calendar-actions"><button type="button" data-action="previous-month" aria-label="上一月">←</button><button type="button" data-action="calendar-today">今天</button><button type="button" data-action="next-month" aria-label="下一月">→</button></div></header>
@@ -407,7 +426,7 @@ ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
 </section>
 <section class="checkin-summary-grid" aria-label="本周概览">
   <article class="checkin-stat glass-panel"><span data-stat="primary-label">CMC · 本周</span><strong data-stat="cmc-week">0 / 8.5 h</strong><small><span data-stat="cmc-total">累计 0 / 60 h</span><br><span data-stat="cmc-mastery">观看 0/0 · 复现 0/0</span></small><i data-progress="cmc"></i></article>
-  <article class="checkin-stat glass-panel"><span>算法 · 已复现</span><strong data-stat="algorithms">0 / 6–8</strong><small>看过答案不计入</small><i data-progress="algorithm"></i></article>
+  <article class="checkin-stat glass-panel"><span data-stat="algorithm-label">算法 · 已复现</span><strong data-stat="algorithms">0 / 6–8</strong><small>看过答案不计入</small><i data-progress="algorithm"></i></article>
   <article class="checkin-stat glass-panel"><span data-stat="cet-label">六级 · 本周</span><strong data-stat="cet-week">0 / 700</strong><small data-stat="cet-total">新词累计 0 / 900</small><i data-progress="cet6"></i></article>
   <article class="checkin-stat glass-panel"><span>有效完成率</span><strong data-stat="completion">0%</strong><small data-stat="completion-detail">0 / 0 项有效完成</small></article>
   <article class="checkin-stat glass-panel"><span>连续达标</span><strong data-stat="streak">0 天</strong><small>当天计划全部有效完成</small></article>
@@ -429,7 +448,7 @@ ${progressLine('六级 · 刷题', progress.cet6.practice)}`;
     </section>
     <section class="checkin-rules glass-panel">
       <span class="checkin-kicker">执行规则</span><h2>质量优先，不为凑数看答案</h2>
-      <div class="rules-grid"><p><b>算法</b>独立思考 25 分钟 → 必要时看提示 / 题解 → 关掉后复现 → 次日重写。模拟赛与正式赛填写 AC 数、未过题和卡点即可。</p><p><b>本周</b>9 月 14–20 日专注百度之星，CMC、日常算法和六级暂停且不记欠账；9 月 17 日普通话预约等固定时点提醒仍保留。</p><p><b>六级</b>9 月 21–29 日每天新词 100；9 月 30 日起每天复习 1000 词，并做 45 分钟听力 / 阅读 / 翻译 / 写作。</p></div>
+      <div class="rules-grid"><p><b>算法</b>独立思考 25 分钟 → 必要时看提示 / 题解 → 关掉后复现 → 次日重写。模拟赛与正式赛填写 AC 数、未过题和卡点即可。</p><p><b>本周</b>百度之星已于 9 月 19 日结束；9 月 20 日不再安排冲刺或补偿任务，9 月 21 日恢复 CMC、日常算法和六级。</p><p><b>六级</b>9 月 21–29 日每天新词 100；9 月 30 日起每天复习 1000 词，并做 45 分钟听力 / 阅读 / 翻译 / 写作。</p></div>
     </section>
   </div>
   <aside class="checkin-side-column">

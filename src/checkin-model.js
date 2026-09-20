@@ -164,7 +164,8 @@ export const CMC_CHAPTERS = [
 const DAY_MS = 86_400_000;
 const VALID_KINDS = new Set(['cmc', 'algorithm', 'cet6', 'contest', 'sprint', 'review', 'other']);
 const BAIDU_SPRINT_START = '2026-09-14';
-const BAIDU_SPRINT_END = '2026-09-20';
+const BAIDU_SPRINT_END = '2026-09-19';
+const BAIDU_PAUSE_END = '2026-09-20';
 export const CET6_NEW_START = '2026-09-21';
 export const CET6_NEW_END = '2026-09-29';
 export const CET6_REVIEW_START = '2026-09-30';
@@ -614,13 +615,6 @@ function baiduSprintTasks() {
       }),
       id: '2026-09-19-event-baidu-star-round-2',
     }],
-    ['2026-09-20', sprintTask('2026-09-20', 'closest-ac-fixes', '10:00', '补最接近 AC 的 1–2 题', 120, {
-      instructions: '优先补正式赛里最接近 AC 的题；完成仍以关掉题解后独立复现计数。',
-      reproducedTarget: 1,
-    })],
-    ['2026-09-20', sprintTask('2026-09-20', 'weekly-review', '20:00', '百度之星冲刺周复盘', 30, {
-      checklist: ['记录本周有效复现数', '整理高频卡点', '确定下周恢复的 CMC 与算法主线'],
-    })],
   ];
 }
 
@@ -631,6 +625,10 @@ function ensureDay(days, date) {
 
 export function defaultDays(cmcStartLesson = 6) {
   const days = {};
+
+  for (let date = PLAN_START; date <= BAIDU_PAUSE_END; date = addDays(date, 1)) {
+    ensureDay(days, date);
+  }
 
   for (let date = CET6_NEW_START; date <= PLAN_END; date = addDays(date, 1)) {
     ensureDay(days, date).push(cetTask(date));
@@ -830,7 +828,8 @@ function cmcLessonNumbers(task) {
 function supersededDefaultTask(task, date) {
   if (!task?.id?.startsWith(`${date}-`)) return false;
   if (/-(cmc-course|cmc-chapter-\d+|cmc-paper)$/.test(task.id)) return true;
-  if (date >= BAIDU_SPRINT_START && date <= BAIDU_SPRINT_END) {
+  if (date >= BAIDU_SPRINT_START && date <= BAIDU_PAUSE_END) {
+    if (date > BAIDU_SPRINT_END && /-sprint-(closest-ac-fixes|weekly-review)$/.test(task.id)) return true;
     return /-(leetcode-\d+|contest|review|cet6)$/.test(task.id);
   }
   return false;

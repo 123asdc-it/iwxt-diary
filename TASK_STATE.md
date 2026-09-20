@@ -117,6 +117,24 @@ Risks for this pass: local dates must not shift at UTC boundaries; an empty day
 must not be labelled missed; event announcements can change after deployment;
 GitHub cannot issue the custom-domain certificate until its DNS checks finish.
 
+### 2026-09-20 Baidu Star closeout correction
+
+1. Treat the confirmed 2026-09-19 14:00–17:00 round as the end of the active
+   Baidu Star sprint; do not generate a post-contest sprint,补题, or复盘 debt on
+   2026-09-20.
+2. Show 2026-09-20 as a rest and transition day, then resume CMC, routine
+   algorithms, and CET6 on 2026-09-21 as already scheduled.
+3. During version-1 hydration, remove untouched legacy 2026-09-20 sprint cards,
+   but preserve any completed, timed, or annotated card as excluded history so
+   browser-local records are not erased or counted as current debt.
+4. Update the today panel, weekly summary, day subtitle, empty state, and rules
+   so none of them still describes 2026-09-20 as an active sprint day.
+
+Risks for this correction: browser-local records may contain the removed task
+IDs; hydration must distinguish blank defaults from meaningful user input, and
+the weekly statistics must still include the completed sprint period without
+creating a false Sunday target.
+
 Risks: browser storage can be cleared and does not sync across devices; imported
 JSON must be validated before replacing local records; the custom domain still
 depends on the user's DNSPod cutover and GitHub certificate issuance.
@@ -225,6 +243,18 @@ depends on the user's DNSPod cutover and GitHub certificate issuance.
   `35491325842`. Live CSS reads contain the two-column grid, larger card
   padding, and odd-final-milestone span rule. A public-browser check resolved
   two 537 px event columns with 22 px card padding and zero console messages.
+
+- The 2026-09-20 Baidu Star closeout correction ends generated sprint tasks on
+  2026-09-19. September 20 is an empty rest/transition day, and September 21
+  resumes the existing CMC and CET6 plan. Hydration removes untouched legacy
+  Sunday sprint cards while retaining completed or annotated ones as excluded
+  history. Weekly sprint targets now correctly contain 11 cards and 7 planned
+  independent reproductions.
+- Local verification passed `npm run check`, all 31 Node tests, `npm run build`,
+  `npm audit --omit=dev`, and `git diff --check`. A fresh Playwright session at
+  390 x 844 confirmed the September 20 ended/rest state, zero sprint cards,
+  restored CMC and CET6 cards on September 21, exact 390 px page containment,
+  and zero console errors or warnings. No screenshots were produced.
 
 - The 2026-09-10 first-load pass replaces the 2559 x 1439, 3,382,944-byte
   wallpaper PNG with a visually checked 1920 x 1080, 117,724-byte WebP while
