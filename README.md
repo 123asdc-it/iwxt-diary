@@ -144,11 +144,16 @@ updatedAt: "2026-09-02T08:00:00.000Z"
 
 ## 独立交互教程
 
-多语言程序教程位于 <https://iwxt.cn/tutorials/polyglot/>，博客导航及入口文章均可进入。
-教程保留深绿、纸色与大字号排版，通过“返回博客”回到日记首页；它不加载博客的
-壁纸与毛玻璃样式，也不操作每日打卡的数据。
+教程目录位于 <https://iwxt.cn/tutorials/>，博客导航及对应入口文章均可进入。
 
-修改教程请编辑 `public/tutorials/polyglot/index.html`。`public/` 会原样复制进
+- 多语言程序：<https://iwxt.cn/tutorials/polyglot/>。
+- 华为 ICT 网络赛道初赛：<https://iwxt.cn/tutorials/huawei-ict-network/>。这一页保留用户提供 HTML 的内容、交互及阅读设置。
+多语言教程保留深绿、纸色与大字号排版，华为 ICT 教程保留提供文件的阅读界面。
+各教程通过“返回博客”回到日记首页，独立于博客的壁纸与毛玻璃样式，也不操作
+每日打卡的数据。
+
+修改教程请编辑对应的 `public/tutorials/<slug>/index.html`，目录卡片配置位于
+`scripts/build.mjs` 的 `tutorials` 数组。`public/` 会原样复制进
 生产构建，正常运行 `npm run build` 并通过现有 GitHub Pages 流程发布即可。
 博客的原主题、其他文章和写作流程保持原有方式。
 

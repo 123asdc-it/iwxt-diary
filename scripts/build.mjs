@@ -11,6 +11,23 @@ import {
 } from './content.mjs';
 import { readCmcCatalog } from './cmc-catalog.mjs';
 
+const tutorials = [
+  {
+    slug: 'huawei-ict-network',
+    title: '华为 ICT 网络赛道初赛：自上而下教程',
+    summary: '从一次访问理解网络，结合章节阅读、拓扑演示和题库练习。',
+    detail: '网络基础 · 交换与路由 · WLAN · 安全 · 数据中心',
+    cover: 'uploads/covers/986b23b4c31dd94bb622ef728e4361a5c432c291921e468c0077fbcb8a0fef4b.png',
+  },
+  {
+    slug: 'polyglot',
+    title: '代码之间：多语言程序交互教程',
+    summary: '从协作动机到编译、链接和 ABI，亲手组合一个 C/C++ 程序。',
+    detail: '计算机基础 · 编译与链接 · ABI',
+    cover: 'uploads/covers/dcd5159506e3388eb3b9c6d44b8644c5246b671a5fca9bc8406e5c8120c8c3a9.png',
+  },
+];
+
 const iconPaths = {
   archive: '<rect width="18" height="4" x="3" y="3" rx="1"/><path d="M5 7v13h14V7M10 11h4"/>',
   book: '<path d="M3 4h6a4 4 0 0 1 3 1.4A4 4 0 0 1 15 4h6v16h-6a4 4 0 0 0-3 1.4A4 4 0 0 0 9 20H3Z"/><path d="M12 5.4v16"/>',
@@ -60,7 +77,7 @@ function pageHead({ config, title, description, pathname, imagePath }) {
 function drawer({ config, entries, months, tags }) {
   const home = pathUrl(config.basePath);
   const checkin = pathUrl(config.basePath, 'checkin/');
-  const tutorial = pathUrl(config.basePath, 'tutorials/polyglot/');
+  const tutorial = pathUrl(config.basePath, 'tutorials/');
   const monthButtons = months.map((month) => {
     const count = entries.filter((entry) => entry.month === month).length;
     return `<a href="${home}#month=${encodeURIComponent(month)}"><span>${escapeHtml(month)}</span><b>${count}</b></a>`;
@@ -93,7 +110,7 @@ function drawer({ config, entries, months, tags }) {
 </aside>`;
 }
 
-function appbar(config, { homePage = false, checkinPage = false } = {}) {
+function appbar(config, { homePage = false, checkinPage = false, tutorialsPage = false } = {}) {
   const searchControl = homePage
     ? `<button class="appbar-icon" type="button" data-open-search aria-label="搜索日记">${icon('search')}</button>`
     : `<a class="appbar-icon" href="${pathUrl(config.basePath)}#search=1" aria-label="搜索日记">${icon('search')}</a>`;
@@ -101,7 +118,7 @@ function appbar(config, { homePage = false, checkinPage = false } = {}) {
   <button class="appbar-icon" type="button" data-open-drawer aria-label="打开导航菜单">${icon('menu')}</button>
   <a class="site-title" href="${pathUrl(config.basePath)}">${escapeHtml(config.title)}</a>
   <div class="appbar-spacer"></div>
-  <a class="appbar-write-button appbar-tutorial-button" href="${pathUrl(config.basePath, 'tutorials/polyglot/')}" aria-label="交互教程：多语言程序">${icon('book')}<span>交互教程</span></a>
+  <a class="appbar-write-button appbar-tutorial-button${tutorialsPage ? ' is-active' : ''}" href="${pathUrl(config.basePath, 'tutorials/')}" aria-label="交互教程目录">${icon('book')}<span>交互教程</span></a>
   <a class="appbar-write-button${checkinPage ? ' is-active' : ''}" href="${pathUrl(config.basePath, 'checkin/')}">${icon('check')}<span>每日打卡</span></a>
   <span class="owner-badge">${icon('circle')}${checkinPage ? '本机记录' : '公开日记'}</span>
   ${searchControl}
@@ -289,6 +306,36 @@ ${footer(config)}
 </html>`;
 }
 
+function tutorialIndexPage(config, entries) {
+  const months = [...new Set(entries.map((entry) => entry.month))];
+  const tags = [...new Set(entries.flatMap((entry) => entry.tags))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
+  const cards = tutorials.map((tutorial) => `<a class="romanticism-post-card reveal-on-scroll" href="${pathUrl(config.basePath, `tutorials/${tutorial.slug}/`)}" data-tutorial-card data-reveal style="background-image:url('${pathUrl(config.basePath, tutorial.cover)}')">
+    <span class="post-card-shade"></span>
+    <span class="post-card-copy"><strong>${escapeHtml(tutorial.title)}</strong><small>${escapeHtml(tutorial.detail)}</small><em>${escapeHtml(tutorial.summary)}</em></span>
+  </a>`).join('\n');
+  return `${pageHead({ config, title: `交互教程 · ${config.title}`, description: '可以动手操作的学习笔记：网络基础、多语言程序与交互实验。', pathname: 'tutorials/', imagePath: tutorials[0].cover })}
+<body>
+<div class="romanticism-site" data-site style="--site-wallpaper:url('${pathUrl(config.basePath, config.homeImage)}');--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">
+${experienceChrome()}
+${appbar(config, { tutorialsPage: true })}
+${drawer({ config, entries, months, tags })}
+<main>
+  <section class="index-hero glass-frame" data-hero aria-labelledby="tutorials-title">
+    <div class="image-shade"></div>${heroAtmosphere()}
+    <div class="index-hero-copy clear-in" data-hero-copy><p>可以动手操作的学习笔记</p><h1 id="tutorials-title">交互教程</h1></div>
+    <a class="hero-scroll-cue" href="#tutorial-list"><span>查看教程</span><i aria-hidden="true"></i></a>
+  </section>
+  <section class="theme-surface home-surface" id="tutorial-list">
+    <div class="glass-page-grid"><div class="post-feed clear-in">${cards}</div>${glassSidebar({ config, entries, months, tags })}</div>
+  </section>
+</main>
+${footer(config)}
+<script type="module" src="${pathUrl(config.basePath, 'assets/app.js')}"></script>
+</div>
+</body>
+</html>`;
+}
+
 function notFoundPage(config) {
   return `${pageHead({ config, title: `没有找到 · ${config.title}`, description: '没有找到这个页面。', pathname: '404.html', imagePath: 'og.png' })}
 <body><div class="romanticism-site" data-site style="--site-wallpaper:url('${pathUrl(config.basePath, config.homeImage)}');--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">${experienceChrome()}${appbar(config)}<main><section class="index-hero glass-frame" data-hero><div class="image-shade"></div>${heroAtmosphere()}<div class="index-hero-copy clear-in" data-hero-copy><span class="hero-eyebrow">LOST IN THE TIDE</span><p>404</p><h1>这里是空荡的原野……</h1><p><a class="hero-home-link" href="${pathUrl(config.basePath)}">返回日记首页</a></p></div></section></main></div><script type="module" src="${pathUrl(config.basePath, 'assets/app.js')}"></script></body></html>`;
@@ -310,6 +357,8 @@ async function build() {
   await writeFile(path.join(DIST_DIR, '404.html'), notFoundPage(config));
   await mkdir(path.join(DIST_DIR, 'checkin'), { recursive: true });
   await writeFile(path.join(DIST_DIR, 'checkin', 'index.html'), checkinPage(config, entries, cmcCatalog));
+  await mkdir(path.join(DIST_DIR, 'tutorials'), { recursive: true });
+  await writeFile(path.join(DIST_DIR, 'tutorials', 'index.html'), tutorialIndexPage(config, entries));
   await writeFile(path.join(DIST_DIR, '.nojekyll'), '');
 
   for (const entry of entries) {
@@ -318,8 +367,14 @@ async function build() {
     await writeFile(path.join(postDir, 'index.html'), postPage(config, entries, entry));
   }
 
-  const sitemap = entries.map((entry) => `${config.siteUrl}${pathUrl(config.basePath, `posts/${entry.slug}/`)}`).join('\n');
-  await writeFile(path.join(DIST_DIR, 'sitemap.txt'), `${config.siteUrl}${pathUrl(config.basePath)}\n${config.siteUrl}${pathUrl(config.basePath, 'checkin/')}\n${config.siteUrl}${pathUrl(config.basePath, 'tutorials/polyglot/')}\n${sitemap}\n`);
+  const sitemap = [
+    `${config.siteUrl}${pathUrl(config.basePath)}`,
+    `${config.siteUrl}${pathUrl(config.basePath, 'checkin/')}`,
+    `${config.siteUrl}${pathUrl(config.basePath, 'tutorials/')}`,
+    ...tutorials.map((tutorial) => `${config.siteUrl}${pathUrl(config.basePath, `tutorials/${tutorial.slug}/`)}`),
+    ...entries.map((entry) => `${config.siteUrl}${pathUrl(config.basePath, `posts/${entry.slug}/`)}`),
+  ].join('\n');
+  await writeFile(path.join(DIST_DIR, 'sitemap.txt'), `${sitemap}\n`);
   await writeFile(path.join(DIST_DIR, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${config.siteUrl}${pathUrl(config.basePath, 'sitemap.txt')}\n`);
   console.log(`Built ${entries.length} published ${entries.length === 1 ? 'entry' : 'entries'} in ${DIST_DIR}`);
 }

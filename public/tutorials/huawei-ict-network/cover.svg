@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<rect width="1600" height="900" fill="#f4f8fb"/>
+<path d="M245 450H1355" stroke="#8daec7" stroke-width="16" fill="none"/>
+<g fill="#fff" stroke="#236a9b" stroke-width="6"><rect x="90" y="300" width="320" height="300" rx="28"/><rect x="500" y="300" width="280" height="300" rx="28"/><circle cx="1010" cy="450" r="150"/><rect x="1270" y="300" width="240" height="300" rx="28"/></g>
+<g fill="none" stroke="#236a9b" stroke-width="12"><path d="M153 355h194v115H153zM250 470v48m-66 0h132"/><path d="M550 385h180M550 430h180M550 475h180"/><path d="m930 450 50-50-50-50m100 200 50-50-50-50M930 450h150"/><path d="M1320 385h140M1320 430h140M1320 475h140"/></g>
+<g font-family="-apple-system,PingFang SC,Microsoft YaHei,sans-serif" font-size="48" text-anchor="middle" fill="#214c6b" font-weight="600"><text x="250" y="565">主机</text><text x="640" y="565">交换机</text><text x="1010" y="695">路由器</text><text x="1390" y="565">网络</text></g>
+</svg>
