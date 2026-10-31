@@ -13,6 +13,7 @@ import { readCmcCatalog } from './cmc-catalog.mjs';
 
 const iconPaths = {
   archive: '<rect width="18" height="4" x="3" y="3" rx="1"/><path d="M5 7v13h14V7M10 11h4"/>',
+  book: '<path d="M3 4h6a4 4 0 0 1 3 1.4A4 4 0 0 1 15 4h6v16h-6a4 4 0 0 0-3 1.4A4 4 0 0 0 9 20H3Z"/><path d="M12 5.4v16"/>',
   calendar: '<path d="M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Z"/>',
   check: '<path d="M9 11l3 3L22 4"/><path d="M21 12a9 9 0 1 1-5.3-8.2"/>',
   circle: '<circle cx="12" cy="12" r="9"/>',
@@ -59,6 +60,7 @@ function pageHead({ config, title, description, pathname, imagePath }) {
 function drawer({ config, entries, months, tags }) {
   const home = pathUrl(config.basePath);
   const checkin = pathUrl(config.basePath, 'checkin/');
+  const tutorial = pathUrl(config.basePath, 'tutorials/polyglot/');
   const monthButtons = months.map((month) => {
     const count = entries.filter((entry) => entry.month === month).length;
     return `<a href="${home}#month=${encodeURIComponent(month)}"><span>${escapeHtml(month)}</span><b>${count}</b></a>`;
@@ -79,6 +81,7 @@ function drawer({ config, entries, months, tags }) {
   <nav class="drawer-nav">
     <a href="${home}">${icon('home')}<span>主页</span></a>
     <a href="${checkin}">${icon('check')}<span>每日打卡</span></a>
+    <a href="${tutorial}">${icon('book')}<span>交互教程</span></a>
     <div class="drawer-section">
       <div class="drawer-section-title">${icon('archive')}<span>文章归档</span></div>
       <a href="${home}"><span>全部</span><b>${entries.length}</b></a>${monthButtons}
@@ -98,6 +101,7 @@ function appbar(config, { homePage = false, checkinPage = false } = {}) {
   <button class="appbar-icon" type="button" data-open-drawer aria-label="打开导航菜单">${icon('menu')}</button>
   <a class="site-title" href="${pathUrl(config.basePath)}">${escapeHtml(config.title)}</a>
   <div class="appbar-spacer"></div>
+  <a class="appbar-write-button appbar-tutorial-button" href="${pathUrl(config.basePath, 'tutorials/polyglot/')}" aria-label="交互教程：多语言程序">${icon('book')}<span>交互教程</span></a>
   <a class="appbar-write-button${checkinPage ? ' is-active' : ''}" href="${pathUrl(config.basePath, 'checkin/')}">${icon('check')}<span>每日打卡</span></a>
   <span class="owner-badge">${icon('circle')}${checkinPage ? '本机记录' : '公开日记'}</span>
   ${searchControl}
@@ -315,7 +319,7 @@ async function build() {
   }
 
   const sitemap = entries.map((entry) => `${config.siteUrl}${pathUrl(config.basePath, `posts/${entry.slug}/`)}`).join('\n');
-  await writeFile(path.join(DIST_DIR, 'sitemap.txt'), `${config.siteUrl}${pathUrl(config.basePath)}\n${config.siteUrl}${pathUrl(config.basePath, 'checkin/')}\n${sitemap}\n`);
+  await writeFile(path.join(DIST_DIR, 'sitemap.txt'), `${config.siteUrl}${pathUrl(config.basePath)}\n${config.siteUrl}${pathUrl(config.basePath, 'checkin/')}\n${config.siteUrl}${pathUrl(config.basePath, 'tutorials/polyglot/')}\n${sitemap}\n`);
   await writeFile(path.join(DIST_DIR, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${config.siteUrl}${pathUrl(config.basePath, 'sitemap.txt')}\n`);
   console.log(`Built ${entries.length} published ${entries.length === 1 ? 'entry' : 'entries'} in ${DIST_DIR}`);
 }

@@ -1,0 +1,797 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="从 C/C++ 出发，通过编译流水线、链接实验和 ABI 寄存器模拟，理解多语言程序如何协作。可离线使用的中文交互教程。">
+<meta name="theme-color" content="#18332f">
+<link rel="canonical" href="https://iwxt.cn/tutorials/polyglot/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="代码之间：多语言程序交互教程">
+<meta property="og:description" content="从一个函数调用出发，理解多语言协作的动机、编译、链接与 ABI。">
+<meta property="og:url" content="https://iwxt.cn/tutorials/polyglot/">
+<meta property="og:image" content="https://iwxt.cn/uploads/covers/dcd5159506e3388eb3b9c6d44b8644c5246b671a5fca9bc8406e5c8120c8c3a9.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%2317332e%27/%3E%3Ctext x=%2732%27 y=%2743%27 text-anchor=%27middle%27 font-family=%27monospace%27 font-size=%2737%27 fill=%27%23ddebcc%27%3E%7B%7D%3C/text%3E%3C/svg%3E">
+<title>代码之间 · 多语言程序交互教程</title>
+<style>
+:root {
+  --paper: #fafbf7;
+  --white: #fff;
+  --ink: #182e25;
+  --muted: #43544a;
+  --line: #d6dfd1;
+  --green: #214c40;
+  --mint: #ddebcc;
+  --orange: #a64423;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --radius: 12px;
+}
+[hidden] { display: none !important; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 20px/1.9 var(--sans); }
+button, input, select { font: inherit; }
+button, a, input, summary { -webkit-tap-highlight-color: transparent; }
+button, summary { cursor: pointer; }
+button:disabled { cursor: default; opacity: .55; }
+a { color: #1d5941; text-underline-offset: 4px; }
+a:hover { color: var(--orange); }
+:focus-visible { outline: 3px solid #b66428; outline-offset: 4px; }
+::selection { background: #d9e7c7; }
+p { margin: 0 0 1.1em; }
+h1, h2, h4 { line-height: 1.5; letter-spacing: -.015em; }
+h1 { font-size: clamp(34px, 3.4vw, 46px); margin: 10px 0 26px; font-weight: 750; }
+h2 { font-size: 25px; margin: 0 0 18px; }
+h4 { font-size: 20px; }
+code { font-family: var(--mono); font-size: max(16px, .94em); background: #eaf0e3; padding: 2px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+pre { margin: 0; overflow-x: auto; white-space: pre; font: 18px/1.85 var(--mono); tab-size: 2; }
+pre code { font: inherit; background: none; padding: 0; color: inherit; overflow-wrap: normal; }
+small { font-size: 16px; }
+.muted, .reading-note { color: var(--muted); }
+.skip { position: fixed; left: 20px; top: 15px; background: white; z-index: 100; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; padding: 0; }
+.skip:focus { width: auto; height: auto; overflow: visible; clip-path: none; padding: 10px 20px; }
+.sidebar { position: fixed; inset: 0 auto 0 0; width: 266px; background: #17322c; color: #f4f8ee; padding: 32px 20px; display: flex; flex-direction: column; z-index: 20; overflow-y: auto; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
+.brand:hover { color: #ddebcc; }
+.brand-icon { width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid #88a293; border-radius: 8px; font: 22px var(--mono); color: #d9ecc5; }
+.brand strong { font-size: 24px; letter-spacing: .05em; }
+.chapter-nav { display: grid; gap: 10px; margin-top: 36px; }
+.nav-link { display: flex; align-items: center; gap: 10px; color: #e0ebe3; text-decoration: none; border: 1px solid transparent; border-radius: 7px; padding: 13px 10px; font-size: 16px; line-height: 1.6; }
+.nav-num { font: 16px var(--mono); color: #bbd2c3; flex-shrink: 0; }
+.nav-link:hover { color: white; background: #25483d; }
+.nav-link[aria-current="step"] { color: white; background: #315743; border-color: #668465; font-weight: 600; }
+.nav-link[aria-current="step"] .nav-num { color: #e3f2cb; }
+.nav-dot { width: 5px; height: 5px; flex-shrink: 0; border-radius: 50%; background: #deefbf; margin-left: auto; opacity: 0; }
+.nav-link[aria-current="step"] .nav-dot { opacity: 1; }
+.sidebar-bottom { margin-top: auto; padding: 26px 10px 0; }
+.progress-label { display: flex; justify-content: space-between; gap: 10px; font-size: 16px; color: #e0ebe0; margin-bottom: 12px; }
+.progress-track { height: 4px; border-radius: 3px; background: #577360; overflow: hidden; }
+.progress-fill { width: 16.66%; height: 100%; background: #d3e8b4; transition: width .2s; }
+.source-link { display: block; margin-top: 24px; color: #deebdf; font-size: 16px; }
+.source-link:hover { color: white; }
+.page-shell { margin-left: 266px; }
+.topbar { position: sticky; top: 0; z-index: 15; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 38px; background: rgba(250,251,247,.98); border-bottom: 1px solid var(--line); font-size: 16px; }
+.topbar-meta, .topbar-actions { display: flex; align-items: center; gap: 10px; }
+.blog-home-link { color: #214c40; font-size: 16px; text-decoration: none; white-space: nowrap; padding: 9px 0; }
+.blog-home-link:hover { text-decoration: underline; }
+.text-button { border: 0; background: none; padding: 9px 0; color: #294b38; font-size: 16px; min-height: 44px; }
+.text-button:hover { color: var(--orange); }
+.main { max-width: 1100px; margin: auto; padding: 38px 46px 46px; min-width: 0; }
+.chapter[hidden] { display: none; }
+.lesson-heading { font-size: 36px; margin: 5px 0 24px; }
+.intro { font-size: 20px; color: var(--ink); max-width: 850px; line-height: 1.95; }
+.hero-heading .accent { color: var(--orange); white-space: nowrap; }
+.hero-split { display: grid; grid-template-columns: 1.15fr 1fr; gap: 30px; align-items: center; margin: 30px 0 38px; }
+.hero-copy p { font-size: 20px; color: var(--ink); }
+.primary, .secondary { display: inline-flex; justify-content: center; align-items: center; gap: 9px; min-height: 46px; border-radius: 6px; padding: 11px 17px; font-size: 16px; line-height: 1.65; font-weight: 550; text-decoration: none; }
+.primary { background: var(--green); color: white; border: 1px solid var(--green); }
+.primary:hover { background: #183b2f; color: white; }
+.secondary { color: #244a32; background: transparent; border: 1px solid #98af8d; }
+.secondary:hover { background: #e9f0df; color: #244a32; }
+.small-button { font-size: 16px; padding: 9px 14px; }
+.hero-board { background: #e9f0e0; border: 1px solid #cbdac0; border-radius: var(--radius); padding: 23px; overflow: hidden; }
+.source-files { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+.source-file { min-width: 0; padding: 16px 12px; background: #fff; border: 1px solid #b4c7a8; border-radius: 7px; }
+.file-ext { font-size: 16px; color: #334e2e; }
+.source-file strong { display: block; margin: 12px 0; font: 19px var(--mono); }
+.source-file span { display: block; font: 17px/1.8 var(--mono); color: #2e492c; overflow-wrap: anywhere; }
+.merge-lines { position: relative; width: 55%; height: 30px; margin: auto; border: solid #779969; border-width: 0 1px 1px; border-radius: 0 0 9px 9px; }
+.merge-lines:after { content: ""; position: absolute; left: 50%; top: 29px; height: 17px; border-left: 1px solid #779969; }
+.binary { margin: 16px auto 0; padding: 15px; max-width: 270px; text-align: center; color: white; background: #17322c; border-radius: 7px; font: 20px/1.8 var(--mono); }
+.binary small { display: block; margin-top: 5px; color: #e1efcd; font-size: 17px; }
+.section-break { border: 0; border-top: 1px solid var(--line); margin: 38px 0; }
+.section-head { margin: 34px 0 20px; }
+.section-head h2 { margin: 0; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.box { border: 1px solid var(--line); border-radius: var(--radius); background: #fff; padding: 24px; }
+.box h2 { font-size: 23px; }
+.box p { font-size: 18px; color: var(--ink); margin-bottom: 0; }
+.box-highlight { background: #edf3e6; border-color: #b2c7a5; }
+.mini-route { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; font: 16px/1.8 var(--mono); margin: 20px 0; }
+.route-node { padding: 6px 9px; border: 1px solid #bdcdb2; border-radius: 4px; background: #fff; }
+.route-arrow { color: #365a2d; }
+.note { font-size: 18px; color: #293f2d; background: #edf3e5; border-left: 3px solid #759764; border-radius: 0 7px 7px 0; padding: 20px 23px; margin: 28px 0; }
+.note.warm { background: #f6eee4; color: #64432d; border-left-color: #ac673f; }
+.micro-question { margin: 30px 0; padding: 25px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.micro-question h2 { font-size: 21px; }
+.choice-row { display: flex; flex-wrap: wrap; gap: 12px; }
+.choice-button { color: #29432b; background: white; border: 1px solid #acbfa0; border-radius: 6px; padding: 11px 15px; text-align: left; font-size: 17px; min-height: 46px; }
+.choice-button:hover { background: #edf3e3; }
+.choice-button[aria-pressed="true"] { background: #e0ecd2; border-color: #678852; }
+.answer-feedback { color: #294b2c; font-size: 18px; margin-top: 18px; }
+.answer-feedback:empty { display: none; }
+.reading-note { font-size: 17px; margin: 26px 0; }
+.chip { font-size: 16px; line-height: 1.5; color: #2c502b; }
+#pipe-badge { display: none; }
+.pipeline { margin-top: 32px; }
+.lab-label { font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 20px; }
+.pipeline-steps { display: flex; gap: 14px; margin-bottom: 23px; padding-bottom: 8px; overflow-x: auto; }
+.pipe-step { flex: 1; min-width: 122px; text-align: left; padding: 16px 12px; border: 1px solid #b7c9ac; border-radius: 7px; color: var(--ink); background: #fff; }
+.pipe-step strong { display: block; font-size: 18px; margin-bottom: 8px; }
+.pipe-step code { font-size: 16px; background: none; padding: 0; color: #36572c; }
+.pipe-step[aria-selected="true"] { color: white; background: var(--green); border-color: var(--green); }
+.pipe-step[aria-selected="true"] code { color: #e4f2d4; }
+.pipe-detail { display: grid; grid-template-columns: .9fr 1.1fr; border: 1px solid var(--line); border-radius: var(--radius); background: white; overflow: hidden; }
+.pipe-explain { padding: 27px; min-width: 0; }
+.pipe-explain h2 { font-size: 24px; margin-top: 0 !important; }
+.pipe-explain p { font-size: 18px; color: var(--ink); }
+.pipe-command { padding: 13px; border-radius: 6px; background: #edf3e7; color: #26452c; font: 17px/1.8 var(--mono); overflow-wrap: anywhere; }
+.code-window { background: #182e27; color: #f2f7ee; min-width: 0; }
+.code-title { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 14px 20px; border-bottom: 1px solid #5c7761; color: #edf5e7; font: 16px/1.8 var(--sans); flex-wrap: wrap; }
+.code-window pre { padding: 24px 22px; }
+.code-foot { padding: 15px 20px; border-top: 1px solid #5c7761; font-size: 16px; color: #e2eddb; }
+.code-dots { display: none; }
+.demo-controls { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-top: 18px; color: var(--muted); font-size: 16px; }
+.toolbar { display: flex; gap: 10px; flex-wrap: wrap; }
+.terminal { background: #182e27; color: #f0f7e9; padding: 23px; border-radius: 9px; margin: 24px 0; min-width: 0; }
+.terminal pre { font-size: 18px; }
+.terminal code { color: inherit; background: none; padding: 0; }
+.eyebrow { font-size: 16px; color: var(--muted); letter-spacing: 0; }
+.symbol-lab { padding: 26px; background: white; border: 1px solid var(--line); border-radius: var(--radius); margin: 28px 0; }
+.symbol-files { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.object-file { padding: 20px; background: #f6f9f1; border: 1px solid #c3d2b7; border-radius: 7px; }
+.object-file header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; font-size: 17px; flex-wrap: wrap; }
+.object-file code { background: none; padding: 0; }
+.symbol { font: 17px/2 var(--mono); }
+.symbol span { color: #963b20; }
+.object-file.excluded { border-style: dashed; background: #f6eee5; }
+.include-toggle { display: flex; align-items: center; gap: 8px; color: #294929; font-size: 16px; cursor: pointer; }
+.include-toggle input { width: 19px; height: 19px; accent-color: var(--green); }
+.link-output { margin-top: 20px; padding: 18px; color: #284e27; background: #e7f1dc; border-radius: 7px; font-size: 17px; }
+.link-output[data-status="error"] { color: #873b20; background: #f7e9df; }
+.segmented { display: flex; gap: 5px; width: fit-content; background: #e6eddd; padding: 5px; border-radius: 7px; margin: 24px 0; }
+.segmented button { border: 0; border-radius: 5px; background: none; padding: 10px 19px; min-height: 46px; font-size: 17px; color: #314d2b; }
+.segmented button[aria-selected="true"] { background: white; color: var(--ink); }
+.link-mode-panel { padding: 26px; background: white; border: 1px solid var(--line); border-radius: var(--radius); }
+.library-diagram { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.program-block { padding: 19px; border: 1px solid #c1d2b4; border-radius: 7px; text-align: center; background: #f0f5e9; }
+.program-block strong { font: 18px var(--mono); }
+.embedded-lib { margin-top: 16px; background: #d8e8c8; color: #2d4c26; padding: 10px; border-radius: 5px; font-size: 17px; }
+.shared-lib { display: none; max-width: 420px; margin: 20px auto 0; padding: 15px; text-align: center; background: #d8e8c8; border: 1px solid #9cb88a; border-radius: 6px; font-size: 17px; }
+.link-mode-panel[data-mode="dynamic"] .embedded-lib { background: none; border: 1px dashed #92b07f; }
+.link-mode-panel[data-mode="dynamic"] .shared-lib { display: block; }
+.link-mode-text { font-size: 18px; color: var(--ink); margin-top: 23px; margin-bottom: 0; }
+.file-tabs { display: flex; gap: 5px; overflow-x: auto; background: #e5eddc; padding: 5px 5px 0; border-radius: 8px 8px 0 0; }
+.file-tabs button { border: 0; background: none; color: #304f27; padding: 12px 20px; font: 17px var(--mono); min-height: 48px; white-space: nowrap; border-radius: 5px 5px 0 0; }
+.file-tabs button[aria-selected="true"] { background: #182e27; color: #f1f7e9; }
+.file-view { border-radius: 0 0 9px 9px; overflow: hidden; }
+.file-view pre { min-height: 240px; }
+.copy-button { min-height: 44px; padding: 7px 12px; color: #f2f7ec; background: transparent; border: 1px solid #8ea389; border-radius: 4px; font-size: 16px; }
+.copy-button:hover { background: #2c4d3a; }
+.copy-status { min-height: 0; margin-top: 12px; color: #28482d; font-size: 17px; }
+.copy-status:empty { display: none; }
+.lab-steps { counter-reset: lab; list-style: none; margin: 27px 0; padding: 0; }
+.lab-steps li { position: relative; padding: 0 0 22px 39px; font-size: 19px; }
+.lab-steps li:before { counter-increment: lab; content: counter(lab); position: absolute; left: 0; top: 4px; width: 26px; height: 26px; border-radius: 50%; border: 1px solid #a1b78e; color: #315b29; text-align: center; font: 16px/26px var(--mono); }
+.download-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin: 24px 0; }
+details { background: white; border: 1px solid var(--line); border-radius: 8px; padding: 19px 22px; margin: 26px 0; font-size: 18px; }
+summary { font-size: 18px; font-weight: 600; }
+details[open] summary { margin-bottom: 18px; }
+details p:last-child { margin-bottom: 0; }
+details .code-window { border-radius: 6px; margin: 20px 0; }
+details .code-window pre { font-size: 17px; }
+.table-wrap { overflow-x: auto; margin: 25px 0; border: 1px solid var(--line); border-radius: 7px; }
+.comparison-table { width: 100%; border-collapse: collapse; min-width: 520px; font-size: 18px; }
+.comparison-table th, .comparison-table td { padding: 16px 15px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+.comparison-table tr:last-child td { border-bottom: 0; }
+.comparison-table th { background: #eaf1e2; color: #2e4a29; font-size: 17px; font-weight: 600; }
+.comparison-table td:first-child { font-size: 17px; }
+.abi-lab { border: 1px solid #afc49e; border-radius: var(--radius); background: white; margin: 30px 0; overflow: hidden; }
+.abi-lab-header { padding: 19px 24px; background: #e5efda; font-size: 20px; }
+.abi-inputs { display: flex; align-items: center; flex-wrap: wrap; gap: 22px; padding: 24px 24px 12px; }
+.abi-inputs label { display: flex; align-items: center; gap: 10px; font-size: 18px; }
+.abi-inputs input { width: 87px; padding: 8px 10px; background: #f5f8ef; border: 1px solid #a6bd96; border-radius: 5px; color: var(--ink); font: 20px var(--mono); min-height: 44px; }
+.abi-inputs .text-button { margin-left: auto; }
+.abi-presets { display: flex; flex-wrap: wrap; gap: 10px; padding: 8px 24px 25px; }
+.preset { color: #304f29; background: white; border: 1px solid #a8bd98; border-radius: 5px; padding: 10px 13px; min-height: 45px; font-size: 16px; }
+.preset[aria-pressed="true"] { color: white; background: var(--green); border-color: var(--green); }
+.register-stage { background: #f5f8ef; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 24px; }
+.register-labels { margin-bottom: 19px; font-size: 17px; color: #304d29; }
+.registers { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 15px; }
+.register { min-width: 0; padding: 17px 14px; border: 1px solid #b9ccb0; border-radius: 7px; background: white; }
+.register.read { border-color: #63874e; box-shadow: inset 0 3px #63874e; }
+.register header { font: 18px var(--mono); color: #30502a; }
+.register strong { display: block; font: 32px var(--mono); margin: 15px 0 13px; }
+.register small { display: block; color: #344c2e; font-size: 17px; line-height: 1.7; min-height: 31px; }
+.register-state { font-size: 17px; color: #334e2c; margin-top: 22px; }
+.memory-view { margin-top: 18px; padding-top: 15px; border-top: 1px dashed #adc59a; font: 17px/1.9 var(--mono); color: #294d23; overflow-wrap: anywhere; }
+.abi-result { padding: 25px; }
+.result-kicker { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 17px; }
+.result-status { color: #2c5625; font-size: 16px; background: #e8f2df; padding: 3px 8px; border-radius: 4px; }
+.abi-result[data-status="error"] .result-status { color: #8c3e20; background: #f6e7da; }
+.result-number { font: 42px var(--mono); margin: 14px 0 19px; color: #204c32; }
+.abi-result[data-status="error"] .result-number { color: #a64a25; }
+.abi-result p { font-size: 18px; margin-bottom: 0; color: var(--ink); }
+.lab-disclaimer { border-top: 1px solid var(--line); background: #f6f8f0; padding: 20px 24px; font-size: 17px; color: #364b30; }
+.reason-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0 30px; }
+.reason-item { border-top: 1px solid var(--line); padding: 24px 0; }
+.reason-item h2 { font-size: 23px; margin: 0 0 14px; }
+.reason-item p { font-size: 18px; margin: 0; }
+.decision-list { display: grid; gap: 17px; }
+.decision { display: grid; grid-template-columns: 1fr auto; gap: 10px 20px; align-items: center; background: white; border: 1px solid var(--line); border-radius: 7px; padding: 22px; font-size: 18px; }
+.decision strong { color: #264c2b; }
+.decision span { font-size: 17px; color: #2c4e2b; }
+.decision p { grid-column: 1/-1; font-size: 18px; margin: 0; }
+.quiz { background: white; border: 1px solid #adc399; border-radius: var(--radius); overflow: hidden; margin: 34px 0; }
+.quiz-head { display: flex; justify-content: space-between; align-items: center; gap: 15px; background: #e7f0db; padding: 18px 24px; font-size: 18px; }
+.quiz-head span { font-size: 16px; }
+.quiz-body { padding: 28px; }
+.quiz h2 { font-size: 23px; margin: 0 0 23px; }
+.quiz-options { display: grid; gap: 13px; }
+.quiz-option { display: flex; align-items: flex-start; gap: 12px; border: 1px solid #bbceae; border-radius: 7px; padding: 15px; font-size: 18px; cursor: pointer; }
+.quiz-option:hover { background: #f1f6e9; }
+.quiz-option:has(input:checked) { background: #eaf3df; border-color: #6b8f52; }
+.quiz-option input { width: 18px; height: 18px; flex-shrink: 0; accent-color: var(--green); margin-top: 9px; }
+.quiz-feedback { font-size: 18px; margin-top: 23px; }
+.quiz-feedback:empty { display: none; }
+.quiz-actions { display: flex; gap: 13px; flex-wrap: wrap; align-items: center; margin-top: 25px; }
+#quiz-hint { display: none; }
+.glossary { display: grid; grid-template-columns: 1fr 1fr; gap: 0 30px; }
+.glossary div { padding: 20px 0; border-bottom: 1px solid var(--line); }
+.glossary dt { font-size: 19px; color: #244a2b; font-weight: 600; margin-bottom: 12px; }
+.glossary dd { font-size: 18px; color: var(--ink); margin: 0; }
+.sources { font-size: 17px; line-height: 2; padding-left: 24px; }
+.sources li { margin-bottom: 15px; }
+.sources a { overflow-wrap: anywhere; }
+.chapter-footer { margin-top: 40px; border-top: 1px solid var(--line); padding-top: 27px; display: flex; justify-content: space-between; align-items: center; gap: 18px; }
+.chapter-footer .next-info { text-align: right; }
+.chapter-footer > .muted { font-size: 17px !important; }
+.noscript { background: #f7ecdf; color: #684226; font-size: 18px; padding: 20px; }
+.toast { position: fixed; bottom: 25px; left: calc(50% + 100px); transform: translateX(-50%); max-width: 90vw; padding: 15px 23px; border-radius: 7px; background: #17322c; color: white; font-size: 17px; z-index: 50; }
+@media (max-width: 1150px) {
+  .main { padding: 32px; }
+  .topbar { padding: 12px 30px; }
+  .hero-split, .pipe-detail { grid-template-columns: 1fr; }
+  .hero-board { max-width: 540px; }
+  .hero-copy p { max-width: 760px; }
+  .two-col, .symbol-files, .reason-list, .glossary { grid-template-columns: 1fr; }
+}
+@media (max-width: 850px) {
+  .sidebar { position: relative; width: auto; display: block; padding: 22px 22px 0; }
+  .brand { width: fit-content; }
+  .brand strong { font-size: 23px; }
+  .chapter-nav { display: flex; gap: 9px; overflow-x: auto; margin: 22px -22px 0; padding: 0 22px 17px; scrollbar-width: thin; scrollbar-color: #a8c098 transparent; }
+  .nav-link { white-space: nowrap; font-size: 16px; padding: 10px 12px; }
+  .nav-dot, .sidebar-bottom { display: none; }
+  .page-shell { margin-left: 0; }
+  .topbar { padding: 11px 24px; }
+  .main { padding: 32px 28px 40px; }
+  .toast { left: 50%; }
+}
+@media (max-width: 600px) {
+  body { font-size: 18px; line-height: 1.9; }
+  .main { padding: 28px 20px 35px; }
+  .topbar { position: static; padding: 9px 20px; gap: 10px; }
+  .topbar-meta { display: none; }
+  .topbar-actions { width: 100%; justify-content: flex-end; }
+  .hero-heading { font-size: 35px; line-height: 1.6; }
+  .lesson-heading { font-size: 30px; }
+  .intro, .hero-copy p { font-size: 19px; }
+  h2 { font-size: 24px; }
+  .hero-split { gap: 25px; margin-top: 24px; }
+  .hero-board { padding: 18px; }
+  .source-files { gap: 10px; }
+  .source-file { padding: 14px 10px; }
+  .source-file strong { font-size: 18px; }
+  .source-file span, .file-ext { font-size: 16px; }
+  .binary { font-size: 19px; }
+  .two-col { gap: 18px; }
+  .box { padding: 20px; }
+  .box h2 { font-size: 23px; }
+  .mini-route { font-size: 16px; }
+  .note { padding: 18px; }
+  .primary, .secondary, .small-button { padding: 10px 14px; font-size: 16px; }
+  .micro-question h2 { font-size: 20px; }
+  .choice-button { width: 100%; font-size: 18px; }
+  .pipe-step { min-width: 122px; }
+  .pipe-explain { padding: 22px; }
+  pre, .terminal pre, details .code-window pre { font-size: 17px; }
+  .code-window pre { padding: 22px 18px; }
+  .code-title, .code-foot { padding: 15px 18px; }
+  .code-title { gap: 12px; }
+  .symbol-lab, .link-mode-panel { padding: 20px; }
+  .library-diagram { grid-template-columns: 1fr; }
+  .program-block { padding: 17px; }
+  .object-file { padding: 19px; }
+  .symbol { font-size: 17px; }
+  .file-tabs button { padding: 11px 16px; font-size: 17px; }
+  .file-tabs { gap: 2px; }
+  .lab-steps li { font-size: 18px; }
+  .terminal { padding: 20px 18px; }
+  .terminal > div:first-child { flex-wrap: wrap; gap: 12px; }
+  .abi-lab-header { padding: 18px; font-size: 20px; }
+  .abi-inputs { padding: 20px 17px 10px; gap: 16px; }
+  .abi-inputs label { font-size: 18px; gap: 8px; }
+  .abi-inputs input { width: 75px; }
+  .abi-presets { padding: 10px 17px 21px; gap: 9px; }
+  .preset { font-size: 16px; padding: 9px 11px; }
+  .register-stage { padding: 21px 15px; }
+  .registers { gap: 8px; }
+  .register { padding: 15px 8px; }
+  .register strong { font-size: 25px; }
+  .register small { min-height: 57px; font-size: 16px; }
+  .register-labels, .register-state, .memory-view { font-size: 17px; }
+  .abi-result { padding: 23px 18px; }
+  .result-kicker { gap: 12px; }
+  .lab-disclaimer { padding: 20px 18px; }
+  .decision { grid-template-columns: 1fr; padding: 21px; }
+  .decision p { grid-column: 1; }
+  .quiz-head { padding: 18px; }
+  .quiz-body { padding: 23px 18px; }
+  .quiz h2 { font-size: 22px; }
+  .quiz-option { padding: 14px 12px; font-size: 18px; gap: 10px; }
+  details { padding: 18px; }
+  .chapter-footer { flex-wrap: wrap; }
+}
+@media (max-width: 360px) {
+  .main { padding-left: 16px; padding-right: 16px; }
+  .hero-heading { font-size: 32px; }
+  .hero-board { padding: 15px; }
+  .source-files { grid-template-columns: 1fr; }
+  .source-file { padding: 14px; }
+  .source-file strong { margin: 9px 0; }
+  .merge-lines { display: none; }
+  .registers { grid-template-columns: 1fr; }
+  .register { display: grid; grid-template-columns: 34px auto 1fr; align-items: center; gap: 15px; padding: 14px; }
+  .register strong { margin: 0; font-size: 26px; }
+  .register small { min-height: 0; }
+  .quiz-head { flex-wrap: wrap; }
+}
+
+@media (max-width: 600px) {
+  .comparison-table, .comparison-table tbody { display: block; min-width: 0; }
+  .comparison-table thead { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; }
+  .comparison-table tr { display: block; border-bottom: 1px solid var(--line); }
+  .comparison-table tr:last-child { border-bottom: 0; }
+  .comparison-table td { display: block; border: 0; padding: 13px 18px; font-size: 18px; }
+  .comparison-table td:first-child { background: #eaf1e2; padding-top: 16px; padding-bottom: 16px; font-size: 19px; font-weight: 600; }
+  .comparison-table td:not(:first-child):before { content: attr(data-label) "："; display: block; margin-bottom: 5px; font-size: 17px; color: #2d4728; font-weight: 600; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *:before, *:after { transition: none !important; animation: none !important; }
+}
+@media print {
+  body { background: white; color: #111; font-size: 12pt; }
+  .sidebar, .topbar, .chapter-footer, .toast, .demo-controls, .copy-button, .download-row, .quiz-actions { display: none !important; }
+  .page-shell { margin: 0; }
+  .main { max-width: none; padding: 0; }
+  .chapter, .chapter[hidden] { display: block !important; break-before: page; }
+  .chapter:first-of-type { break-before: auto; }
+  .hero-heading { font-size: 28pt; }
+  .lesson-heading { font-size: 23pt; }
+  h2 { font-size: 17pt; }
+  .intro, .hero-copy p, .box p, .note, .reading-note, .abi-result p, .reason-item p, details { font-size: 12pt; }
+  .code-window, .terminal { color: #111; background: #f4f4ee; border: 1px solid #aaa; }
+  .code-title, .code-foot { color: #222; border-color: #aaa; font-size: 11pt; }
+  pre, .terminal pre, details .code-window pre { font-size: 11pt; white-space: pre-wrap; }
+  .file-panel[hidden] { display: block !important; }
+  .file-panel { margin-bottom: 15px; }
+  .file-panel:before { content: attr(data-filename); display: block; padding: 10px; font: 12pt var(--mono); }
+  .file-tabs { display: none; }
+  .comparison-table { min-width: 0; font-size: 12pt; }
+  .comparison-table th, .comparison-table td { font-size: 11pt; }
+  .box, .abi-lab, .pipe-detail, .quiz { break-inside: avoid; }
+  .sources { font-size: 11pt; }
+  a { color: #111; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到教程正文</a>
+<aside class="sidebar" aria-label="课程导航">
+  <a class="brand" href="#chapter-start"><span class="brand-icon" aria-hidden="true">{·}</span><span><strong>代码之间</strong></span></a>
+  
+  <nav class="chapter-nav" aria-label="教程章节">
+    <a class="nav-link" href="#chapter-start" data-chapter="start" aria-current="step"><span class="nav-num">01</span>从一个函数调用开始<span class="nav-dot"></span></a>
+    <a class="nav-link" href="#chapter-compile" data-chapter="compile"><span class="nav-num">02</span>拆开编译流水线<span class="nav-dot"></span></a>
+    <a class="nav-link" href="#chapter-link" data-chapter="link"><span class="nav-num">03</span>链接器在连接什么<span class="nav-dot"></span></a>
+    <a class="nav-link" href="#chapter-build" data-chapter="build"><span class="nav-num">04</span>亲手组合 C 与 C++<span class="nav-dot"></span></a>
+    <a class="nav-link" href="#chapter-abi" data-chapter="abi"><span class="nav-num">05</span>ABI：对齐底层约定<span class="nav-dot"></span></a>
+    <a class="nav-link" href="#chapter-review" data-chapter="review"><span class="nav-num">06</span>做选择，再检验理解<span class="nav-dot"></span></a>
+  </nav>
+  <div class="sidebar-bottom"><div class="progress-label"><span>当前章节</span><span id="sidebar-progress">01 / 06</span></div><div class="progress-track" aria-hidden="true"><div class="progress-fill" id="progress-fill"></div></div><a class="source-link" href="https://www.bilibili.com/video/BV1A3sf6TETV/" target="_blank" rel="noopener noreferrer">查看原视频 ↗</a></div>
+</aside>
+<div class="page-shell">
+  <header class="topbar"><div class="topbar-meta"><span>iwxt · 多语言程序教程</span></div><div class="topbar-actions"><a class="blog-home-link" href="../../">← 返回博客</a><button type="button" class="text-button" id="print-button">打印 / 保存 PDF ↗</button></div></header>
+  <noscript><style>.chapter[hidden]{display:block!important}.chapter{margin-bottom:60px}.file-panel[hidden]{display:block!important}.file-tabs,.copy-button{display:none}.file-panel:before{content:attr(data-filename);display:block;padding:10px;font:18px var(--mono)}.chapter-footer{display:none}</style><div class="noscript">当前浏览器关闭了 JavaScript，所有章节已展开。交互实验与自检需要开启 JavaScript；正文和代码仍可阅读。</div></noscript>
+  <main class="main" id="main" tabindex="-1">
+    <section class="chapter" id="chapter-start" aria-labelledby="title-start">
+      
+      <h1 class="hero-heading" id="title-start" tabindex="-1">不同的语言，<br>如何运行在<span class="accent">同一个程序</span>里？</h1>
+      
+      <div class="hero-split"><div class="hero-copy"><p>你已经能写 <code>add(20, 22)</code>。现在换一个问题：如果 <code>add</code> 的实现来自另一种语言，C++ 还可以调用它吗？</p><p>一个项目可能既要调用成熟的库，又要做界面、统计和高效计算。不同部分选用合适的语言，是为了复用已有成果、减少开发工作；收益值得时，才增加语言之间的边界。</p><p>下面从这个动机出发，把编译、链接和二进制接口连成一条线，最后亲手做出一个输出 <code>42</code> 的混合语言程序。</p><a class="primary" href="#chapter-compile">开始探索 <span aria-hidden="true">→</span></a></div><div class="hero-board" aria-label="示意图：C++ 主程序和 C 函数分别编译后链接为一个程序"><div class="source-files"><div class="source-file"><div class="file-ext">C++ 主程序</div><strong>main.cpp</strong><span>add(20, 22);</span></div><div class="source-file"><div class="file-ext">C 函数实现</div><strong>add.c</strong><span>return a + b;</span></div></div><div class="merge-lines" aria-hidden="true"></div><div class="binary">./demo<small>输出：42</small></div></div></div>
+      <hr class="section-break">
+      <div class="section-head"><h2>先分清：多种语言，怎样协作？</h2></div>
+      <div class="two-col"><article class="box"><h2>不同进程：消息通信</h2><div class="mini-route"><span class="route-node">前端 JavaScript</span><span class="route-arrow">⇄ HTTP ⇄</span><span class="route-node">后端 Python</span></div><p>各自运行，把请求和结果序列化后传递。双方无需使用同一种语言，也不需要被链接成同一个程序。</p></article><article class="box box-highlight"><h2>同一进程：函数调用</h2><div class="mini-route"><span class="route-node">C++ 主程序</span><span class="route-arrow">→ 调用 →</span><span class="route-node">C / Rust 库</span></div><p>代码被编译为兼容的目标文件或库，在同一进程内调用。接口两侧需要对齐符号、类型和调用约定。</p></article></div>
+      <div class="note"><strong>这页会带你走过：</strong>函数在哪里实现 → 源码如何变成目标文件 → 链接器如何找到实现 → 跨语言调用还需要遵守什么约定。示例默认你见过变量、函数和简单 C++ 代码；不要求先学汇编。</div>
+      <div class="micro-question" data-micro="boundary"><h2>想一想：浏览器向 Python 后端发送 HTTP 请求，属于哪一种？</h2><div class="choice-row"><button class="choice-button" type="button" data-answer="process" aria-pressed="false">不同进程，通过消息交流</button><button class="choice-button" type="button" data-answer="binary" aria-pressed="false">编译进同一个可执行文件</button></div><div class="answer-feedback" aria-live="polite"></div></div>
+      
+      <div class="chapter-footer"><span class="muted" style="font-size:17px">接下来，把一条编译命令拆开。</span><div class="next-info"><a class="primary" href="#chapter-compile">编译流水线 →</a></div></div>
+    </section>
+
+    <section class="chapter" id="chapter-compile" aria-labelledby="title-compile" hidden>
+      <h1 class="lesson-heading" id="title-compile" tabindex="-1">一条命令，多个阶段。</h1><p class="intro">执行 <code>gcc hello.c -o hello</code> 时，通常由编译器驱动程序组织多个工具完成工作。为了看清分工，我们用常见的 C 工具链，把它拆成五个可以观察的位置。<a href="https://gcc.gnu.org/onlinedocs/gcc/Overall-Options.html" target="_blank" rel="noopener noreferrer" aria-label="查看 GCC 关于编译阶段的官方文档">[1]</a></p>
+      <div class="pipeline"><div class="lab-label">实验一：点击查看编译阶段</div><div class="pipeline-steps" role="tablist" aria-label="编译阶段"><button type="button" class="pipe-step" id="pipe-tab-0" role="tab" aria-selected="true" aria-controls="pipe-panel" data-stage="0"><strong>源代码</strong><code>hello.c</code></button><button type="button" class="pipe-step" id="pipe-tab-1" role="tab" aria-selected="false" aria-controls="pipe-panel" tabindex="-1" data-stage="1"><strong>预处理</strong><code>hello.i</code></button><button type="button" class="pipe-step" id="pipe-tab-2" role="tab" aria-selected="false" aria-controls="pipe-panel" tabindex="-1" data-stage="2"><strong>编译</strong><code>hello.s</code></button><button type="button" class="pipe-step" id="pipe-tab-3" role="tab" aria-selected="false" aria-controls="pipe-panel" tabindex="-1" data-stage="3"><strong>汇编</strong><code>hello.o</code></button><button type="button" class="pipe-step" id="pipe-tab-4" role="tab" aria-selected="false" aria-controls="pipe-panel" tabindex="-1" data-stage="4"><strong>链接</strong><code>hello</code></button></div><div class="pipe-detail" id="pipe-panel" role="tabpanel" aria-labelledby="pipe-tab-0" tabindex="0"><div class="pipe-explain"><span class="chip" id="pipe-badge">人能读懂的源码</span><h2 id="pipe-title" style="margin-top:16px">先写下一段 C 代码</h2><p id="pipe-description">宏、头文件和函数调用仍然是源代码中的文本。处理器不能直接执行这些 C 语言语句。</p><div class="pipe-command" id="pipe-command"><code>编辑文件：hello.c</code></div></div><div class="code-window"><div class="code-title"><span id="pipe-filename">hello.c</span><span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><pre><code id="pipe-code">#include &lt;stdio.h&gt;
+#define ANSWER 42
+
+int main(void) {
+    printf("%d\n", ANSWER);
+    return 0;
+}</code></pre><div class="code-foot" id="pipe-caption">本例用于观察阶段，不在网页中执行编译。</div></div></div><div class="demo-controls"><span id="pipe-progress" aria-live="polite">位置 1 / 5 · 源代码</span><div class="toolbar"><button type="button" class="secondary small-button" id="pipe-reset">回到源码</button><button type="button" class="primary small-button" id="pipe-next">下一个阶段 →</button></div></div></div>
+      <div class="note"><strong>为什么目标文件还不能直接运行？</strong>因为它可能还引用着别处的函数，地址也尚需安排。对常规本机 C 程序，链接器还需要结合其他目标文件、库和启动所需组件，形成可被系统加载的程序。</div>
+      <div class="section-head"><h2>这些命令，分别在哪儿停下？</h2></div><div class="table-wrap"><table class="comparison-table"><thead><tr><th scope="col">选项</th><th scope="col">做到哪一步</th><th scope="col">典型输出</th></tr></thead><tbody><tr><td data-label="选项">gcc -E hello.c</td><td data-label="做到哪一步">仅预处理</td><td data-label="典型输出">预处理后的文本</td></tr><tr><td data-label="选项">gcc -S hello.c</td><td data-label="做到哪一步">预处理 + 编译</td><td data-label="典型输出"><code>hello.s</code> 汇编文本</td></tr><tr><td data-label="选项">gcc -c hello.c</td><td data-label="做到哪一步">预处理 + 编译 + 汇编</td><td data-label="典型输出"><code>hello.o</code> 目标文件</td></tr><tr><td data-label="选项">gcc hello.c -o hello</td><td data-label="做到哪一步">继续到链接</td><td data-label="典型输出">可执行文件 <code>hello</code></td></tr></tbody></table></div><p class="reading-note">这是常见 C/GCC 风格流程。编译器可以使用内部中间表示，也可能集成汇编器，不一定把每种中间文件写到磁盘；其他语言的流程也可能不同。macOS 上名为 <code>gcc</code> 的命令还可能实际调用 Apple Clang，可用 <code>gcc --version</code> 查看。</p>
+      <div class="micro-question" data-micro="object"><h2>如果只执行 <code>gcc -c add.c</code>，你得到什么？</h2><div class="choice-row"><button type="button" class="choice-button" data-answer="executable" aria-pressed="false">可以直接运行的程序</button><button type="button" class="choice-button" data-answer="object" aria-pressed="false">供后续链接的目标文件</button></div><div class="answer-feedback" aria-live="polite"></div></div><div class="chapter-footer"><a class="secondary" href="#chapter-start">← 上一章</a><div class="next-info"><a class="primary" href="#chapter-link">看看链接器 →</a></div></div>
+    </section>
+
+    <section class="chapter" id="chapter-link" aria-labelledby="title-link" hidden>
+      <h1 class="lesson-heading" id="title-link" tabindex="-1">找到名字背后的实现。</h1><p class="intro">编译 <code>main.cpp</code> 时，编译器可以先根据声明检查 <code>add</code> 的调用。它不必在同一份源码里看到函数体。到了链接阶段，工具才需要为外部引用找到对应定义。</p>
+      <div class="symbol-lab"><div class="lab-label">实验二：试着移除函数的实现</div><div class="symbol-files"><article class="object-file"><header><code>main.o</code><span class="chip">调用方</span></header><div class="symbol">main：本文件定义<br><span>add：需要外部定义</span></div></article><article class="object-file" id="add-object"><header><code>add.o</code><label class="include-toggle"><input id="include-add" type="checkbox" checked>加入链接</label></header><div class="symbol">add：本文件定义<br>实现：a + b</div></article></div><div class="link-output" id="link-output" data-status="success" aria-live="polite">链接成功 → main.o 的 add 引用找到了 add.o 中的定义。</div><p class="reading-note" style="margin-bottom:0">这是对符号解析的简化演示，假定符号名、目标格式、架构和 ABI 均兼容。真实错误文案依链接器而异。</p></div>
+      <p>链接器还会处理<strong>重定位</strong>：根据最终布局修正需要调整的位置。链接能解决“引用指向哪里”，但它不会自动修复“调用双方对参数的理解不一致”。后者留到 ABI 章节。</p>
+      <hr class="section-break"><div class="section-head"><h2>库里的代码，怎么进入程序？</h2></div><p style="font-size:20px;color:var(--ink)">“库”是便于复用的一组代码。下面两种方式描述库与程序的组合关系；它们都可以参与多语言项目。</p>
+      <div class="segmented" role="tablist" aria-label="链接方式"><button type="button" role="tab" id="static-tab" aria-selected="true" aria-controls="link-mode-panel" data-link-mode="static">静态链接</button><button type="button" role="tab" id="dynamic-tab" aria-selected="false" aria-controls="link-mode-panel" tabindex="-1" data-link-mode="dynamic">动态链接</button></div><div class="link-mode-panel" id="link-mode-panel" data-mode="static" role="tabpanel" aria-labelledby="static-tab" tabindex="0"><div class="library-diagram"><div class="program-block"><strong>program A</strong><div class="embedded-lib">包含所需的库代码</div></div><div class="program-block"><strong>program B</strong><div class="embedded-lib">包含所需的库代码</div></div></div><div class="shared-lib">共享库 · libmath.so / .dylib / .dll</div><p class="link-mode-text" id="link-mode-text">链接时，所需库代码被纳入各自的程序。通常更便于打包这一部分依赖，但多个程序可能重复包含同一份库代码。</p></div>
+      <div class="note"><strong>动态链接并不等于“整个库只占一份内存”。</strong>兼容进程可共享某些只读代码页，各进程仍有自己的地址空间和运行时状态。共享库通常在程序加载时被加载，也可以按需显式加载；不是每调用一次函数都重新读取磁盘。</div><div class="table-wrap"><table class="comparison-table"><thead><tr><th scope="col">常见平台</th><th scope="col">静态库</th><th scope="col">共享库</th></tr></thead><tbody><tr><td data-label="常见平台">Linux</td><td data-label="静态库"><code>.a</code></td><td data-label="共享库"><code>.so</code></td></tr><tr><td data-label="常见平台">macOS</td><td data-label="静态库"><code>.a</code></td><td data-label="共享库"><code>.dylib</code></td></tr><tr><td data-label="常见平台">Windows / MSVC</td><td data-label="静态库"><code>.lib</code></td><td data-label="共享库"><code>.dll</code>，常配合导入库</td></tr></tbody></table></div><p class="reading-note">这些是常见命名，扩展名不是语言。Windows 的 <code>.lib</code> 也可能是导入库，不能仅凭后缀断定库代码被静态打进了程序。共享库的更新还必须考虑 ABI 兼容性。</p><div class="chapter-footer"><a class="secondary" href="#chapter-compile">← 上一章</a><div class="next-info"><a class="primary" href="#chapter-build">写一个混合程序 →</a></div></div>
+    </section>
+
+    <section class="chapter" id="chapter-build" aria-labelledby="title-build" hidden>
+      <h1 class="lesson-heading" id="title-build" tabindex="-1">C 实现，C++ 调用。</h1><p class="intro">我们把入口和输出留在 C++，把加法放在 C。两边共享一份头文件，各自编译，再链接成一个程序。这个例子故意使用简单整数，先把接口和构建过程看清。</p>
+      <div style="margin-top:27px"><div class="file-tabs" role="tablist" aria-label="示例源码"><button type="button" role="tab" id="file-tab-header" aria-selected="true" aria-controls="file-header" data-file="header">add.h</button><button type="button" role="tab" id="file-tab-c" aria-selected="false" aria-controls="file-c" tabindex="-1" data-file="c">add.c</button><button type="button" role="tab" id="file-tab-cpp" aria-selected="false" aria-controls="file-cpp" tabindex="-1" data-file="cpp">main.cpp</button></div><div class="code-window file-view"><div class="code-title"><span id="file-description">共同的声明 · 两种语言都能包含</span><button class="copy-button" type="button" id="copy-source">复制代码</button></div><div class="file-panel" id="file-header" role="tabpanel" aria-labelledby="file-tab-header" data-filename="add.h" tabindex="0"><pre><code id="source-header">#ifndef ADD_H
+#define ADD_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+int add(int a, int b);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif</code></pre></div><div class="file-panel" id="file-c" role="tabpanel" aria-labelledby="file-tab-c" data-filename="add.c" tabindex="0" hidden><pre><code id="source-c">#include "add.h"
+
+int add(int a, int b) {
+    return a + b;
+}</code></pre></div><div class="file-panel" id="file-cpp" role="tabpanel" aria-labelledby="file-tab-cpp" data-filename="main.cpp" tabindex="0" hidden><pre><code id="source-cpp">#include &lt;iostream&gt;
+#include "add.h"
+
+int main() {
+    std::cout &lt;&lt; add(20, 22) &lt;&lt; '\n';
+    return 0;
+}</code></pre></div></div><div class="copy-status" id="copy-source-status" aria-live="polite"></div></div>
+      <ol class="lab-steps"><li><strong>把三个文件放在同一个文件夹。</strong>头文件提供声明，<code>add.c</code> 提供实现，<code>main.cpp</code> 使用这个接口。</li><li><strong>分别交给对应的语言编译器。</strong><code>cc</code> 编译 C，<code>c++</code> 编译 C++，都用 <code>-c</code> 暂停在目标文件。</li><li><strong>让 C++ 编译器驱动完成最后链接。</strong>它会按本机工具链的配置处理 C++ 标准库等依赖。仅把 <code>add.o</code> 加入链接，不会让整个项目变成 C 项目。</li></ol>
+      <div class="terminal"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><span class="eyebrow" style="color:#edf5e7">终端命令（Linux / macOS）</span><button type="button" class="copy-button" id="copy-commands">复制命令</button></div><pre><code id="build-commands">cc -std=c11 -Wall -Wextra -c add.c -o add.o
+c++ -std=c++17 -Wall -Wextra -c main.cpp -o main.o
+c++ main.o add.o -o demo
+./demo</code></pre><div style="border-top:1px solid #3c5546;margin-top:15px;padding-top:12px;font:18px var(--mono)"><span style="color:#91b184">预期输出：</span>42</div></div><div class="copy-status" id="copy-command-status" aria-live="polite"></div><div class="download-row"><button type="button" class="primary" id="download-example">↓ 下载三个源码文件（ZIP）</button></div>
+      <div class="note"><strong><code>extern "C"</code> 到底做了什么？</strong>在 C++ 一侧，它为相关函数指定 C 语言链接；在常见工具链中，这也避免使用 C++ 的函数名修饰方式。<code>__cplusplus</code> 条件让 C 编译器跳过这段 C++ 专用语法。它不会把任意 C++ 类型或代码“转换成 C”，也不能消除架构、数据布局等兼容要求。<a href="https://eel.is/c++draft/dcl.link" target="_blank" rel="noopener noreferrer" aria-label="查看 C++ 工作草案中的语言链接规则">[2]</a></div>
+      <details><summary>如果去掉 extern "C"，为什么可能链接失败？</summary><p>C++ 支持函数重载，常见实现会把参数等信息编码进链接时的符号名；而 C 编译出的 <code>add</code> 使用另一套命名约定。若 C++ 一侧按 C++ 链接寻找它，就可能找不到 C 一侧提供的定义。</p><p>这不是“加个 extern 就什么都兼容”：接口类型、平台 ABI、对象格式和编译目标仍要匹配。<code>std::string</code>、异常和对象所有权等也需要单独设计，不能照搬这个整数例子。</p></details>
+      <details><summary>进阶：如果把实现换成 Rust？</summary><p>原理仍然是导出兼容的接口，再用适合目标平台的方式构建、链接库。下面展示 Rust 2024 的接口片段，使用 C 的整数类型和调用约定；此片段不是本页下载示例的一部分。<a href="https://doc.rust-lang.org/edition-guide/rust-2024/unsafe-attributes.html" target="_blank" rel="noopener noreferrer">[3]</a></p><div class="code-window"><pre><code>// 使用 Rust 2024 edition
+use std::ffi::c_int;
+
+// SAFETY: 整个链接单元中，add 符号只有这一个定义。
+#[unsafe(no_mangle)]
+pub extern "C" fn add(a: c_int, b: c_int) -&gt; c_int {
+    a + b  // 本教程只使用 20、22 这样不会溢出的输入。
+}</code></pre></div><p><code>extern "C"</code> 指定 ABI；<code>no_mangle</code> 保留可预测的导出符号名。Rust 2024 要求将这一属性标为 <code>unsafe(...)</code>，因为符号名冲突可能带来安全问题。真实接口还要约定溢出、错误处理和所有权；不要让异常或 Rust panic 随意跨过 FFI 边界。具体链接参数依平台、库类型和工具链而异。</p></details><p class="reading-note" id="verification-note">运行环境：Linux/macOS，已安装支持上述选项的 C/C++ 工具链。Windows/MSVC 的命令和产物命名不同。这是终端练习，网页中的实验不会代替真实编译器。</p><div class="chapter-footer"><a class="secondary" href="#chapter-link">← 上一章</a><div class="next-info"><a class="primary" href="#chapter-abi">进入 ABI 实验 →</a></div></div>
+    </section>
+
+    <section class="chapter" id="chapter-abi" aria-labelledby="title-abi" hidden>
+      <h1 class="lesson-heading" id="title-abi" tabindex="-1">找到函数，还不等于调对函数。</h1><p class="intro">假设函数已经找到了：调用方把第一个参数放到 R0，函数却从 R1 读。这时，符号能对上，计算依然可能出错。要让二进制代码正确协作，双方还需要遵守兼容的 ABI。</p><div class="table-wrap"><table class="comparison-table"><thead><tr><th scope="col">看哪一层</th><th scope="col">关心的问题</th><th scope="col">在 add 例子中</th></tr></thead><tbody><tr><td data-label="看哪一层">API · 源码接口</td><td data-label="关心的问题">函数叫什么、参数和返回值的语义是什么？</td><td data-label="在 add 例子中"><code>int add(int a, int b)</code> 用来求和</td></tr><tr><td data-label="看哪一层">ABI · 二进制接口</td><td data-label="关心的问题">类型如何布局、参数如何传递、结果从哪里取、符号如何命名？</td><td data-label="在 add 例子中">调用双方按同一套底层规则传递两个整数</td></tr></tbody></table></div>
+      <div class="abi-lab"><header class="abi-lab-header"><strong>ABI 调用实验（教学模拟）</strong></header><div class="abi-inputs"><label for="abi-a">参数 a <input id="abi-a" type="number" min="-99" max="99" step="1" value="20"></label><label for="abi-b">参数 b <input id="abi-b" type="number" min="-99" max="99" step="1" value="22"></label><button type="button" class="text-button" id="abi-reset">重置 ↺</button></div><div class="abi-presets" role="group" aria-label="选择 ABI 调用情景"><button type="button" class="preset" data-abi="aligned" aria-pressed="true">① 约定一致</button><button type="button" class="preset" data-abi="shifted" aria-pressed="false">② 参数寄存器错位</button><button type="button" class="preset" data-abi="address" aria-pressed="false">③ 把地址当成值</button><button type="button" class="preset" data-abi="return" aria-pressed="false">④ 返回位置不一致</button></div><div class="register-stage"><div class="register-labels"><span id="abi-register-label">被调函数读取 R0、R1</span></div><div class="registers"><div class="register read" id="register-0"><header>R0 </header><strong id="register-value-0">20</strong><small id="register-help-0">参数 a</small></div><div class="register read" id="register-1"><header>R1 </header><strong id="register-value-1">22</strong><small id="register-help-1">参数 b</small></div><div class="register" id="register-2"><header>R2 </header><strong id="register-value-2">7</strong><small id="register-help-2">无关的旧值</small></div></div><div class="register-state" id="register-state">上图展示调用前的寄存器；函数计算完成后，把和放进 R0。</div><div class="memory-view" id="memory-view" hidden>MEMORY[4096] = 20 · MEMORY[8192] = 22</div></div><div class="abi-result" id="abi-result" data-status="success" aria-live="polite" aria-atomic="true"><div class="result-kicker"><span>调用方最终读到的结果</span><span class="result-status" id="abi-status">约定一致</span></div><div class="result-number" id="abi-result-value">42</div><p id="abi-explanation">调用方把 20、22 放入 R0、R1；被调函数从同样的位置读取，求和后返回到 R0。调用方读回 42，与预期一致。</p></div><div class="lab-disclaimer">教学模型：R0/R1/R2 是虚构处理器的寄存器，R2 初始固定为 7；4096、8192 是模拟地址。这不是 x86、ARM 或任何实际平台 ABI。输入限定为 −99～99 的整数，避免把溢出问题混进本实验。</div></div>
+      <div class="section-head"><h2>ABI 通常还管哪些事情？</h2></div><div class="reason-list"><article class="reason-item"><h2>数据的表示与布局</h2><p>类型大小、对齐要求、结构体字段布局等。同样写成“一个整数”，二进制表示也需要双方理解一致。</p></article><article class="reason-item"><h2>参数、返回值与栈</h2><p>参数在寄存器还是栈上、返回值放哪里、哪些寄存器需要保存、谁负责相应的栈操作。</p></article><article class="reason-item"><h2>符号如何导出和查找</h2><p>函数名如何编码、哪些符号可见。链接器能找到函数，是跨语言调用的必要环节之一。</p></article><article class="reason-item"><h2>目标平台的规则</h2><p>处理器、操作系统、对象格式、编译器选项等都会影响兼容性。“都是 C ABI”不能跨所有平台通用。</p></article></div>
+      <div class="note warm"><strong>接口相同，不代表 ABI 相同。</strong>源码里都写 <code>add(a, b)</code>，不能证明二进制兼容；同样，某次恰好得到正确数值，也不能证明约定一致。跨语言接口还要明确内存归谁释放、字符串如何编码、错误如何传递。</div><p class="reading-note">真实 ABI 通常由具体平台规范定义。例如 <a href="https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst" target="_blank" rel="noopener noreferrer">Arm AArch64 过程调用标准</a>会规定真实的寄存器与参数传递规则；本页的虚构实验只用于帮助理解“约定必须对齐”。</p><div class="chapter-footer"><a class="secondary" href="#chapter-build">← 上一章</a><div class="next-info"><a class="primary" href="#chapter-review">选择与自检 →</a></div></div>
+    </section>
+
+    <section class="chapter" id="chapter-review" aria-labelledby="title-review" hidden>
+      <h1 class="lesson-heading" id="title-review" tabindex="-1">为什么混用，什么时候值得？</h1><p class="intro">多语言本身不是目标。先明确需要复用的能力，以及接口要跨过哪条边界，再衡量构建、调试和维护的成本。</p><div class="reason-list"><article class="reason-item"><h2>复用已有库和系统能力</h2><p>已有成熟 C 库，或操作系统提供了 C 接口。通过合适的接口接入，能减少重复实现。</p></article><article class="reason-item"><h2>把热点放到合适的位置</h2><p>先测量瓶颈，再考虑用原生代码处理关键计算。频繁跨边界、复制数据，也可能抵消收益。</p></article><article class="reason-item"><h2>兼顾开发效率与底层控制</h2><p>界面、脚本和业务逻辑可以使用合适的生态；硬件、实时约束或特定平台能力另作设计。</p></article><article class="reason-item"><h2>逐步迁移旧系统</h2><p>保留已有模块，通过稳定接口替换局部。团队经验、平台支持也会影响选择，但会增加协调成本。</p></article></div><div class="section-head"><h2>先按协作边界做选择</h2></div><div class="decision-list"><article class="decision"><strong>不同机器，独立部署</strong><span>→ 消息 / 网络接口</span><p>例如 HTTP、RPC。重点设计协议、序列化、超时和错误语义。</p></article><article class="decision"><strong>同一进程，复用本地库</strong><span>→ FFI / 原生接口</span><p>先确认支持的语言接口、目标平台 ABI、类型、内存与错误处理约定。</p></article><article class="decision"><strong>已有单语言方案足够</strong><span>→ 保持现有方案</span><p>只有收益足以覆盖构建、调试和分发成本时，再增加语言边界。</p></article></div>
+      <div class="quiz" id="final-quiz"><div class="quiz-head"><strong>理解自检 · 一次一题</strong><span id="quiz-counter">01 / 04</span></div><div class="quiz-body"><h2 id="quiz-question">只执行 gcc -c main.c 后，为什么通常还不能直接运行？</h2><form id="quiz-form"><fieldset style="border:0;padding:0;margin:0;min-width:0" aria-labelledby="quiz-question"><div class="quiz-options" id="quiz-options"></div></fieldset><div class="quiz-feedback" id="quiz-feedback" aria-live="polite"></div><div class="quiz-actions"><button class="primary" type="submit" id="quiz-submit">检查答案</button><button class="secondary" type="button" id="quiz-next" hidden>下一题 →</button><small id="quiz-hint">未作答时不会显示答案</small></div></form></div></div>
+      <div class="section-head"><h2>把几个词放回正确的位置</h2></div><dl class="glossary"><div><dt>Compiler / 编译器</dt><dd>把源码转换到目标表示的工具；日常“编译命令”还可能驱动多个阶段。</dd></div><div><dt>Object file / 目标文件</dt><dd>包含机器码、符号和重定位等信息，供后续链接使用。</dd></div><div><dt>Linker / 链接器</dt><dd>组合目标文件与库，解析符号引用并处理重定位等工作。</dd></div><div><dt>Library / 库</dt><dd>被其他代码复用的代码集合，可通过静态或动态方式参与程序。</dd></div><div><dt>API / 应用程序接口</dt><dd>代码或系统向使用方提供的功能与使用约定，不等同于二进制兼容性。</dd></div><div><dt>ABI / 应用程序二进制接口</dt><dd>二进制组件协作的底层规则，与具体平台和工具链相关。</dd></div><div><dt>FFI / 外部函数接口</dt><dd>一种语言调用另一种语言实现的函数时使用的机制。</dd></div><div><dt>IPC / 进程间通信</dt><dd>独立进程之间交换数据与消息的方式，网络通信是相关形态之一。</dd></div></dl>
+      <details><summary>继续查阅：视频与原始技术资料</summary><ol class="sources"><li><a href="https://www.bilibili.com/video/BV1A3sf6TETV/" target="_blank" rel="noopener noreferrer">原视频：为什么有些项目使用多种编程语言</a>。主题来源；本教程的代码和实验为另行编写。</li><li><a href="https://gcc.gnu.org/onlinedocs/gcc/Overall-Options.html" target="_blank" rel="noopener noreferrer">GCC：Options Controlling the Kind of Output</a>。编译阶段及 <code>-E</code>、<code>-S</code>、<code>-c</code>。</li><li><a href="https://gcc.gnu.org/onlinedocs/gcc/Link-Options.html" target="_blank" rel="noopener noreferrer">GCC：Options for Linking</a>。对象文件、库和链接方式。</li><li><a href="https://eel.is/c++draft/dcl.link" target="_blank" rel="noopener noreferrer">C++ 工作草案：Linkage specifications</a>。语言链接与 <code>extern "C"</code>。</li><li><a href="https://doc.rust-lang.org/nomicon/ffi.html" target="_blank" rel="noopener noreferrer">Rustonomicon：FFI</a>；<a href="https://doc.rust-lang.org/edition-guide/rust-2024/unsafe-attributes.html" target="_blank" rel="noopener noreferrer">Rust 2024：Unsafe attributes</a>。ABI、导出和版本相关语法。</li><li><a href="https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst" target="_blank" rel="noopener noreferrer">Arm：AArch64 Procedure Call Standard</a>。查看真实平台如何规定调用规则。</li></ol></details><div class="note"><strong>下一次读项目源码时，可以沿着这条线找：</strong>谁在调用 → 接口声明在哪 → 实现由什么语言编写 → 怎样被构建和链接 → 双方用什么 ABI 与内存约定。先找清边界，代码组织会容易理解得多。</div><div class="chapter-footer"><a class="secondary" href="#chapter-abi">← 上一章</a><div class="next-info"><a class="primary" href="#chapter-start">回到起点 ↺</a></div></div>
+    </section>
+  </main>
+  
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+<script>
+'use strict';
+const $ = (s, root = document) => root.querySelector(s);
+const $$ = (s, root = document) => Array.from(root.querySelectorAll(s));
+const chapterIds = ['start', 'compile', 'link', 'build', 'abi', 'review'];
+const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let currentChapter = '';
+function showChapter() {
+  const match = location.hash.match(/^#chapter-(start|compile|link|build|abi|review)$/);
+  if (!match && location.hash && currentChapter) return;
+  const id = match ? match[1] : 'start';
+  if (id === currentChapter) return;
+  currentChapter = id;
+  const index = chapterIds.indexOf(id);
+  $$('.chapter').forEach(el => { el.hidden = el.id !== 'chapter-' + id; });
+  $$('.nav-link').forEach(el => {
+    if (el.dataset.chapter === id) el.setAttribute('aria-current', 'step');
+    else el.removeAttribute('aria-current');
+  });
+  $('#sidebar-progress').textContent = String(index + 1).padStart(2, '0') + ' / 06';
+  $('#progress-fill').style.width = ((index + 1) / 6 * 100) + '%';
+  document.title = $('#title-' + id).textContent + ' · 代码之间';
+  if (showChapter.initialized) {
+    $('#title-' + id).focus({preventScroll: true});
+    window.scrollTo({top: window.innerWidth <= 850 ? $('.topbar').offsetTop : 0, behavior: reducedMotion() ? 'instant' : 'smooth'});
+    const active = $('.nav-link[aria-current]');
+    const nav = $('.chapter-nav');
+    if (window.innerWidth <= 850) nav.scrollTo({left: active.offsetLeft - 20, behavior: reducedMotion() ? 'instant' : 'smooth'});
+  }
+  showChapter.initialized = true;
+}
+window.addEventListener('hashchange', showChapter);
+showChapter();
+$('#print-button').addEventListener('click', () => window.print());
+
+// Tabs use arrow keys, Home, and End, with one tab stop in each group.
+$$('[role="tablist"]').forEach(group => {
+  group.addEventListener('keydown', event => {
+    const tabs = $$('[role="tab"]', group);
+    const index = tabs.indexOf(document.activeElement);
+    if (index < 0 || !['ArrowRight','ArrowLeft','Home','End'].includes(event.key)) return;
+    event.preventDefault();
+    const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+    tabs[next].click();
+    tabs[next].focus();
+  });
+});
+function selectTab(button) {
+  $$('[role="tab"]', button.closest('[role="tablist"]')).forEach(tab => {
+    const active = tab === button;
+    tab.setAttribute('aria-selected', String(active));
+    tab.tabIndex = active ? 0 : -1;
+  });
+}
+
+const stages = [
+  {name:'源代码',badge:'人能读懂的源码',title:'先写下一段 C 代码',description:'宏、头文件和函数调用仍然是源代码中的文本。处理器不能直接执行这些 C 语言语句。',command:'编辑文件：hello.c',file:'hello.c',code:'#include <stdio.h>\n#define ANSWER 42\n\nint main(void) {\n    printf("%d\\n", ANSWER);\n    return 0;\n}',caption:'本例用于观察阶段，不在网页中执行编译。'},
+  {name:'预处理',badge:'处理宏和头文件',title:'把预处理指令展开',description:'展开 #include、宏和条件编译指令。输出仍是 C 源码文本，只是已经完成这些预处理。这里省略了头文件的大量声明。',command:'gcc -E hello.c -o hello.i',file:'hello.i · 简化示意',code:'/* 省略 stdio.h 展开的其他内容 */\nextern int printf(const char *, ...);\n\nint main(void) {\n    printf("%d\\n", 42);\n    return 0;\n}',caption:'教学节选：并非完整的真实预处理输出。'},
+  {name:'编译',badge:'转换到目标汇编',title:'把语义变成目标指令',description:'编译器分析源程序并进行优化，生成适合目标平台的汇编。下方只展示抽象逻辑；实际寄存器、指令和优化结果取决于平台与选项。',command:'gcc -S hello.i -o hello.s',file:'hello.s · 伪汇编',code:'; 抽象伪汇编，不对应实际 ISA\nmain:\n    准备 printf 的格式字符串\n    准备整数参数 42\n    调用 printf\n    将返回值设为 0\n    返回',caption:'这是伪汇编，不能交给真实汇编器执行。'},
+  {name:'汇编',badge:'机器码与元数据',title:'生成可重定位的目标文件',description:'汇编器把汇编代码转为机器码，并记录符号和需要重定位的位置。printf 等外部引用可能还没有最终地址。',command:'gcc -c hello.s -o hello.o',file:'hello.o · 内容概念图',code:'[目标文件]\n\n机器码区域：本文件中的指令\n符号定义：main\n外部引用：printf\n重定位项：等待链接时修正\n其他元数据：依平台和格式而定',caption:'目标文件不是纯文本；这里显示内容分类示意。'},
+  {name:'链接',badge:'组合、解析与重定位',title:'把各部分连接成程序',description:'链接器结合目标文件、库及启动组件，解析引用并安排最终布局。动态链接时，某些符号解析和重定位还会交给加载器或运行时链接器。',command:'gcc hello.o -o hello',file:'hello · 运行示意',code:'$ ./hello\n42\n\n源码中的 printf 调用\n    ↓\n通过链接 / 加载连接到实现\n    ↓\n在目标系统中执行',caption:'显示的是预期运行效果，不是网页内真实执行。'}
+];
+let stageIndex = 0;
+function setStage(index) {
+  stageIndex = index;
+  const stage = stages[index];
+  const tab = $('#pipe-tab-' + index);
+  selectTab(tab);
+  $('#pipe-panel').setAttribute('aria-labelledby', tab.id);
+  $('#pipe-badge').textContent = stage.badge;
+  $('#pipe-title').textContent = stage.title;
+  $('#pipe-description').textContent = stage.description;
+  $('#pipe-command').textContent = stage.command;
+  $('#pipe-filename').textContent = stage.file;
+  $('#pipe-code').textContent = stage.code;
+  $('#pipe-caption').textContent = stage.caption;
+  $('#pipe-progress').textContent = '位置 ' + (index + 1) + ' / 5 · ' + stage.name;
+  $('#pipe-next').disabled = index === stages.length - 1;
+}
+$$('[data-stage]').forEach(button => button.addEventListener('click', () => setStage(Number(button.dataset.stage))));
+$('#pipe-next').addEventListener('click', () => setStage(Math.min(stageIndex + 1, stages.length - 1)));
+$('#pipe-reset').addEventListener('click', () => setStage(0));
+
+const microAnswers = {
+  boundary:{correct:'process',yes:'对。这里传递的是 HTTP 请求和响应；前后端分别运行，不需要被链接成同一个二进制文件。',no:'这里属于不同进程之间的协作。它们交换消息，不要求把 JavaScript 和 Python 编译进同一个可执行文件。'},
+  object:{correct:'object',yes:'对。-c 表示编译到目标文件后停止，没有执行最终链接。目标文件将交给链接器继续处理。',no:'-c 会跳过链接，得到目标文件。它通常还需要与其他文件、库和启动组件组合，才能形成可运行的程序。'}
+};
+$$('[data-micro]').forEach(box => {
+  $$('.choice-button', box).forEach(button => button.addEventListener('click', () => {
+    $$('.choice-button', box).forEach(choice => choice.setAttribute('aria-pressed', String(choice === button)));
+    const answer = microAnswers[box.dataset.micro];
+    $('.answer-feedback', box).textContent = button.dataset.answer === answer.correct ? answer.yes : answer.no;
+  }));
+});
+
+$('#include-add').addEventListener('change', event => {
+  const included = event.target.checked;
+  $('#add-object').classList.toggle('excluded', !included);
+  $('#link-output').dataset.status = included ? 'success' : 'error';
+  $('#link-output').textContent = included ? '链接成功 → main.o 的 add 引用找到了 add.o 中的定义。' : '链接失败 → add 没有找到定义。常见提示：undefined reference / undefined symbol。';
+});
+$$('[data-link-mode]').forEach(button => button.addEventListener('click', () => {
+  const dynamic = button.dataset.linkMode === 'dynamic';
+  selectTab(button);
+  $('#link-mode-panel').dataset.mode = button.dataset.linkMode;
+  $('#link-mode-panel').setAttribute('aria-labelledby', button.id);
+  $$('.embedded-lib').forEach(el => { el.textContent = dynamic ? '保留对共享库的依赖 ↓' : '包含所需的库代码'; });
+  $('#link-mode-text').textContent = dynamic ? '程序依赖外部共享库，通常在加载时或运行中由系统连接到所需实现。可减少某些重复代码，但分发、版本和查找路径需要一并管理。' : '链接时，所需库代码被纳入各自的程序。通常更便于打包这一部分依赖，但多个程序可能重复包含同一份库代码。';
+}));
+
+const fileDescriptions = {header:'共同的声明 · 两种语言都能包含',c:'函数实现 · 使用 C 编译器',cpp:'主程序 · 使用 C++ 编译器'};
+let currentFile = 'header';
+$$('[data-file]').forEach(button => button.addEventListener('click', () => {
+  currentFile = button.dataset.file;
+  selectTab(button);
+  $$('.file-panel').forEach(panel => {panel.hidden = panel.id !== 'file-' + currentFile;});
+  $('#file-description').textContent = fileDescriptions[currentFile];
+  $('#copy-source-status').textContent = '';
+}));
+async function copyText(text, status) {
+  let copied = false;
+  if (navigator.clipboard && window.isSecureContext) {
+    try { await navigator.clipboard.writeText(text); copied = true; } catch (_) { /* file:// or permissions may block clipboard. */ }
+  }
+  if (!copied) {
+    const input = document.createElement('textarea');
+    const focused = document.activeElement;
+    input.value = text;
+    input.style.cssText = 'position:fixed;left:-9999px;top:0';
+    document.body.appendChild(input);
+    input.select();
+    try { copied = document.execCommand('copy'); } catch (_) { copied = false; }
+    input.remove();
+    if (focused && focused.focus) focused.focus({preventScroll:true});
+  }
+  $(status).textContent = copied ? '已复制，可粘贴到编辑器或终端。' : '浏览器未允许复制，请选中上面的代码手动复制。';
+}
+$('#copy-source').addEventListener('click', () => copyText($('#source-' + currentFile).textContent + '\n', '#copy-source-status'));
+$('#copy-commands').addEventListener('click', () => copyText($('#build-commands').textContent + '\n', '#copy-command-status'));
+
+// Small, dependency-free ZIP writer using the ZIP STORE method and CRC32.
+// Code is read directly from the displayed snippets so the download stays in sync.
+function crc32(bytes) {
+  let crc = 0xffffffff;
+  for (const byte of bytes) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit++) crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+function makeZip(files) {
+  const encoder = new TextEncoder();
+  const chunks = [], central = [];
+  let offset = 0, centralSize = 0;
+  for (const [name, text] of files) {
+    const filename = encoder.encode(name), bytes = encoder.encode(text), crc = crc32(bytes);
+    const local = new Uint8Array(30 + filename.length), view = new DataView(local.buffer);
+    view.setUint32(0,0x04034b50,true);view.setUint16(4,20,true);view.setUint16(6,0x0800,true);
+    view.setUint16(12,0x5d61,true);view.setUint32(14,crc,true);view.setUint32(18,bytes.length,true);view.setUint32(22,bytes.length,true);view.setUint16(26,filename.length,true);local.set(filename,30);
+    const entry = new Uint8Array(46 + filename.length), cv = new DataView(entry.buffer);
+    cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);cv.setUint16(8,0x0800,true);cv.setUint16(14,0x5d61,true);cv.setUint32(16,crc,true);cv.setUint32(20,bytes.length,true);cv.setUint32(24,bytes.length,true);cv.setUint16(28,filename.length,true);cv.setUint32(42,offset,true);entry.set(filename,46);
+    chunks.push(local,bytes);central.push(entry);offset += local.length + bytes.length;centralSize += entry.length;
+  }
+  const end = new Uint8Array(22), ev = new DataView(end.buffer);
+  ev.setUint32(0,0x06054b50,true);ev.setUint16(8,files.length,true);ev.setUint16(10,files.length,true);ev.setUint32(12,centralSize,true);ev.setUint32(16,offset,true);
+  return new Blob([...chunks,...central,end],{type:'application/zip'});
+}
+let toastTimer;
+function toast(message) { clearTimeout(toastTimer); $('#toast').textContent = message; $('#toast').hidden = false; toastTimer = setTimeout(() => {$('#toast').hidden = true;},4000); }
+$('#download-example').addEventListener('click', () => {
+  const files = [['add.h',$('#source-header').textContent+'\n'],['add.c',$('#source-c').textContent+'\n'],['main.cpp',$('#source-cpp').textContent+'\n'],['README.txt','C + C++ mixed-language example\n\nLinux/macOS, with a compatible C/C++ toolchain installed.\nRun these commands in this folder:\n\n'+$('#build-commands').textContent+'\n\nExpected output: 42\n\nWindows/MSVC needs different commands.\n']];
+  const url = URL.createObjectURL(makeZip(files));
+  const anchor = document.createElement('a');anchor.href = url;anchor.download = 'c-cpp-example.zip';document.body.appendChild(anchor);anchor.click();anchor.remove();setTimeout(() => URL.revokeObjectURL(url),30000);
+  toast('已生成示例 ZIP：add.h、add.c、main.cpp 和命令说明。');
+});
+
+let abiMode = 'aligned';
+function numericInput(input) {
+  if (!input.value.trim() || !Number.isFinite(input.valueAsNumber) || input.validity.badInput) return null;
+  if (!Number.isInteger(input.valueAsNumber) || input.valueAsNumber < -99 || input.valueAsNumber > 99) return null;
+  return input.valueAsNumber;
+}
+function renderABI() {
+  const a = numericInput($('#abi-a')), b = numericInput($('#abi-b'));
+  if (a === null || b === null) {
+    $('#abi-result').dataset.status = 'error';$('#abi-result-value').textContent = '—';$('#abi-status').textContent = '等待输入';$('#abi-explanation').textContent = '请为 a 和 b 输入 −99 到 99 的整数。';return;
+  }
+  const expected = a + b;
+  const addressed = abiMode === 'address';
+  const values = addressed ? [4096,8192,7] : [a,b,7];
+  const reading = abiMode === 'shifted' ? [1,2] : [0,1];
+  const explanations = [addressed ? '参数 a 的模拟地址' : '参数 a', addressed ? '参数 b 的模拟地址' : '参数 b','无关的旧值'];
+  values.forEach((value,index) => {
+    $('#register-value-'+index).textContent = value;
+    $('#register-help-'+index).textContent = explanations[index];
+    $('#register-'+index).classList.toggle('read',reading.includes(index));
+  });
+  $('#memory-view').hidden = !addressed;
+  $('#memory-view').textContent = 'MEMORY[4096] = '+a+' · MEMORY[8192] = '+b;
+  $('#abi-register-label').textContent = '被调函数读取 R'+reading[0]+'、R'+reading[1];
+  let result, explanation, state, status;
+  if (abiMode === 'aligned') {
+    result = expected;status = '约定一致';state = '上图展示调用前的寄存器；函数计算完成后，把和放进 R0。';
+    explanation = `调用方把 ${a}、${b} 放入 R0、R1；被调函数从同样的位置读取，求和后返回到 R0。调用方读回 ${result}，与预期一致。`;
+  } else if (abiMode === 'shifted') {
+    result = b + 7;status = '参数位置不兼容';state = '上图展示调用前的寄存器；被调函数读取 R1、R2，结果返回到 R0。';
+    explanation = `调用方按 R0、R1 传参，被调函数却读取 R1、R2，实际算的是 ${b} + 7 = ${result}；预期是 ${a} + ${b} = ${expected}。`+(result===expected?'本次数值恰好相同，但参数约定仍然不兼容。':'链接成功也不能修复这个约定错误。');
+  } else if (abiMode === 'address') {
+    result = 4096+8192;status = '地址被误当成数值';state = '调用方按地址传递参数；被调函数没有解引用，直接将寄存器中的地址相加。';
+    explanation = `内存里的实际数值为 ${a} 和 ${b}，预期结果为 ${expected}。但被调函数把 4096、8192 当作两个整数，算出 ${result}。值与地址的含义需要在接口两侧保持一致。`;
+  } else {
+    result = a;status = '返回位置不兼容';state = `函数正确算出 ${expected} 并写入 R2；调用方却去读取仍保留参数 a 的 R0。`;
+    explanation = `两个参数传对了，函数也算出了 ${expected}。但它按另一套约定把结果放进 R2，调用方仍从 R0 取回 ${result}。返回值的位置同样属于调用约定。`+(result===expected?'本次数字恰巧相等，不能据此认定 ABI 兼容。':'');
+  }
+  $('#register-state').textContent = state;
+  $('#abi-result').dataset.status = abiMode === 'aligned' ? 'success' : 'error';
+  $('#abi-result-value').textContent = result;$('#abi-status').textContent = status;$('#abi-explanation').textContent = explanation;
+}
+$$('[data-abi]').forEach(button => button.addEventListener('click', () => {
+  abiMode = button.dataset.abi;
+  $$('[data-abi]').forEach(preset => preset.setAttribute('aria-pressed',String(preset === button)));
+  renderABI();
+}));
+['a','b'].forEach(key => {
+  const input = $('#abi-'+key);
+  input.addEventListener('input',renderABI);
+  input.addEventListener('change',() => {const value=numericInput(input);if(value!==null)input.value=String(value);renderABI();});
+});
+$('#abi-reset').addEventListener('click', () => {$('#abi-a').value=20;$('#abi-b').value=22;$('[data-abi="aligned"]').click();});
+
+const questions = [
+  {question:'只执行 gcc -c main.c 后，为什么通常还不能直接运行？',options:['输出是目标文件，尚未执行最终链接。','需要把文件扩展名手动改成 .exe。','C 语言只能由解释器执行。'],answer:0,explain:'-c 让流程在目标文件阶段停止。通常还需链接其他目标文件、库和启动组件，不能通过改扩展名代替链接。'},
+  {question:'C++ 调用 C 编译的 add 时，extern "C" 的作用是什么？',options:['自动把 C++ 对象转换成 C 的结构体。','为该函数指定 C 语言链接，而非默认的 C++ 语言链接。','保证不同处理器上的机器码都能直接运行。'],answer:1,explain:'它指定语言链接，常见实现会使用相应的符号命名与调用规则。它不负责翻译任意类型，也不提供跨架构兼容性。'},
+  {question:'两个目标文件面向同一处理器、也能找到符号，是否就能保证正确调用？',options:['可以，链接器会自动修复所有参数约定。','可以，只要函数名相同就没有其他要求。','不可以，还要满足 ABI、类型布局等兼容要求。'],answer:2,explain:'符号解析只是一个环节。参数和返回值的位置、数据布局等约定不兼容时，调用仍可能出错。'},
+  {question:'若两个服务需要部署在不同机器上，优先考虑哪一类协作边界？',options:['通过网络协议传递请求和结果。','把所有目标文件静态链接到同一个进程。','让一台机器直接使用另一台机器的普通内存指针。'],answer:0,explain:'跨机器通常使用网络协议，明确消息格式和失败语义。单进程内的普通函数调用与指针传递，不能直接替代这种边界。'}
+];
+let quizIndex=0,quizScore=0,quizAnswered=false;
+function renderQuiz() {
+  quizAnswered=false;
+  const q=questions[quizIndex];
+  $('#quiz-counter').textContent=String(quizIndex+1).padStart(2,'0')+' / 04';
+  $('#quiz-question').textContent=q.question;
+  $('#quiz-options').replaceChildren();
+  q.options.forEach((text,index) => {
+    const label=document.createElement('label');label.className='quiz-option';
+    const input=document.createElement('input');input.type='radio';input.name='answer';input.value=index;input.required=true;
+    const span=document.createElement('span');span.textContent=text;
+    label.append(input,span);$('#quiz-options').append(label);
+  });
+  $('#quiz-feedback').textContent='';$('#quiz-submit').hidden=false;$('#quiz-submit').disabled=false;$('#quiz-submit').textContent='检查答案';$('#quiz-next').hidden=true;$('#quiz-next').textContent=quizIndex===questions.length-1?'查看本次结果 →':'下一题 →';$('#quiz-hint').textContent='未作答时不会显示答案';
+}
+$('#quiz-form').addEventListener('submit',event => {
+  event.preventDefault();
+  if(quizAnswered) return;
+  const selected=$('input[name="answer"]:checked');
+  if(!selected) return;
+  quizAnswered=true;
+  const q=questions[quizIndex],correct=Number(selected.value)===q.answer;
+  if(correct) quizScore++;
+  $('#quiz-feedback').textContent=(correct?'回答正确。':'这道题需要再看一下。')+q.explain;
+  $$('input[name="answer"]').forEach(input => {input.disabled=true;});
+  $('#quiz-submit').hidden=true;$('#quiz-next').hidden=false;$('#quiz-hint').textContent='本题按首次提交计分';
+  $('#quiz-next').focus({preventScroll:true});
+});
+$('#quiz-next').addEventListener('click',() => {
+  if(quizIndex < questions.length-1) {
+    quizIndex++;renderQuiz();$('input[name="answer"]').focus({preventScroll:true});
+  } else {
+    $('#quiz-question').textContent='本次自检完成。';$('#quiz-counter').textContent='DONE / 04';$('#quiz-options').replaceChildren();
+    $('#quiz-feedback').textContent=`首次提交答对 ${quizScore} / ${questions.length} 题。可以回到相关章节重做实验，再用自己的话解释“为什么链接成功不等于调用正确”。这次选择题结果只是当次表现，不等同于长期掌握。`;
+    $('#quiz-next').hidden=true;$('#quiz-submit').hidden=true;$('#quiz-hint').textContent='结果仅保留在当前页面会话中';
+    const restart=document.createElement('button');restart.type='button';restart.className='secondary';restart.id='quiz-restart';restart.textContent='重新自检 ↺';
+    restart.addEventListener('click',() => {quizIndex=0;quizScore=0;restart.remove();renderQuiz();$('input[name="answer"]').focus({preventScroll:true});});
+    $('.quiz-actions').prepend(restart);restart.focus({preventScroll:true});
+  }
+});
+renderQuiz();
+</script>
+</body>
+</html>

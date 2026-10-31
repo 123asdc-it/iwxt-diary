@@ -1,5 +1,21 @@
 # TASK_STATE
 
+## 2026-11-01 独立交互教程接入（进行中）
+
+- 用户选择：先做独立教程页，保留博客主题；教程保留现有深绿、纸色、大字号与交互。
+- 计划：新增 /tutorials/polyglot/ 页面；加博客导航与文章入口；教程加入返回博客链接；将路线加入 sitemap；通过现有 GitHub Pages 工作流同步上线。
+- 工作方式：从最新 origin/main 创建隔离分支 codex/polyglot-tutorial-20261101，避免干扰原目录和其他正在进行的工作。
+- 预计改动：public/tutorials/polyglot/index.html、导航/构建脚本、一篇入口文章与本地封面、README.md、TASK_STATE.md。
+- 风险：移动导航拥挤、博客主题样式污染教程、部署路径与章节 hash 冲突；用浏览器检查首页→文章→教程→返回、窄屏、离线交互和控制台。
+- 保留边界：不改博客全站视觉、不改原有文章正文或封面、不接触打卡模型/数据格式和本机 localStorage。
+- 验证：npm run check、31/31 既有测试、生产环境 npm run build、git diff --check 均通过。
+- Playwright 46 项接入检查通过：桌面导航、文章入口、手机抽屉、返回博客、深色模式隔离、同源存储保留、示例下载、六章在 1440/390/320px 下的宽度及 sitemap；无新控制台或运行错误。
+- 已目视检查博客入口、独立教程桌面与手机截图。教程桌面正文 20px、手机 18px，颜色保持；小屏入口在抽屉中，避免挤压原导航。
+- 托管页与原离线教程的 JavaScript 完全一致，额外语法检查通过；只新增博客导航/元数据与开头的动机说明。
+- 新封面为自行绘制的可编辑 SVG，并用浏览器原生导出为 24,495 字节 PNG；使用本地内容哈希路径，无外链图片依赖。
+- 部署：准备通过现有 Pages 工作流发布，随后核对线上内容与下载。
+
+
 ## 2026-11-01 article cover replacement
 
 - Goal: replace the cover image for `0:5，还不是结局`; the user clarified

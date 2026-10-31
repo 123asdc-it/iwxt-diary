@@ -983,3 +983,10 @@ select:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 55%, 
   .hero-title-character { opacity: 1; transform: none; }
   .reveal-on-scroll { opacity: 1; filter: none; translate: none; }
 }
+
+
+/* Keep the tutorial entry in the existing navigation style. On narrow screens,
+   the drawer and article card provide it without crowding the app bar. */
+@media (max-width: 700px) {
+  .appbar-tutorial-button { display: none; }
+}

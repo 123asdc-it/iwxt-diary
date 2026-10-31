@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<rect width="1600" height="900" fill="#fafbf7"/>
+<rect x="1010" width="590" height="900" fill="#17322c"/>
+<g fill="#fff" stroke="#b4c7a8" stroke-width="3"><rect x="165" y="175" width="400" height="245" rx="24"/><rect x="165" y="480" width="400" height="245" rx="24"/></g>
+<g font-family="ui-monospace, Menlo, monospace" font-size="90" font-weight="600" fill="#214c40"><text x="220" y="292">C++</text><text x="220" y="597">C</text></g>
+<g fill="#d5e2ca"><rect x="220" y="335" width="245" height="14" rx="7"/><rect x="220" y="365" width="175" height="14" rx="7"/><rect x="220" y="640" width="245" height="14" rx="7"/><rect x="220" y="670" width="175" height="14" rx="7"/></g>
+<g fill="none" stroke="#7a986b" stroke-width="9"><path d="M565 298H735Q765 298 765 328V573Q765 603 735 603H565"/><path d="M765 450H1090"/></g>
+<path d="m1065 426 27 24-27 24" stroke="#ddebcc" stroke-width="9" fill="none"/>
+<rect x="1130" y="325" width="320" height="250" rx="24" fill="#ddebcc"/>
+<text x="1290" y="430" text-anchor="middle" font-family="-apple-system,PingFang SC,Microsoft YaHei,sans-serif" font-size="64" font-weight="600" fill="#17322c">一个程序</text>
+<text x="1290" y="509" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="38" fill="#214c40">20 + 22 = 42</text>
+</svg>
