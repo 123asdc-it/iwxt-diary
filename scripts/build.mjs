@@ -257,7 +257,7 @@ ${drawer({ config, entries, months, tags })}
       <article class="romanticism-article glass-content-panel reveal-on-scroll" data-reveal>
         <p class="post-summary">${escapeHtml(entry.summary)}</p><hr>
         <div class="markdown-body">${entry.html}</div>
-        <div class="copyright-panel glass"><span aria-hidden="true">©</span><p>最后更新时间：${escapeHtml(new Date(entry.updatedAt).toLocaleString('zh-CN'))}<br>这是一篇公开日记，不开放评论。</p></div>
+        <div class="copyright-panel glass"><span aria-hidden="true">©</span><p>最后更新时间：${escapeHtml(new Date(entry.updatedAt).toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }))}<br>这是一篇公开日记，不开放评论。</p></div>
       </article>
       ${glassSidebar({ config, entries, months, tags })}
     </div>
