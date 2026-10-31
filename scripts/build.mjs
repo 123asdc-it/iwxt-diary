@@ -13,6 +13,13 @@ import { readCmcCatalog } from './cmc-catalog.mjs';
 
 const tutorials = [
   {
+    slug: 'mita-attention',
+    title: 'MiTA：让注意力复用候选',
+    summary: '从 Q/K/V 到 landmark、top-k、共享压缩与联合归一，亲手走完一遍论文公式。',
+    detail: '论文导读 · 8 章 · 数值实验与证据边界',
+    cover: 'uploads/covers/1916e9a21570ee43efd6c0c1844e93e1cec337c00305f8a1501aa760f2c37f12.png',
+  },
+  {
     slug: 'discrete-math',
     title: '离散数学：全书逐章交互教程',
     summary: '从逻辑到图与数，逐章读概念、跟推导、改实验、做自测并记录理解。',
@@ -348,7 +355,7 @@ function tutorialIndexPage(config, entries) {
     <span class="post-card-shade"></span>
     <span class="post-card-copy"><strong>${escapeHtml(tutorial.title)}</strong><small>${escapeHtml(tutorial.detail)}</small><em>${escapeHtml(tutorial.summary)}</em></span>
   </a>`).join('\n');
-  return `${pageHead({ config, title: `交互教程 · ${config.title}`, description: '可以动手操作的学习笔记与练习：英语词汇、算法与滑动窗口、大模型基础、数学竞赛、网络基础、多语言程序。', pathname: 'tutorials/', imagePath: tutorials[0].cover })}
+  return `${pageHead({ config, title: `交互教程 · ${config.title}`, description: '可以动手操作的学习笔记与练习：英语词汇、算法与滑动窗口、论文与大模型基础、离散数学与数学竞赛、网络基础、多语言程序。', pathname: 'tutorials/', imagePath: tutorials[0].cover })}
 <body>
 <div class="romanticism-site" data-site style="--site-wallpaper:url('${pathUrl(config.basePath, config.homeImage)}');--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">
 ${experienceChrome()}
