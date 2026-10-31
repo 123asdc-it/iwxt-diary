@@ -1,11 +1,11 @@
 # TASK_STATE
 
-## 2026-11-01 独立交互教程接入（进行中）
+## 2026-11-01 独立交互教程接入（已完成）
 
 - 用户选择：先做独立教程页，保留博客主题；教程保留现有深绿、纸色、大字号与交互。
 - 计划：新增 /tutorials/polyglot/ 页面；加博客导航与文章入口；教程加入返回博客链接；将路线加入 sitemap；通过现有 GitHub Pages 工作流同步上线。
 - 工作方式：从最新 origin/main 创建隔离分支 codex/polyglot-tutorial-20261101，避免干扰原目录和其他正在进行的工作。
-- 预计改动：public/tutorials/polyglot/index.html、导航/构建脚本、一篇入口文章与本地封面、README.md、TASK_STATE.md。
+- 改动文件：public/tutorials/polyglot/index.html、public/tutorials/polyglot/cover.svg、public/uploads/covers/dcd5159506e3388eb3b9c6d44b8644c5246b671a5fca9bc8406e5c8120c8c3a9.png、content/posts/2026-11-01-polyglot-programs.md、scripts/build.mjs、src/site.css、README.md、TASK_STATE.md。
 - 风险：移动导航拥挤、博客主题样式污染教程、部署路径与章节 hash 冲突；用浏览器检查首页→文章→教程→返回、窄屏、离线交互和控制台。
 - 保留边界：不改博客全站视觉、不改原有文章正文或封面、不接触打卡模型/数据格式和本机 localStorage。
 - 验证：npm run check、31/31 既有测试、生产环境 npm run build、git diff --check 均通过。
@@ -13,7 +13,12 @@
 - 已目视检查博客入口、独立教程桌面与手机截图。教程桌面正文 20px、手机 18px，颜色保持；小屏入口在抽屉中，避免挤压原导航。
 - 托管页与原离线教程的 JavaScript 完全一致，额外语法检查通过；只新增博客导航/元数据与开头的动机说明。
 - 新封面为自行绘制的可编辑 SVG，并用浏览器原生导出为 24,495 字节 PNG；使用本地内容哈希路径，无外链图片依赖。
-- 部署：准备通过现有 Pages 工作流发布，随后核对线上内容与下载。
+- 部署：代码提交 91245223b5ed608917fb2cd15868d130dc60d3bf 已经通过 GitHub Pages 工作流 41229327335（success）上线。
+- 正式地址：https://iwxt.cn/tutorials/polyglot/；入口文章：https://iwxt.cn/posts/2026-11-01-polyglot-programs/。
+- 线上验证：HTTPS 正常，教程、样式及新封面均返回 HTTP 200，字节与本地生产构建完全一致。手机抽屉入口、文章→教程、教程→博客、ABI 情景和 ZIP 下载均通过，无浏览器错误；线上下载包 CRC 校验通过。
+- 未修改旧文章、旧封面、checkin.js 或 checkin-model.js；没有更改打卡存储键或格式。
+- 后续维护：编辑 public/tutorials/polyglot/index.html，随现有博客构建发布；离线教程为另存版本，不设后台文件监控。
+- 剩余必需工作：无。
 
 
 ## 2026-11-01 article cover replacement
