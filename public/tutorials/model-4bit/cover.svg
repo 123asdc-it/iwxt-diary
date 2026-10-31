@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+<rect width="1200" height="675" fill="#17322c"/>
+<rect x="620" y="72" width="508" height="531" rx="24" fill="#f0f5e7"/>
+<g fill="#ddebcc" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif">
+<text x="80" y="215" font-size="106" font-weight="700">4bit</text>
+<text x="80" y="310" font-size="52" font-weight="600">模型量化</text>
+<text x="80" y="410" font-size="31">压小之后，</text>
+<text x="80" y="458" font-size="31">丢掉了什么？</text>
+<path d="M82 520H510" stroke="#789b76" stroke-width="2"/>
+</g>
+<g font-family="ui-monospace,Menlo,monospace" font-size="46" fill="#214c40" text-anchor="middle">
+<text x="755" y="205">2.4</text><text x="995" y="205">2.1</text>
+<path d="M755 240V318H875M995 240V318H875V373" fill="none" stroke="#789b76" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="782" y="395" width="186" height="113" rx="13" fill="#214c40"/>
+<text x="875" y="472" font-size="69" fill="#f0f5e7">2</text>
+<g stroke="#789b76" stroke-width="2"><path d="M690 555H1060"/><path d="M690 545V565M736 545V565M782 545V565M828 545V565M875 540V570M922 545V565M968 545V565M1014 545V565M1060 545V565"/></g>
+</g>
+</svg>

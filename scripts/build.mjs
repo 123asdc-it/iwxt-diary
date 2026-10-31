@@ -13,6 +13,13 @@ import { readCmcCatalog } from './cmc-catalog.mjs';
 
 const tutorials = [
   {
+    slug: 'model-4bit',
+    title: '4bit 模型量化：压小之后，丢掉了什么？',
+    summary: '动手改刻度、算得分，理解量化误差、分组、校准与运行开销。',
+    detail: '大模型基础 · 8 章 · 5 个交互实验',
+    cover: 'uploads/covers/00a211d124f51264c08df42a8531c97561bd2a3eb6ce549551f20ce1b15be238.png',
+  },
+  {
     slug: 'yeyu-practice',
     title: '夜雨知识点练习',
     summary: '按知识点独立动笔，对照参考解答，记录完成情况与错因笔记。',
@@ -320,7 +327,7 @@ function tutorialIndexPage(config, entries) {
     <span class="post-card-shade"></span>
     <span class="post-card-copy"><strong>${escapeHtml(tutorial.title)}</strong><small>${escapeHtml(tutorial.detail)}</small><em>${escapeHtml(tutorial.summary)}</em></span>
   </a>`).join('\n');
-  return `${pageHead({ config, title: `交互教程 · ${config.title}`, description: '可以动手操作的学习笔记与练习：数学竞赛、网络基础、多语言程序。', pathname: 'tutorials/', imagePath: tutorials[0].cover })}
+  return `${pageHead({ config, title: `交互教程 · ${config.title}`, description: '可以动手操作的学习笔记与练习：大模型基础、数学竞赛、网络基础、多语言程序。', pathname: 'tutorials/', imagePath: tutorials[0].cover })}
 <body>
 <div class="romanticism-site" data-site style="--site-wallpaper:url('${pathUrl(config.basePath, config.homeImage)}');--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">
 ${experienceChrome()}

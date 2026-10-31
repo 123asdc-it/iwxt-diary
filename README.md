@@ -147,6 +147,7 @@ updatedAt: "2026-09-02T08:00:00.000Z"
 教程目录位于 <https://iwxt.cn/tutorials/>，博客导航及对应入口文章均可进入。
 
 - 多语言程序：<https://iwxt.cn/tutorials/polyglot/>。
+- 4bit 模型量化：<https://iwxt.cn/tutorials/model-4bit/>。沿视频的四个权重、两组输入理解数值近似，附刻度、排序、分组、单样本补偿与空间估算实验；单文件可下载离线使用。
 - 夜雨知识点练习：<https://iwxt.cn/tutorials/yeyu-practice/>。题图按需加载，提供完整离线 ZIP，练习记录支持原格式 JSON 导入导出。
 - 华为 ICT 网络赛道初赛：<https://iwxt.cn/tutorials/huawei-ict-network/>。这一页保留用户提供 HTML 的内容、交互及阅读设置。
 多语言教程保留深绿、纸色与大字号排版，华为 ICT 教程保留提供文件的阅读界面。
@@ -163,6 +164,8 @@ updatedAt: "2026-09-02T08:00:00.000Z"
 同步更新离线包。练习记录继续使用 `yeyu-knowledge-practice-v1` 键和版本 1 的 JSON 格式，
 用户可以从原文件导出，再导入博客版。讲义 PDF 本体未包含在发布内容中，出处页码予以保留。
 
+
+4bit 教程为内嵌 CSS/JS 的独立 HTML，页面可直接下载离线使用。数值核心同样内嵌在页面中，`test/quantization-tutorial.test.mjs` 读取该实际实现，核对原视频算例、裁剪与舍入、误差传播、分组、补偿和元数据开销。正文的来源章节区分片中算例与补充实验；不包含视频媒体、字幕全文或真实模型评测。
 
 ### 后续视频教程的默认约定
 

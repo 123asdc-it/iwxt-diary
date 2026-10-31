@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="沿着四个权重、两道题，动手理解 4bit 量化丢掉的数值细节，以及分组、GPTQ 校准和内存开销。">
+<meta name="theme-color" content="#17322c">
+<link rel="canonical" href="https://iwxt.cn/tutorials/model-4bit/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="4bit 模型量化：压小之后，丢掉了什么？">
+<meta property="og:description" content="改一改刻度和输入，看同样的权重误差为什么有时翻转选择，有时没有。">
+<meta property="og:url" content="https://iwxt.cn/tutorials/model-4bit/">
+<meta property="og:image" content="https://iwxt.cn/uploads/covers/00a211d124f51264c08df42a8531c97561bd2a3eb6ce549551f20ce1b15be238.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2317332c'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='sans-serif' font-size='44' fill='%23ddebcc'%3E4%3C/text%3E%3C/svg%3E">
+<title>4bit 模型量化 · 交互教程</title>
+<style>
+:root{--paper:#fafbf7;--ink:#182e25;--muted:#43544a;--line:#d6dfd1;--green:#214c40;--mint:#ddebcc;--orange:#a64423;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+*{box-sizing:border-box}[hidden]{display:none!important}html{scroll-padding-top:100px}body{margin:0;background:var(--paper);color:var(--ink);font:20px/1.9 var(--sans)}a{color:#1d5941;text-underline-offset:4px}a:hover{color:var(--orange)}button,input,select{font:inherit}button,a,input,summary{-webkit-tap-highlight-color:transparent}button,summary{cursor:pointer}button:disabled{cursor:default;opacity:.5}button,a{touch-action:manipulation}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:3px solid #b66428;outline-offset:4px}::selection{background:var(--mint)}p{margin:0 0 1.1em}h1,h2,h3{line-height:1.5;letter-spacing:-.015em}h1{font-size:clamp(34px,3.5vw,46px);margin:8px 0 25px}h2{font-size:26px;margin:32px 0 18px}h3{font-size:21px;margin:0 0 14px}strong{font-weight:650}code,.formula{font-family:var(--mono);font-size:18px;overflow-wrap:anywhere}code{padding:2px 5px;background:#eaf0e3;border-radius:4px}small{font-size:16px}.muted,.caption{color:var(--muted)}.caption{font-size:17px;margin:16px 0}.skip{position:fixed;left:16px;top:12px;padding:12px;background:white;z-index:100;clip-path:inset(50%);width:1px;height:1px;overflow:hidden}.skip:focus{clip-path:none;width:auto;height:auto}.sidebar{position:fixed;inset:0 auto 0 0;width:266px;display:flex;flex-direction:column;padding:30px 20px;background:#17322c;color:#f4f8ee;z-index:40;overflow-y:auto}.brand{display:flex;gap:12px;align-items:center;color:white;text-decoration:none;font-size:24px;font-weight:650}.brand-icon{width:40px;height:40px;display:grid;place-items:center;border:1px solid #88a293;border-radius:8px;color:#ddebcc;font:26px var(--mono)}.sidebar nav{display:grid;gap:7px;margin-top:30px}.nav-link{display:flex;align-items:center;gap:12px;padding:11px 10px;border-radius:7px;color:#e0ebe3;font-size:17px;text-decoration:none;border:1px solid transparent}.nav-link span{font:16px var(--mono);color:#bbd2c3}.nav-link:hover{background:#25483d;color:white}.nav-link[aria-current="step"]{background:#315743;border-color:#668465;color:white}.sidebar-bottom{margin-top:auto;padding:26px 10px 0;font-size:16px}.sidebar-bottom a{color:#deebdf;display:block;margin-top:16px}.sidebar-bottom p{margin:0}.page-shell{margin-left:266px;min-width:0}.topbar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 38px;background:rgba(250,251,247,.98);border-bottom:1px solid var(--line);font-size:17px}.topbar a{text-decoration:none}.topbar-actions{display:flex;align-items:center;gap:20px}.menu{display:none;min-height:46px;min-width:46px;border:1px solid #98af8d;border-radius:6px;background:transparent;color:var(--ink);font-size:20px}.main{max-width:1120px;margin:auto;padding:38px 46px 50px;min-width:0}.chapter{min-width:0}.chapter:focus{outline:none}.lead{font-size:21px;max-width:850px}.hero-board{background:#e9f0e0;border:1px solid #cbdac0;border-radius:12px;padding:26px;margin:28px 0}.hero-flow{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px}.hero-card{background:white;border:1px solid #b4c7a8;border-radius:8px;padding:22px}.hero-card strong{display:block;font:30px/1.5 var(--mono);color:var(--green);margin-bottom:10px}.hero-card p{font-size:18px;margin:0}.hero-arrow{font-size:28px}.route{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:26px 0;font-size:18px}.route span{background:white;border:1px solid var(--line);padding:7px 12px;border-radius:6px}.route i{font-style:normal;color:var(--muted)}.note{font-size:19px;border-left:3px solid #759764;border-radius:0 7px 7px 0;background:#edf3e5;padding:21px 23px;margin:27px 0}.note.warm{background:#f6eee4;border-color:#ac673f;color:#64432d}.primary,.secondary{display:inline-flex;justify-content:center;align-items:center;min-height:46px;padding:10px 17px;border-radius:6px;font-size:18px;line-height:1.65;text-decoration:none}.primary{background:var(--green);border:1px solid var(--green);color:white}.primary:hover{background:#183b2f;color:white}.secondary{background:white;border:1px solid #98af8d;color:#244a32}.secondary:hover{background:#e9f0df;color:#244a32}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:24px 0}.box,.lab{border:1px solid var(--line);border-radius:12px;background:white;padding:25px;margin:25px 0}.two-col>.box{margin:0;min-width:0}.box p:last-child{margin-bottom:0}.lab>h2:first-child{margin-top:0}.lab p{font-size:19px}.controls{display:flex;align-items:end;flex-wrap:wrap;gap:18px;margin:22px 0}.controls label{display:grid;gap:8px;flex:1;min-width:170px;font-size:18px}.controls label.compact{flex:0 1 180px}.controls input[type=range]{accent-color:var(--green);width:100%;min-height:34px;cursor:pointer}.controls select,.controls input[type=number]{border:1px solid #aabda1;border-radius:6px;padding:10px;background:var(--paper);color:var(--ink);font-size:18px;width:100%;min-height:46px}.controls output{font:18px var(--mono);color:var(--green)}.preset-row,.button-row{display:flex;gap:12px;flex-wrap:wrap;margin:20px 0}.preset-row button{background:white;color:#244a32;border:1px solid #98af8d;border-radius:6px;padding:11px 16px;font-size:18px;min-height:46px}.preset-row button[aria-pressed=true]{background:#e2edd6;border-color:#678852}.table-wrap,.diagram-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:8px;margin:22px 0;scrollbar-color:#8aab7b #eff4e8}.table-wrap table{margin:0;border:0}table{border-collapse:collapse;width:100%;font-size:18px;line-height:1.8}th,td{text-align:left;border-bottom:1px solid var(--line);padding:13px 16px}th{background:#eef3e7;font-weight:650}tbody tr:last-child td{border-bottom:0}caption{text-align:left;padding:12px 16px;font-size:18px;color:var(--muted)}.table-wrap table{min-width:510px}.formula-block{padding:19px 22px;border:1px solid #cbdac0;background:#f2f6ec;border-radius:8px;font:18px/2 var(--mono);overflow-wrap:anywhere;margin:20px 0}.formula-block p{font:inherit;margin:0}.formula-block p+p{margin-top:10px}.diagram-scroll svg{display:block;width:100%;min-width:720px;height:auto;background:#f8faf4}.diagram-scroll text{font-family:var(--sans);font-size:18px;fill:var(--ink)}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:24px 0}.metric{background:#edf3e5;border:1px solid #c5d6b9;border-radius:8px;padding:20px;min-width:0}.metric span{display:block;font-size:17px;margin-bottom:10px}.metric strong{font:27px/1.5 var(--mono);color:#214c40;overflow-wrap:anywhere}.metric p{font-size:17px;margin:8px 0 0}.result{padding:19px 22px;background:#e7f1dc;border:1px solid #b7cba7;border-radius:8px;font-size:19px;margin:22px 0}.result[data-kind=change]{background:#f7eee2;border-color:#d6bca2;color:#643d26}.result p{font-size:inherit;margin:0}.result p+p{margin-top:10px}.score-pair{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:22px 0}.score-card{padding:22px;background:#f2f6ec;border:1px solid #cbdac0;border-radius:8px}.score-card h3{font-size:19px}.score-card strong{font:29px var(--mono);display:block;margin:13px 0}.score-card p{font-size:18px;margin:0}.steps{display:grid;gap:16px;list-style:none;padding:0;margin:26px 0}.steps li{border-left:3px solid #88a674;padding:10px 0 10px 21px}.steps strong{display:block}.steps p{font-size:19px;margin:8px 0 0}.quiz{padding:24px;border:1px solid #adc399;border-radius:10px;background:#f7faf2;margin:32px 0}.quiz h3{font-size:21px}.choices{display:grid;gap:12px}.choices button{border:1px solid #acbfa0;border-radius:6px;padding:13px 16px;background:white;color:#29432b;text-align:left;font-size:18px;min-height:48px}.choices button:hover{background:#edf3e3}.choices button[aria-pressed=true]{border-color:#678852;background:#e0ecd2}.feedback{font-size:19px;color:#294b2c;margin-top:18px}.feedback:empty{display:none}.sources{padding-left:24px;font-size:18px}.sources li{margin-bottom:22px}.sources p{font-size:18px;margin:8px 0 0}.sources a{overflow-wrap:anywhere}.source-cite{font-size:17px;color:var(--muted)}.chapter-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:26px;margin-top:42px}.chapter-footer p{font-size:17px;margin:0}.shade{display:none}.mobile-close{display:none}details{border-top:1px solid var(--line);margin-top:24px;padding-top:20px}summary{font-size:19px;font-weight:600}details p{font-size:18px;margin-top:15px}.glossary{display:grid;grid-template-columns:1fr 1fr;gap:22px}.glossary div{border-bottom:1px solid var(--line);padding:16px 0}.glossary dt{font-size:20px;font-weight:650}.glossary dd{margin:8px 0 0;font-size:18px}.noscript{padding:20px;background:#f6eee4;color:#64432d;font-size:18px}
+@media(max-width:1150px){.main{padding:32px}.topbar{padding:13px 30px}.two-col,.glossary{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}.metric{display:block}.hero-card{padding:18px}.hero-flow{gap:14px}}
+@media(max-width:850px){.page-shell{margin-left:0}.sidebar{transform:translateX(-100%);width:min(310px,88vw);visibility:hidden}.sidebar.open{transform:translateX(0);visibility:visible}.menu,.mobile-close{display:block}.mobile-close{margin-left:auto;background:transparent;border:1px solid #88a293;border-radius:6px;color:white;padding:7px 14px;font-size:18px;min-height:44px}.shade.open{display:block;position:fixed;inset:0;background:#10251b88;border:0;z-index:35}.sidebar-bottom{margin-top:26px}.topbar-meta{display:none}.topbar-actions{gap:16px}.topbar{padding:12px 24px}.main{padding:32px 28px}}
+@media(max-width:600px){body{font-size:18px;line-height:1.9}.main{padding:28px 19px 38px}.topbar{padding:10px 16px;gap:12px;font-size:16px}.topbar-actions{gap:13px}.topbar-actions a{font-size:16px}.topbar-actions .download-label{display:none}h1{font-size:34px}h2{font-size:24px}h3{font-size:21px}.lead{font-size:19px}.hero-board{padding:18px}.hero-flow{grid-template-columns:1fr}.hero-arrow{transform:rotate(90deg);justify-self:center;line-height:1}.hero-card strong{font-size:28px}.hero-card p{font-size:18px}.box,.lab{padding:19px}.note{font-size:18px;padding:18px}.metrics{gap:14px}.metric{padding:18px}.score-pair{grid-template-columns:1fr}.controls{gap:17px}.controls label{min-width:100%;font-size:18px}.controls label.compact{flex-basis:100%}.formula-block{padding:16px;font-size:17px}.quiz{padding:19px}.choices button{font-size:18px}.caption,.source-cite{font-size:17px}.route{font-size:17px}.table-wrap{margin-right:0}.preset-row button{font-size:17px;padding:10px 13px}.chapter-footer .primary{max-width:100%}}
+@media(prefers-reduced-motion:no-preference){.sidebar{transition:transform .18s ease,visibility .18s}.progress-fill{transition:width .2s}}
+@media print{.sidebar,.topbar,.chapter-footer,.skip,.shade,.controls,.preset-row,.button-row,.quiz,#download{display:none!important}.page-shell{margin:0}.main{max-width:none;padding:0}.chapter[hidden]{display:block!important}.chapter{break-before:page}h1{font-size:28px}body{font-size:14pt}.box,.lab{break-inside:avoid}.diagram-scroll,.table-wrap{overflow:visible}.diagram-scroll svg{min-width:0}.table-wrap table{min-width:0}.note{font-size:14pt}.source-cite,.caption{font-size:12pt}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到教程正文</a>
+<button class="shade" id="shade" aria-label="关闭章节目录" tabindex="-1"></button>
+<aside class="sidebar" id="sidebar" aria-label="教程章节">
+ <button class="mobile-close" id="close-menu">关闭目录</button>
+ <a class="brand" href="#start"><span class="brand-icon" aria-hidden="true">4</span>数值与选择</a>
+ <nav id="chapters" aria-label="章节导航">
+  <a class="nav-link" href="#start"><span>01</span>先弄清丢了什么</a>
+  <a class="nav-link" href="#grid"><span>02</span>16 个刻度怎么存</a>
+  <a class="nav-link" href="#choice"><span>03</span>亲手算一次翻转</a>
+  <a class="nav-link" href="#error"><span>04</span>误差怎样影响选择</a>
+  <a class="nav-link" href="#groups"><span>05</span>把刻度用在合适处</a>
+  <a class="nav-link" href="#calibration"><span>06</span>校准在补什么</a>
+  <a class="nav-link" href="#cost"><span>07</span>体积、内存与速度</a>
+  <a class="nav-link" href="#recap"><span>08</span>带走什么、怎样验证</a>
+ </nav>
+ <div class="sidebar-bottom"><p id="chapter-position">章节 1 / 8</p><a href="../" id="catalog-link">← 全部交互教程</a><a href="https://www.bilibili.com/video/BV1AFpB6TE3o/" target="_blank" rel="noopener">观看原视频 ↗</a></div>
+</aside>
+<div class="page-shell">
+ <header class="topbar"><button class="menu" id="menu" aria-controls="sidebar" aria-expanded="false" aria-label="打开章节目录">☰</button><span class="topbar-meta">4bit 模型量化</span><div class="topbar-actions"><a href="../../" id="blog-link">← 返回博客</a><a href="./index.html" download="4bit模型量化_交互教程.html" id="download">下载<span class="download-label">离线版</span></a></div></header>
+ <noscript><p class="noscript">当前浏览器关闭了 JavaScript。下面保留全部正文；交互实验需要启用 JavaScript 才能计算。</p></noscript>
+ <main class="main" id="main" tabindex="-1">
+ <section class="chapter" id="start" tabindex="-1" aria-labelledby="title-start">
+  <h1 id="title-start">模型压到 4bit，<br>丢掉的到底是什么？</h1>
+  <p class="lead">直接丢掉的，是一部分<strong>区分权重数值的精细程度</strong>。它会不会影响回答，要看这些近似值在具体输入里怎样参与计算。</p>
+  <div class="hero-board"><div class="hero-flow"><div class="hero-card"><strong>2.4 ≠ 2.1</strong><p>原来是两个不同的权重。</p></div><span class="hero-arrow" aria-hidden="true">→</span><div class="hero-card"><strong>2 = 2</strong><p>若都舍入到整数 2，原来的区别就消失了。</p></div></div></div>
+  <h2>为什么还要这样压缩？</h2>
+  <p>大模型有很多权重。每个权重占的位数少一点，合起来就能省下大量存储和内存传输，让原本装不下的模型更有机会运行起来。</p>
+  <p>这里讨论的是<strong>权重量化</strong>：权重的数量通常不变，改的是它们的编码与还原方式。它不等于删掉四分之三的参数，也不能被解释成只剩四分之一的知识。</p>
+  <div class="note">把 2 写成 2.000000，不会告诉我们它原来是 2.4 还是 2.1。后面用更高精度计算，可以算得更细，却不能凭空找回已经合并的区别。</div>
+  <h2>沿着一条计算链理解</h2>
+  <div class="route" aria-label="学习路线"><span>权重数值</span><i aria-hidden="true">→</i><span>有限刻度</span><i aria-hidden="true">→</i><span>计算偏差</span><i aria-hidden="true">→</i><span>候选排序</span><i aria-hidden="true">→</i><span>实际任务</span></div>
+  <p>你只需要会乘法和加法。我们会沿用视频的四个权重、两组输入，再动手调整刻度和分组，看看哪些变化可以直接计算，哪些必须拿真实模型去测试。</p>
+  <p class="caption">根据过拟合青年的视频整理。片中算例与本页新增实验均为教学演示，不是真实大模型的效果或速度评测。<a href="#recap">查看来源与补充说明</a>。</p>
+ </section>
+
+ <section class="chapter" id="grid" tabindex="-1" aria-labelledby="title-grid">
+  <h1 id="title-grid">4 个比特，只有 16 种编码。</h1>
+  <p>一个比特能记 0 或 1。4 个比特一共有 2 × 2 × 2 × 2 = 16 种组合。<strong>编码本身还不是权重数值</strong>，还要约定怎样把它还原成一个数。</p>
+  <p>下面选一种均匀、有符号的 INT4 教学方案：整数代码 <code>q</code> 从 −8 到 7，再乘上间隔 <code>s</code>，还原成近似权重。这个间隔通常叫 <strong>scale（缩放因子）</strong>。</p>
+  <div class="formula-block"><p>整数代码 q = 裁剪到 [−8, 7]（原权重 w ÷ 间隔 s 的最近整数）</p><p>还原权重 ŵ = q × s</p></div>
+  <div class="lab" id="grid-lab">
+   <h2>把两个数放上同一把尺</h2><p>初始的 2.4 与 2.1 都落在 2 上。改动原值或间隔，观察它们何时还能区分。</p>
+   <div class="controls"><label>原权重一 <output id="grid-w1-value">2.4</output><input id="grid-w1" type="range" min="-8" max="8" step="0.01" value="2.4"></label><label>原权重二 <output id="grid-w2-value">2.1</output><input id="grid-w2" type="range" min="-8" max="8" step="0.01" value="2.1"></label><label class="compact" for="grid-scale">刻度间隔 s<select id="grid-scale"><option value="0.1">0.1</option><option value="0.5">0.5</option><option value="1" selected>1</option><option value="2">2</option></select></label></div>
+   <div class="diagram-scroll" tabindex="0" aria-label="16 个可还原权重的刻度图，可左右滑动"><svg id="grid-svg" viewBox="0 0 720 180" role="img" aria-label="有符号 INT4 的 16 个格点"></svg></div>
+   <p class="caption" id="grid-range"></p>
+   <div class="table-wrap" tabindex="0" aria-label="量化前后数值比较"><table><thead><tr><th scope="col">原权重</th><th scope="col">代码 q</th><th scope="col">4 位编码</th><th scope="col">还原权重</th><th scope="col">误差 ŵ − w</th></tr></thead><tbody id="grid-table"></tbody></table></div>
+   <div class="result" id="grid-result" aria-live="polite"></div>
+  </div>
+  <p>间隔更小，范围内的刻度通常更细，但 16 个位置覆盖的范围也会更窄。超出范围时会发生<strong>裁剪</strong>，数值被限制到端点；这时只谈舍入精度就不够了。</p>
+  <p class="source-cite">本实验采用对称 INT4，零点为 0；恰好在中间时取最近偶数。4 位编码按二进制补码显示。真实方案也可以使用零点、非均匀映射或 FP4/NF4，4bit 本身不唯一规定这些规则。参见 <a href="https://onnx.ai/onnx/operators/onnx__QuantizeLinear.html" target="_blank" rel="noopener">ONNX 量化定义</a>与 <a href="https://docs.nvidia.com/deeplearning/tensorrt/11.4.1/inference-library/quantized-types-schemes.html" target="_blank" rel="noopener">NVIDIA 量化方案</a>。</p>
+  <div class="quiz" data-quiz="codes"><h3>想一想：某个模型按组使用不同 scale，整个模型只能出现 16 种还原权重吗？</h3><div class="choices"><button data-answer="yes" aria-pressed="false">只能，因为每个代码都是 4bit。</button><button data-answer="no" aria-pressed="false">不一定，不同组可以用不同刻度。</button><button data-answer="unknown" aria-pressed="false">还不确定。</button></div><p class="feedback" aria-live="polite"></p></div>
+ </section>
+
+ <section class="chapter" id="choice" tabindex="-1" aria-labelledby="title-choice">
+  <h1 id="title-choice">四个权重，算一次选择翻转。</h1>
+  <p>先把复杂模型缩成一个打分器。输入是两个数 <code>x₁、x₂</code>；候选 A 和 B 各有两个权重。分别做两次乘法，再相加，选得分更高的候选。</p>
+  <div class="formula-block"><p>A 得分 = x₁ × 1.4 + x₂ × 2.4</p><p>B 得分 = x₁ × 1.6 + x₂ × 2.1</p></div>
+  <div class="lab" id="choice-lab"><h2>先用片中的两道题</h2><p>权重固定。这里改变的是当前输入；模型权重不会因为你切换输入而重新量化。</p>
+   <div class="preset-row"><button data-case="flip" aria-pressed="true">第一题：输入 [1, 2]</button><button data-case="stable" aria-pressed="false">第二题：输入 [1, 0]</button><button id="reset-case">恢复片中设置</button></div>
+   <div class="controls"><label>输入 x₁ <output id="x1-value">1</output><input id="x1" type="range" min="-3" max="3" step="0.1" value="1"></label><label>输入 x₂ <output id="x2-value">2</output><input id="x2" type="range" min="-3" max="3" step="0.1" value="2"></label><label class="compact">刻度间隔<select id="choice-scale"><option value="0.1">0.1</option><option value="0.5">0.5</option><option value="1" selected>1（片中设置）</option></select></label></div>
+   <div class="table-wrap" tabindex="0" aria-label="四个权重量化前后比较"><table><thead><tr><th scope="col">候选</th><th scope="col">原权重</th><th scope="col">近似权重</th><th scope="col">逐项误差</th></tr></thead><tbody id="weights-table"></tbody></table></div>
+   <div class="score-pair"><div class="score-card"><h3>量化前</h3><strong id="score-before"></strong><p id="calc-before"></p></div><div class="score-card"><h3>量化后</h3><strong id="score-after"></strong><p id="calc-after"></p></div></div>
+   <div class="result" id="choice-result" aria-live="polite"></div>
+  </div>
+  <div class="note warm">这里观察的是候选排序，不知道哪一个候选才是正确答案。A 变成 B，不自动表示回答变差，也不能从一次翻转推算整个模型的能力损失。</div>
+  <p class="caption">四个权重与两组预设输入来自原视频约 01:54–04:20 的手工算例。滑动输入、调整间隔是本页增加的探索方式。</p>
+ </section>
+
+ <section class="chapter" id="error" tabindex="-1" aria-labelledby="title-error">
+  <h1 id="title-error">误差要遇到输入，才会影响这次计算。</h1>
+  <p>第一题中，A 的权重从 [1.4, 2.4] 变成 [1, 2]，两个误差都是 −0.4。输入是 [1, 2]，所以分数变化不是 −0.8，而是：</p>
+  <div class="formula-block">A 的分数变化 = 1 × (−0.4) + 2 × (−0.4) = −1.2</div>
+  <p>B 的权重误差则是 [+0.4, −0.1]。一正一负会抵消一部分：</p>
+  <div class="formula-block">B 的分数变化 = 1 × (+0.4) + 2 × (−0.1) = +0.2</div>
+  <p>原来 A 只领先 0.4 分；这次 A 减少 1.2，B 增加 0.2，领先差就从 +0.4 变成 −1，排序因此翻转。</p>
+  <div class="lab"><h2>比较两个候选的领先差</h2><p>此处跟随上一章的输入与刻度。回去滑动输入，再来观察各项误差。</p><p id="error-current" class="caption"></p><div class="table-wrap" tabindex="0" aria-label="误差对得分差的贡献"><table><thead><tr><th scope="col">项目</th><th scope="col">第一项贡献</th><th scope="col">第二项贡献</th><th scope="col">合计</th></tr></thead><tbody id="error-table"></tbody></table></div><div class="result" id="margin-result" aria-live="polite"></div><button class="secondary" data-go="choice">← 回去调整输入</button></div>
+  <h2>为什么第二题不翻转？</h2>
+  <p>把输入换成 [1, 0]，第二个权重的影响直接乘上 0。量化前 B 的 1.6 高于 A 的 1.4；量化后 B 的 2 仍高于 A 的 1。权重改了，排名却保持不变。</p>
+  <div class="note">关键不只有“误差有多大”，还要看<strong>输入怎样放大或抵消误差，以及候选原来相差多少</strong>。原本非常接近的候选，较小的扰动也可能改变排序。</div>
+  <p>真实语言模型有很多层，还会连续生成 token。某一步输出不同，后续读到的上下文可能随之改变。这里的固定输入点积只解释局部机制，不能替代整段生成与真实任务测试。</p>
+  <div class="quiz" data-quiz="quality"><h3>如果量化后从 A 改选 B，能直接断言效果下降吗？</h3><div class="choices"><button data-answer="yes" aria-pressed="false">能，输出改变就说明原来更好。</button><button data-answer="no" aria-pressed="false">不能，还要看任务的正确标准。</button><button data-answer="unknown" aria-pressed="false">还不确定。</button></div><p class="feedback" aria-live="polite"></p></div>
+ </section>
+
+ <section class="chapter" id="groups" tabindex="-1" aria-labelledby="title-groups">
+  <h1 id="title-groups">格子有限，就把尺用在合适的地方。</h1>
+  <p>对于 −0.24、0.14、0.31，间隔为 1 的尺会把它们都舍入到 0；间隔换成 0.1，就能分出 −0.2、0.1、0.3。这是视频里安排刻度的例子。</p>
+  <p>但如果同一组里还有 24，就不能只顾小数。把整把尺拉宽，能装下大数，却可能让许多小权重挤在同一格。一个办法是<strong>分组量化</strong>：每组单独选 scale。</p>
+  <div class="lab"><h2>让一个离群值撑大范围</h2><p>这是新增的 12 个权重示例。前 8 个较小，后 4 个较大。保持顺序，只改变每组包含多少个权重。</p><div class="controls"><label for="group-size">每组权重数<select id="group-size"><option value="12">12：全部共用一把尺</option><option value="4">4：分成三组</option><option value="2">2：分成六组</option></select></label></div><div class="table-wrap" tabindex="0" aria-label="分组前后权重及误差"><table><thead><tr><th scope="col">原权重</th><th scope="col">所属组</th><th scope="col">该组间隔</th><th scope="col">还原权重</th><th scope="col">绝对误差</th></tr></thead><tbody id="group-table"></tbody></table></div><div class="metrics"><div class="metric"><span>分组数量</span><strong id="group-count"></strong></div><div class="metric"><span>平均绝对误差</span><strong id="group-mae"></strong><p>仅针对这 12 个数。</p></div><div class="metric"><span>另外保存的 scale</span><strong id="group-overhead"></strong><p>此例假设每组 1 个 FP16 scale。</p></div></div><p class="caption">本例用“组内最大绝对值 ÷ 7”选择 scale，零值组另作处理。分组不会重排权重；实际格式的分组位置、算法和元数据可以不同。</p></div>
+  <p>分组让其他组不必迁就这个离群值，但离群值所在的组仍可能受影响。更小的组也要保存更多 scale，有些方案还保存 zero point（零点），会增加开销。</p>
+  <div class="note">更灵活的刻度提供了改善近似的空间；不能因此保证每个输入、每项任务都更好。上一章已经看到，参数误差怎样影响输出，还取决于输入与候选得分差。</div>
+  <p class="source-cite">粒度与缩放开销的取舍参见 <a href="https://docs.nvidia.com/deeplearning/tensorrt/11.4.1/inference-library/quantized-types-workflows.html" target="_blank" rel="noopener">NVIDIA 量化工作流</a>。</p>
+ </section>
+
+ <section class="chapter" id="calibration" tabindex="-1" aria-labelledby="title-calibration">
+  <h1 id="title-calibration">校准在保留计算结果，不是在找回原小数。</h1>
+  <p>只看权重的舍入距离，还不知道它对输出有多大影响。<strong>校准数据</strong>提供一些代表性输入，让量化过程观察：哪些近似会让层输出偏得更多。</p>
+  <ol class="steps"><li><strong>先看原来怎么算。</strong><p>给一层送入校准样本，记录原权重产生的输出。</p></li><li><strong>量化一部分，再看偏了多少。</strong><p>已经落到格点上的权重会引入输出偏差。</p></li><li><strong>调整尚未量化的权重。</strong><p>尽量减轻偏差，然后继续量化；最终仍须得到受格式约束的权重。</p></li></ol>
+  <p>GPTQ 就利用校准输入及相关的二阶信息，近似求解逐层输出重构问题。它优化的是量化层输出与原层输出的差异，不能保证恢复原权重、全局最优或所有任务表现。</p>
+  <p class="source-cite">依据 <a href="https://arxiv.org/html/2210.17323v2#S3" target="_blank" rel="noopener">GPTQ 原论文第 3 节的目标</a>与<a href="https://arxiv.org/html/2210.17323v2#S4" target="_blank" rel="noopener">第 4 节算法</a>。</p>
+  <div class="lab"><h2>只补一条样本，会发生什么？</h2><p>下面是新增的<strong>单样本补偿示意，不是 GPTQ 实现</strong>。固定 A 的原权重 [1.4, 2.4]，先把第一个权重量化为 1，再允许调整第二个权重，试着补回当前样本的输出。</p><div class="controls"><label for="calibration-input">用于补偿的输入<select id="calibration-input"><option value="1,2">[1, 2]：可以借第二项补偿</option><option value="1,1">[1, 1]：换一条校准样本</option><option value="1,0">[1, 0]：第二项不起作用</option></select></label></div><div class="table-wrap" tabindex="0" aria-label="单样本补偿过程"><table><thead><tr><th scope="col">步骤</th><th scope="col">两个权重</th><th scope="col">校准输入的输出</th><th scope="col">另一个输入 [0, 1]</th></tr></thead><tbody id="calibration-table"></tbody></table></div><div class="result" id="calibration-result" aria-live="polite"></div><p class="caption">先把一个浮点权重调到能补偿，不代表量化结束。它还要落到有限刻度上；对一条样本有效，也不保证对其他输入有效。</p></div>
+  <h2>校准数据应该怎样理解？</h2><p>校准样本用来帮助估计量化带来的影响，不等于把模型完整训练一次，也不可能覆盖今后的所有问题。量化后的模型是否够用，仍要在自己的任务上单独验证。</p>
+ </section>
+
+ <section class="chapter" id="cost" tabindex="-1" aria-labelledby="title-cost">
+  <h1 id="title-cost">文件变小、内存变少、运行变快，要分开看。</h1>
+  <p>同样数量的权重，若代码从每个 16bit 改为 4bit，<strong>纯代码存储理论上是原来的四分之一</strong>。这还没算 scale、零点、未量化张量和文件结构。</p>
+  <div class="lab"><h2>算的是哪一部分空间？</h2><div class="controls"><label>参数量（十亿）<output id="params-value">7</output><input id="params" type="range" min="1" max="70" step="1" value="7"></label><label class="compact">每组权重数<select id="storage-group"><option value="32">32</option><option value="64">64</option><option value="128" selected>128</option><option value="256">256</option></select></label><label class="compact">每组零点开销<select id="zero-bits"><option value="0">无：对称方案</option><option value="4">4bit：示例假设</option><option value="16">16bit：示例假设</option></select></label><label>其余运行占用（GB）<output id="extra-value">3</output><input id="extra" type="range" min="0" max="32" step="0.5" value="3"></label></div>
+   <div class="metrics"><div class="metric"><span>FP16 纯权重</span><strong id="fp16-gb"></strong><p>作为 16bit 对照。</p></div><div class="metric"><span>4bit 纯代码</span><strong id="code-gb"></strong><p>只算权重代码。</p></div><div class="metric"><span>4bit 代码 + 元数据</span><strong id="total-gb"></strong><p id="metadata-gb"></p></div></div><div class="result" id="memory-result" aria-live="polite"></div><p class="caption">GB 按 10⁹ 字节计算。此例假设全部权重均可量化、每组 1 个 16bit scale；不含对齐、文件结构和其他张量。其余运行占用由你假设，两种方案暂设相同，不是设备测量，也不会由参数量自动推算。</p>
+   <details><summary>查看这次估算的公式</summary><div class="formula-block"><p>纯代码字节 = 权重数量 × 4 ÷ 8</p><p>元数据字节 = 向上取整（权重数量 ÷ 组大小）×（16 + 零点位数）÷ 8</p><p>假设运行占用 = 权重与元数据 + 其余运行占用</p></div><p>实际推理还需要激活、中间缓冲、KV cache 等。上下文长度、批量和运行框架都会影响它们，weight-only 量化不会自动把这些部分也改成 4bit。</p></details>
+  </div>
+  <h2>存成 4bit，不代表每一步都用 4bit 算。</h2><p>例如 NVIDIA TensorRT 的一种 weight-only 路径，把权重以 INT4 保存；计算时在内核里解量化，输入与点积计算保持较高精度。它减少权重读取量，但不会把原来已经舍入的权重变回原始值。</p>
+  <div class="route" aria-label="一种权重量化运行路径"><span>读入 4bit 代码</span><i aria-hidden="true">→</i><span>结合 scale 解量化</span><i aria-hidden="true">→</i><span>用近似权重计算</span></div>
+  <p class="source-cite">参见 <a href="https://docs.nvidia.com/deeplearning/tensorrt/11.4.1/inference-library/quantized-types-explicit-quantization.html#weight-only-quantization" target="_blank" rel="noopener">TensorRT 的 weight-only 实现说明</a>与 <a href="https://nvidia.github.io/TensorRT-LLM/reference/memory.html" target="_blank" rel="noopener">TensorRT-LLM 内存构成</a>。这是具体实现示例，不是全部 4bit 格式的统一规定。</p>
+  <div class="box"><h3>速度要看完整路径</h3><p>如果瓶颈主要是权重的内存读取，少读数据可能带来加速；但解量化也有开销，硬件、内核、算子融合、批量和上下文都会影响实际结果。不能把“代码存储减少到四分之一”直接换算成“必然快四倍”。</p></div>
+ </section>
+
+ <section class="chapter" id="recap" tabindex="-1" aria-labelledby="title-recap">
+  <h1 id="title-recap">少存了多少位，不能直接换算成少了多少能力。</h1>
+  <p class="lead">量化把许多不同的原值合并到有限格点上。回答效果取决于这些近似怎样改变真实计算与生成过程；空间和速度也各有自己的边界。</p>
+  <dl class="glossary"><div><dt>权重量化</dt><dd>用较少位数及配套映射，保存权重的近似表示。</dd></div><div><dt>scale</dt><dd>把代码还原为数值时用的缩放因子；均匀方案中决定刻度间隔。</dd></div><div><dt>分组</dt><dd>让不同组使用自己的刻度，代价是多保存一些元数据。</dd></div><div><dt>校准</dt><dd>用有限输入样本观察量化影响，帮助保留层输出。</dd></div></dl>
+  <h2>真要选模型，就用自己的任务比较</h2>
+  <ol class="steps"><li><strong>回答效果</strong><p>先准备固定问题和判断标准，比较同一个模型的原精度版与量化版。保持提示词和生成设置尽量一致；有采样时，用固定种子或多次运行区分量化影响与随机波动。</p></li><li><strong>内存占用</strong><p>在同一设备、框架、上下文长度和批量下，记录实际峰值占用，不用下载文件大小代替。</p></li><li><strong>运行速度</strong><p>分别测首个 token 等待时间与后续生成吞吐，使用相同负载；确认运行框架对该量化格式有合适的内核。</p></li></ol>
+  <div class="quiz" data-quiz="transfer"><h3>4bit 文件只有原来的约四分之一大，能推出哪一项？</h3><div class="choices"><button data-answer="speed" aria-pressed="false">在任何设备上，推理都会快四倍。</button><button data-answer="knowledge" aria-pressed="false">模型原来学到的知识只剩四分之一。</button><button data-answer="storage" aria-pressed="false">存储减少了，效果和速度还要分别测。</button><button data-answer="unknown" aria-pressed="false">还不确定。</button></div><p class="feedback" aria-live="polite"></p></div>
+  <h2>来源与本页补充</h2>
+  <ul class="sources"><li><a href="https://www.bilibili.com/video/BV1AFpB6TE3o/" target="_blank" rel="noopener">过拟合青年：模型压到 4bit 之后，究竟丢掉了什么？</a><p>原视频约 7 分 46 秒。已核对公开简介、章节和对应画面；四个权重、两组输入及小数刻度例子来自片中。00:47 编码与刻度；01:54 第一道题；03:24 第二道题；04:51 刻度安排；05:30 校准；06:04 运行成本。</p></li><li><a href="https://arxiv.org/html/2210.17323v2" target="_blank" rel="noopener">GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers</a><p>第 3–4 节的层输出重构目标、输入相关的二阶信息与剩余权重补偿。本页没有实现或复现 GPTQ，也未运行模型评测。</p></li><li><a href="https://onnx.ai/onnx/operators/onnx__QuantizeLinear.html" target="_blank" rel="noopener">ONNX QuantizeLinear</a>；<a href="https://docs.nvidia.com/deeplearning/tensorrt/11.4.1/inference-library/quantized-types-schemes.html" target="_blank" rel="noopener">NVIDIA 量化方案</a><p>用于核对缩放、零点、整数范围和不同格式的边界。</p></li><li><a href="https://docs.nvidia.com/deeplearning/tensorrt/11.4.1/inference-library/quantized-types-workflows.html" target="_blank" rel="noopener">NVIDIA 量化工作流</a>；<a href="https://docs.nvidia.com/deeplearning/tensorrt/11.4.1/inference-library/quantized-types-explicit-quantization.html#weight-only-quantization" target="_blank" rel="noopener">Weight-only 量化</a>；<a href="https://nvidia.github.io/TensorRT-LLM/reference/memory.html" target="_blank" rel="noopener">TensorRT-LLM 内存说明</a><p>用于核对分组开销、权重存储与计算精度的区别，以及运行内存构成。原视频简介里的旧版 NVIDIA 链接当前不可用，此处使用可打开的新版官方页面。</p></li></ul>
+  <div class="note">滑动刻度、12 个权重的分组表、单样本补偿表和内存计算器是本页新增的教学演示。它们的数值可以复算，但不能当作真实模型的质量、显存或速度成绩。小测只检查当前问题，不代表已经长期掌握。</div>
+  <p>想回到关键现象，可以再次切换两组输入：<button class="secondary" data-go="choice">重算四个权重 →</button></p>
+ </section>
+ <footer class="chapter-footer"><button class="secondary" id="previous">← 上一章</button><p id="footer-position">1 / 8</p><button class="primary" id="next">下一章 →</button></footer>
+ </main>
+</div>
+<script id="quantization-math">
+'use strict';
+const QuantMath = (() => {
+  function roundEven(value) {
+    const floor = Math.floor(value), part = value - floor;
+    if (Math.abs(part - 0.5) < 1e-10) return floor % 2 === 0 ? floor : floor + 1;
+    return Math.round(value);
+  }
+  function encode(weight, scale) {
+    const rounded = roundEven(weight / scale);
+    const q = Math.max(-8, Math.min(7, rounded));
+    const value = q * scale;
+    return { q, value, error: value - weight, clipped: q !== rounded, code: ((q + 16) % 16).toString(2).padStart(4, '0') };
+  }
+  function dot(a, b) { return a.reduce((sum, value, i) => sum + value * b[i], 0); }
+  function winner(a, b) { return Math.abs(a - b) < 1e-10 ? '并列' : a > b ? 'A' : 'B'; }
+  function compare(a, b, input, scale) {
+    const qa = a.map(w => encode(w, scale)), qb = b.map(w => encode(w, scale));
+    const original = [dot(a, input), dot(b, input)];
+    const quantized = [dot(qa.map(w => w.value), input), dot(qb.map(w => w.value), input)];
+    return { qa, qb, original, quantized, before: winner(...original), after: winner(...quantized), originalMargin: original[0] - original[1], quantizedMargin: quantized[0] - quantized[1], marginErrors: qa.map((w, i) => w.error - qb[i].error) };
+  }
+  function grouped(weights, size) {
+    const scales = [], quantized = [], groups = [];
+    for (let i = 0; i < weights.length; i += size) {
+      const current = weights.slice(i, i + size);
+      const max = Math.max(...current.map(Math.abs));
+      const scale = max === 0 ? 1 : max / 7;
+      scales.push(scale);
+      for (const weight of current) { quantized.push(encode(weight, scale).value); groups.push(scales.length); }
+    }
+    const mae = weights.reduce((sum, weight, i) => sum + Math.abs(weight - quantized[i]), 0) / weights.length;
+    return { scales, quantized, groups, mae };
+  }
+  function compensate(weights, input, scale) {
+    const first = [encode(weights[0], scale).value, weights[1]];
+    const possible = Math.abs(input[1]) > 1e-10;
+    const adjusted = [first[0], possible ? weights[1] + (weights[0] - first[0]) * input[0] / input[1] : weights[1]];
+    return { first, adjusted, final: adjusted.map(w => encode(w, scale).value), possible };
+  }
+  function storage(count, bits, groupSize, scaleBits, zeroBits) {
+    const codeGB = count * bits / 8 / 1e9;
+    const metadataGB = Math.ceil(count / groupSize) * (scaleBits + zeroBits) / 8 / 1e9;
+    return { codeGB, metadataGB, totalGB: codeGB + metadataGB, fp16GB: count * 16 / 8 / 1e9, bitsPerWeight: (codeGB + metadataGB) * 8 * 1e9 / count };
+  }
+  return { encode, dot, compare, grouped, compensate, storage };
+})();
+</script>
+<script id="tutorial-app">
+'use strict';
+(() => {
+const $ = selector => document.querySelector(selector);
+const $$ = selector => [...document.querySelectorAll(selector)];
+const f = (n, places = 3) => (Math.abs(n) < 1e-10 ? 0 : n).toFixed(places).replace(/\.?0+$/, '');
+const signed = n => (n >= 0 ? '+' : '−') + f(Math.abs(n));
+const weightA = [1.4, 2.4], weightB = [1.6, 2.1];
+const chapterIds = $$('.chapter').map(el => el.id);
+let current = 0;
+$('.skip').addEventListener('click', event => { event.preventDefault(); $('#main').focus(); window.scrollTo({ top: 0, behavior: 'instant' }); });
+function openMenu(open) {
+  $('#sidebar').classList.toggle('open', open); $('#shade').classList.toggle('open', open);
+  $('#menu').setAttribute('aria-expanded', String(open));
+  if (open) $('#close-menu').focus();
+}
+$('#menu').addEventListener('click', () => openMenu(true));
+$('#close-menu').addEventListener('click', () => { openMenu(false); $('#menu').focus(); });
+$('#shade').addEventListener('click', () => { openMenu(false); $('#menu').focus(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $('#sidebar').classList.contains('open')) { openMenu(false); $('#menu').focus(); }
+  if (e.key === 'Tab' && $('#sidebar').classList.contains('open') && window.matchMedia('(max-width:850px)').matches) {
+    const focusable = [...$('#sidebar').querySelectorAll('a,button')], first = focusable[0], last = focusable.at(-1);
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+});
+function showChapter(id, focus = true) {
+  if (!chapterIds.includes(id)) id = 'start';
+  current = chapterIds.indexOf(id);
+  $$('.chapter').forEach(el => { el.hidden = el.id !== id; });
+  $$('.nav-link').forEach(el => { if (el.hash === '#' + id) el.setAttribute('aria-current', 'step'); else el.removeAttribute('aria-current'); });
+  $('#chapter-position').textContent = '章节 ' + (current + 1) + ' / ' + chapterIds.length;
+  $('#footer-position').textContent = (current + 1) + ' / ' + chapterIds.length;
+  $('#previous').disabled = current === 0; $('#next').disabled = current === chapterIds.length - 1;
+  $('#next').textContent = current === chapterIds.length - 2 ? '回顾与来源 →' : '下一章 →';
+  document.title = $('#' + id + ' h1').textContent + ' · 4bit 量化';
+  openMenu(false);
+  if (focus) { $('#' + id).focus({ preventScroll: true }); window.scrollTo({ top: 0, behavior: 'instant' }); }
+}
+function go(id) { if (location.hash === '#' + id) showChapter(id); else location.hash = id; }
+$$('[data-go]').forEach(button => button.addEventListener('click', () => go(button.dataset.go)));
+$$('.nav-link,.brand').forEach(link => link.addEventListener('click', () => { if (link.hash === location.hash) showChapter(link.hash.slice(1)); }));
+$('#previous').addEventListener('click', () => go(chapterIds[Math.max(0, current - 1)]));
+$('#next').addEventListener('click', () => go(chapterIds[Math.min(chapterIds.length - 1, current + 1)]));
+window.addEventListener('hashchange', () => showChapter(location.hash.slice(1)));
+window.addEventListener('beforeprint', () => $$('.chapter').forEach(el => { el.hidden = false; }));
+window.addEventListener('afterprint', () => showChapter(chapterIds[current], false));
+if (location.protocol === 'file:') { $('#download').hidden = true; $('#blog-link').href = 'https://iwxt.cn/'; $('#catalog-link').href = 'https://iwxt.cn/tutorials/'; }
+
+function renderGrid() {
+  const weights = [Number($('#grid-w1').value), Number($('#grid-w2').value)], scale = Number($('#grid-scale').value);
+  const encoded = weights.map(w => QuantMath.encode(w, scale));
+  $('#grid-w1-value').textContent = f(weights[0]); $('#grid-w2-value').textContent = f(weights[1]);
+  const ticks = Array.from({ length: 16 }, (_, i) => {
+    const q = i - 8, x = 48 + i * 41.6, active = encoded.some(e => e.q === q);
+    return '<line x1="' + x + '" y1="78" x2="' + x + '" y2="102" stroke="#527043" stroke-width="2"/><circle cx="' + x + '" cy="90" r="' + (active ? 7 : 3) + '" fill="' + (active ? '#a64423' : '#527043') + '"/><text x="' + x + '" y="136" text-anchor="middle">' + f(q * scale) + '</text>';
+  }).join('');
+  $('#grid-svg').innerHTML = '<title>16 个格点，间隔 ' + f(scale) + '</title><text x="36" y="38">16 个可还原数值 · 橙点是当前落点</text><line x1="48" y1="90" x2="672" y2="90" stroke="#527043" stroke-width="2"/>' + ticks;
+  $('#grid-range').textContent = '间隔 ' + f(scale) + '，范围 [' + f(-8 * scale) + ', ' + f(7 * scale) + ']。刻度图可左右滑动，完整结果见下表。';
+  $('#grid-table').innerHTML = weights.map((w, i) => '<tr><td>' + f(w) + '</td><td>' + encoded[i].q + '</td><td><code>' + encoded[i].code + '</code></td><td>' + f(encoded[i].value) + '</td><td>' + signed(encoded[i].error) + '</td></tr>').join('');
+  const clipped = encoded.some(e => e.clipped), same = encoded[0].q === encoded[1].q;
+  $('#grid-result').dataset.kind = clipped ? 'change' : 'normal';
+  $('#grid-result').textContent = clipped ? '出现裁剪：至少一个数的最近整数代码越过了范围，被限制到端点。减小间隔未必让它更准确。' : same && Math.abs(weights[0] - weights[1]) > 1e-10 ? '两个不同原值，保存成了同一个代码。只剩这份代码与 scale，无法判断原来是哪一个。' : same ? '原值相同，落点也相同。试着让两个原值略有区别。' : '这两个原值落在不同刻度上，当前仍能区分；每个还原值与原值的差见最后一列。';
+}
+['#grid-w1','#grid-w2','#grid-scale'].forEach(id => $(id).addEventListener('input', renderGrid));
+
+function renderChoice() {
+  const input = [Number($('#x1').value), Number($('#x2').value)], scale = Number($('#choice-scale').value);
+  const r = QuantMath.compare(weightA, weightB, input, scale);
+  $('#x1-value').textContent = f(input[0]); $('#x2-value').textContent = f(input[1]);
+  $$('[data-case]').forEach(button => button.setAttribute('aria-pressed', String(input[0] === 1 && input[1] === (button.dataset.case === 'flip' ? 2 : 0))));
+  $('#weights-table').innerHTML = [weightA,weightB].map((ws, i) => { const qs = i === 0 ? r.qa : r.qb; return '<tr><td>' + (i === 0 ? 'A' : 'B') + '</td><td>[' + ws.map(w => f(w)).join(', ') + ']</td><td>[' + qs.map(w => f(w.value)).join(', ') + ']</td><td>[' + qs.map(w => signed(w.error)).join(', ') + ']</td></tr>'; }).join('');
+  $('#score-before').textContent = 'A ' + f(r.original[0]) + ' / B ' + f(r.original[1]);
+  $('#score-after').textContent = 'A ' + f(r.quantized[0]) + ' / B ' + f(r.quantized[1]);
+  $('#calc-before').textContent = 'A：' + f(input[0]) + ' × 1.4 + ' + f(input[1]) + ' × 2.4；B：' + f(input[0]) + ' × 1.6 + ' + f(input[1]) + ' × 2.1。';
+  $('#calc-after').textContent = 'A：' + f(input[0]) + ' × ' + f(r.qa[0].value) + ' + ' + f(input[1]) + ' × ' + f(r.qa[1].value) + '；B：' + f(input[0]) + ' × ' + f(r.qb[0].value) + ' + ' + f(input[1]) + ' × ' + f(r.qb[1].value) + '。';
+  const changed = r.before !== r.after, hasTie = r.before === '并列' || r.after === '并列';
+  $('#choice-result').dataset.kind = changed ? 'change' : 'normal';
+  $('#choice-result').textContent = (hasTie ? '出现并列：' : changed ? '排序翻转：' : '排序保持：') + r.before + ' → ' + r.after + '。A − B 的得分差从 ' + signed(r.originalMargin) + ' 变成 ' + signed(r.quantizedMargin) + '。' + (r.qa.concat(r.qb).some(w => w.clipped) ? '当前还包含范围裁剪。' : '');
+  $('#error-current').textContent = '当前输入 [' + input.map(w => f(w)).join(', ') + ']，刻度间隔 ' + f(scale) + '。';
+  const rows = [['A 分数变化', r.qa.map(q => q.error)], ['B 分数变化', r.qb.map(q => q.error)], ['A − B 得分差的变化',r.marginErrors]];
+  $('#error-table').innerHTML = rows.map(([label, e]) => '<tr><td>' + label + '</td><td>' + f(input[0]) + ' × (' + signed(e[0]) + ') = ' + signed(input[0] * e[0]) + '</td><td>' + f(input[1]) + ' × (' + signed(e[1]) + ') = ' + signed(input[1] * e[1]) + '</td><td>' + signed(QuantMath.dot(input, e)) + '</td></tr>').join('');
+  $('#margin-result').textContent = '原得分差 ' + signed(r.originalMargin) + ' + 误差贡献 ' + signed(QuantMath.dot(input, r.marginErrors)) + ' = 新得分差 ' + signed(r.quantizedMargin) + '。正数是 A 领先，负数是 B 领先，0 是并列。';
+}
+['#x1','#x2','#choice-scale'].forEach(id => $(id).addEventListener('input', renderChoice));
+$$('[data-case]').forEach(button => button.addEventListener('click', () => { $('#x1').value = 1; $('#x2').value = button.dataset.case === 'flip' ? 2 : 0; renderChoice(); }));
+$('#reset-case').addEventListener('click', () => { $('#x1').value = 1; $('#x2').value = 2; $('#choice-scale').value = 1; renderChoice(); });
+
+const groupWeights = [-0.24,0.14,0.31,0.28,0.08,-0.11,0.21,0.17,24,-18,12,9];
+function renderGroups() {
+  const r = QuantMath.grouped(groupWeights, Number($('#group-size').value));
+  $('#group-table').innerHTML = groupWeights.map((w, i) => '<tr><td>' + f(w) + '</td><td>第 ' + r.groups[i] + ' 组</td><td>' + f(r.scales[r.groups[i] - 1], 4) + '</td><td>' + f(r.quantized[i], 4) + '</td><td>' + f(Math.abs(r.quantized[i] - w), 4) + '</td></tr>').join('');
+  $('#group-count').textContent = r.scales.length + ' 组'; $('#group-mae').textContent = f(r.mae, 4); $('#group-overhead').textContent = r.scales.length * 2 + ' 字节';
+}
+$('#group-size').addEventListener('change', renderGroups);
+
+function renderCalibration() {
+  const input = $('#calibration-input').value.split(',').map(Number), r = QuantMath.compensate(weightA, input, 1);
+  const rows = [['原权重',weightA],['先量化第一个',r.first],['第二个暂作补偿',r.adjusted],['最后都量化',r.final]];
+  $('#calibration-table').innerHTML = rows.map(([name, w]) => '<tr><td>' + name + '</td><td>[' + w.map(n => f(n)).join(', ') + ']</td><td>' + f(QuantMath.dot(w,input)) + '</td><td>' + f(QuantMath.dot(w,[0,1])) + '</td></tr>').join('');
+  $('#calibration-result').textContent = r.possible ? '在这条样本上，暂把第二个权重调为 ' + f(r.adjusted[1]) + '，可以补回原输出。但它改变了另一个输入的输出；继续量化后，当前样本的输出又变成 ' + f(QuantMath.dot(r.final,input)) + '。这只是单样本示意，不能代表 GPTQ 的最终效果。' : '第二项乘的是 0，怎样改第二个权重，都补不回第一个权重带来的偏差。校准样本本身决定了能观察和补偿什么。';
+}
+$('#calibration-input').addEventListener('change', renderCalibration);
+
+function renderStorage() {
+  const params = Number($('#params').value), extra = Number($('#extra').value);
+  const r = QuantMath.storage(params * 1e9,4,Number($('#storage-group').value),16,Number($('#zero-bits').value));
+  $('#params-value').textContent = f(params); $('#extra-value').textContent = f(extra);
+  $('#fp16-gb').textContent = f(r.fp16GB, 3) + ' GB'; $('#code-gb').textContent = f(r.codeGB, 3) + ' GB'; $('#total-gb').textContent = f(r.totalGB, 3) + ' GB';
+  $('#metadata-gb').textContent = '其中元数据约 ' + f(r.metadataGB,4) + ' GB。';
+  $('#memory-result').textContent = '按这些假设：FP16 运行占用约 ' + f(r.fp16GB + extra) + ' GB；4bit 运行占用约 ' + f(r.totalGB + extra) + ' GB。当前权重及元数据平均约 ' + f(r.bitsPerWeight,5) + ' bit/权重。其余运行占用没有跟着缩成四分之一。';
+}
+['#params','#storage-group','#zero-bits','#extra'].forEach(id => $(id).addEventListener('input', renderStorage));
+
+const quizAnswers = {
+  codes: { correct:'no', explanation:'每组的 4 位代码有 16 种状态；但同一个代码配不同 scale 可以还原成不同数值。全模型的还原数值不必只有 16 种。' },
+  quality: { correct:'no', explanation:'这里只知道排序变了。必须有任务标准或正确答案，才能判断这次改变是变好、变差还是没有实际影响。' },
+  transfer: { correct:'storage', explanation:'纯代码存储可以按位数算；回答质量、运行内存和速度还要在相同条件下分别验证。文件大小不代表知识比例，也不承诺固定加速倍数。' }
+};
+$$('[data-quiz]').forEach(box => $$('.choices button').filter(button => box.contains(button)).forEach(button => button.addEventListener('click', () => {
+  box.querySelectorAll('.choices button').forEach(choice => choice.setAttribute('aria-pressed', String(choice === button)));
+  const answer = quizAnswers[box.dataset.quiz];
+  box.querySelector('.feedback').textContent = (button.dataset.answer === answer.correct ? '这次判断正确。' : button.dataset.answer === 'unknown' ? '可以先抓住这一点：' : '这里需要调整一下判断：') + answer.explanation;
+})));
+renderGrid(); renderChoice(); renderGroups(); renderCalibration(); renderStorage(); showChapter(location.hash.slice(1), false);
+})();
+</script>
+</body>
+</html>
