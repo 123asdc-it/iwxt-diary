@@ -13,6 +13,13 @@ import { readCmcCatalog } from './cmc-catalog.mjs';
 
 const tutorials = [
   {
+    slug: 'yeyu-practice',
+    title: '夜雨知识点练习',
+    summary: '按知识点独立动笔，对照参考解答，记录完成情况与错因笔记。',
+    detail: '数学竞赛 · 11 章 · 179 个知识点 · 180 道独立题',
+    cover: 'uploads/covers/3581c37b1ded5c1a2569b195de3206a7197bf1539e2fcde49474164e2a64e81e.png',
+  },
+  {
     slug: 'huawei-ict-network',
     title: '华为 ICT 网络赛道初赛：自上而下教程',
     summary: '从一次访问理解网络，结合章节阅读、拓扑演示和题库练习。',
@@ -313,7 +320,7 @@ function tutorialIndexPage(config, entries) {
     <span class="post-card-shade"></span>
     <span class="post-card-copy"><strong>${escapeHtml(tutorial.title)}</strong><small>${escapeHtml(tutorial.detail)}</small><em>${escapeHtml(tutorial.summary)}</em></span>
   </a>`).join('\n');
-  return `${pageHead({ config, title: `交互教程 · ${config.title}`, description: '可以动手操作的学习笔记：网络基础、多语言程序与交互实验。', pathname: 'tutorials/', imagePath: tutorials[0].cover })}
+  return `${pageHead({ config, title: `交互教程 · ${config.title}`, description: '可以动手操作的学习笔记与练习：数学竞赛、网络基础、多语言程序。', pathname: 'tutorials/', imagePath: tutorials[0].cover })}
 <body>
 <div class="romanticism-site" data-site style="--site-wallpaper:url('${pathUrl(config.basePath, config.homeImage)}');--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">
 ${experienceChrome()}

@@ -147,6 +147,7 @@ updatedAt: "2026-09-02T08:00:00.000Z"
 教程目录位于 <https://iwxt.cn/tutorials/>，博客导航及对应入口文章均可进入。
 
 - 多语言程序：<https://iwxt.cn/tutorials/polyglot/>。
+- 夜雨知识点练习：<https://iwxt.cn/tutorials/yeyu-practice/>。题图按需加载，提供完整离线 ZIP，练习记录支持原格式 JSON 导入导出。
 - 华为 ICT 网络赛道初赛：<https://iwxt.cn/tutorials/huawei-ict-network/>。这一页保留用户提供 HTML 的内容、交互及阅读设置。
 多语言教程保留深绿、纸色与大字号排版，华为 ICT 教程保留提供文件的阅读界面。
 各教程通过“返回博客”回到日记首页，独立于博客的壁纸与毛玻璃样式，也不操作
@@ -156,6 +157,12 @@ updatedAt: "2026-09-02T08:00:00.000Z"
 `scripts/build.mjs` 的 `tutorials` 数组。`public/` 会原样复制进
 生产构建，正常运行 `npm run build` 并通过现有 GitHub Pages 流程发布即可。
 博客的原主题、其他文章和写作流程保持原有方式。
+
+夜雨练习册的题图与参考解答位于 `public/tutorials/yeyu-practice/images/`，保留原始图片字节，
+网页按需加载。`yeyu-practice-offline.zip` 内包含带内嵌图片的完整 HTML；更新练习页时需要
+同步更新离线包。练习记录继续使用 `yeyu-knowledge-practice-v1` 键和版本 1 的 JSON 格式，
+用户可以从原文件导出，再导入博客版。讲义 PDF 本体未包含在发布内容中，出处页码予以保留。
+
 
 ### 后续视频教程的默认约定
 
