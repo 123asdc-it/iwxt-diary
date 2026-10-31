@@ -1,5 +1,32 @@
 # TASK_STATE
 
+## 2026-11-01 article cover replacement
+
+- Goal: replace the cover image for `0:5，还不是结局`; the user clarified
+  that this request concerns the image only.
+- Plan: select a simpler tennis photograph with a composition suitable for
+  wide cards, save a local optimized asset, and update the entry's cover,
+  focal point, and image attribution.
+- Planned files: this record, the entry Markdown, and one new cover asset.
+- Risks: homepage and article banners crop the same image differently; check
+  desktop and mobile crops and title legibility before delivery. Keep the
+  existing article text, site styling, and browser-local check-in records.
+- Replaced the anime character image with Tim Chow's blue-court photograph
+  (`https://unsplash.com/photos/blue-sports-field-8vhQBaF2wcY`). The new local
+  WebP is 1600 x 900, 392,952 bytes, stored at
+  `public/uploads/covers/6882b03146dd92b5129933aa4920159bf40f3bfc3a08b1b391664b85b112ec6f.webp`.
+  Set the entry's horizontal focal point to 50% and updated its image credit
+  and last-modified timestamp. Kept the old asset for reversible rollback.
+- Verification: `npm run check`, 31/31 existing tests, `npm run build`, and
+  `git diff --check` passed. Playwright screenshots verified homepage cards
+  and article banners at 1440 x 1000 and 390 x 844, including the mobile dark
+  theme. Mobile home/article document widths equal the 390 px viewport; both
+  load the new local image at 50% 50%. The article link and return navigation
+  work, the generated attribution links are correct, and the browser console
+  contains zero errors or warnings.
+- Deployment: pending the existing GitHub Pages workflow. No user input or
+  manual asset setup is required.
+
 ## Current goal
 
 Build a separate, public GitHub Pages diary that preserves the recognizable

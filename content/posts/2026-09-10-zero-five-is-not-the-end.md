@@ -8,15 +8,15 @@ tags:
   - "网球"
   - "人生"
 summary: "比分可以描述此刻的处境，却没有资格提前定义结局。真正要回答的，是下一球还打不打。"
-cover: "uploads/covers/cef9f64393f54c75d84e9bb5dd64d3f1e3d937a6f4ad428fa4645aa90583f9fa.webp"
-coverFocusX: 15
+cover: "uploads/covers/6882b03146dd92b5129933aa4920159bf40f3bfc3a08b1b391664b85b112ec6f.webp"
+coverFocusX: 50
 createdAt: "2026-09-10T12:02:39.000Z"
-updatedAt: "2026-09-10T12:02:39.000Z"
+updatedAt: "2026-10-31T18:14:36.836Z"
 ---
 
 > **转载说明：** 转自抖音「兔丸星球」，根据读者提供的五张截图整理。原视频直链暂缺；截图显示的页面账号为「大器新能源」。正文仅校正了明显的标点、重复句与错别字，文中赛事细节尚未独立核验。
 
-> **封面图：** [Wallhaven 5d8xw9](https://wallhaven.cc/w/5d8xw9)，版权归原作者或权利人所有。
+> **封面图：** [Tim Chow / Unsplash](https://unsplash.com/photos/blue-sports-field-8vhQBaF2wcY)，按 [Unsplash License](https://unsplash.com/license) 使用。
 
 郑钦文 0:5 落后的时候，很多人把电视关了。
 
