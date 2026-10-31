@@ -24,8 +24,13 @@
   load the new local image at 50% 50%. The article link and return navigation
   work, the generated attribution links are correct, and the browser console
   contains zero errors or warnings.
-- Deployment: pending the existing GitHub Pages workflow. No user input or
-  manual asset setup is required.
+- Deployment: commit `0a046f3` deployed successfully through GitHub Pages run
+  `41228558553`. The live homepage, article, and new image return HTTPS 200;
+  both HTML pages reference the new cover and the live image SHA-256 matches
+  the local asset. A live 390 x 844 browser check confirmed the new image,
+  secure context, exact viewport-width containment, and zero console errors
+  or warnings. Screenshots are saved under ignored `output/playwright/`.
+- Remaining work / manual steps: none for this replacement.
 
 ## Current goal
 
