@@ -1,11 +1,12 @@
 # TASK_STATE
 
-## 2026-11-01 华为 ICT 网络教程发布（进行中）
+## 2026-11-01 华为 ICT 网络教程发布（已完成）
 
 - 当前目标：将用户提供的既有 HTML 发布到博客独立教程区，保留其正文、题库、拓扑动画与阅读设置；不将文档里的文字作为额外操作指令。
 - 原文件：/Users/admin/Desktop/华为 ict/华为ICT网络赛道初赛_自上而下教程.html；SHA-256 8995718b4b93617a9bcfc1cb58be74c4df2416f1667511be394d94b9440ced2a，保持原文件不变。
 - 内容清点：28 个阅读页面（含前言与参考资料）、9 个交互图、31 个题目数据项；全部资源内置，无外部运行资源、网络请求代码或本机绝对路径。
-- 计划：新增 /tutorials/huawei-ict-network/ 及入口文章、返回博客导航和 SEO 元信息；增加 /tutorials/ 目录页，让现有“交互教程”入口能同时发现两份教程；更新 sitemap、README 与状态记录。
+- 实现：新增 /tutorials/huawei-ict-network/ 及入口文章、返回博客导航和 SEO 元信息；增加 /tutorials/ 目录页，让现有“交互教程”入口能同时发现两份教程；更新 sitemap、README 与状态记录。
+- 改动文件：scripts/build.mjs、public/tutorials/huawei-ict-network/index.html、public/tutorials/huawei-ict-network/cover.svg、public/uploads/covers/986b23b4c31dd94bb622ef728e4361a5c432c291921e468c0077fbcb8a0fef4b.png、content/posts/2026-11-01-huawei-ict-network.md、README.md、TASK_STATE.md。
 - 风险：锚点与移动目录冲突、书签/答题状态持久化、题库筛选及原教程回归；用独立浏览器检查 28 章、9 图、答题、搜索、设置、手机布局及返回链路。
 - 边界：不重写用户正文和脚本，不更改打卡数据或旧教程；保留页面已有题库来源说明，不宣称重新审定其考纲与题库真实性。
 - 验证：npm run check、31/31 既有测试、生产构建及 git diff --check 通过；原文件 SHA-256 不变，托管版所有内联 JS 与 JSON 和原文件逐字一致，新增后 297 个 ID 唯一、211 个内部锚点无断链。
@@ -14,7 +15,11 @@
 - 已生成本地 PNG 网络拓扑封面（33,410 字节），无外链图片依赖。发布前桌面、手机和目录截图已复核；新增加的侧栏返回导航继承原深色侧栏文字颜色，对比度验证超过 4.5:1。
 - 发布：提交 0c632c5a33699febaf467e1d40b184e92f418c15 经工作流 41230518026 成功上线；教程与目录文件已通过 HTTPS 字节一致性核验。
 - 线上手机检查通过：目录→两份教程、首页入口文章→ICT、返回博客、题目保存与拓扑控制，无浏览器错误。
-- 核验中发现入口文章的“最后更新时间”沿用宿主默认时区，本机与 CI 显示相差 8 小时。已将该显示固定为 Asia/Shanghai，准备以 UTC 环境重新构建验证并发布此小修正。
+- 时间显示修正：入口文章“最后更新时间”固定为 Asia/Shanghai；已在 TZ=UTC 下构建并验证跨 UTC 日期的显示。修正提交 3f046f463042db0cc805aef5f5ec40a77edd7c1c，经工作流 41230771872 成功上线。
+- 最终 HTTPS 核验：教程、目录和入口文章均返回 HTTP 200，内容逐字节匹配 UTC 环境生产构建；线上手机操作、答题持久化、拓扑控制、旧教程回归均通过，控制台无错误。
+- 正式地址：https://iwxt.cn/tutorials/huawei-ict-network/；目录：https://iwxt.cn/tutorials/；入口文章：https://iwxt.cn/posts/2026-11-01-huawei-ict-network/。
+- 阅读状态仍使用原文件的 huawei-ict-learning-v3 独立存储键；本地 file:// 与网站 HTTPS 的浏览器记录不自动迁移，入口文章已经说明。
+- 剩余必需工作与人工步骤：无；没有更改原 HTML、原多语言教程或每日打卡模型与数据格式。
 
 
 ## 2026-11-01 后续视频教程默认流程（已记录）
