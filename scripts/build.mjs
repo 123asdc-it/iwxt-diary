@@ -13,6 +13,13 @@ import { readCmcCatalog } from './cmc-catalog.mjs';
 
 const tutorials = [
   {
+    slug: 'fixed-window-advanced',
+    title: '定长滑动窗口进阶：23 题交互教程',
+    summary: '从窗口转化到正确性说明，逐题演示、C++17 参考实现与错因复盘。',
+    detail: '算法 · 19 道进阶 + 4 道扩展 · 81 帧窗口示例',
+    cover: 'uploads/covers/e6ecb569f4df17c086d5da5c3844a2f15174c1c362c9ed076760edef014ca557.png',
+  },
+  {
     slug: 'model-4bit',
     title: '4bit 模型量化：压小之后，丢掉了什么？',
     summary: '动手改刻度、算得分，理解量化误差、分组、校准与运行开销。',
@@ -327,7 +334,7 @@ function tutorialIndexPage(config, entries) {
     <span class="post-card-shade"></span>
     <span class="post-card-copy"><strong>${escapeHtml(tutorial.title)}</strong><small>${escapeHtml(tutorial.detail)}</small><em>${escapeHtml(tutorial.summary)}</em></span>
   </a>`).join('\n');
-  return `${pageHead({ config, title: `交互教程 · ${config.title}`, description: '可以动手操作的学习笔记与练习：大模型基础、数学竞赛、网络基础、多语言程序。', pathname: 'tutorials/', imagePath: tutorials[0].cover })}
+  return `${pageHead({ config, title: `交互教程 · ${config.title}`, description: '可以动手操作的学习笔记与练习：算法与滑动窗口、大模型基础、数学竞赛、网络基础、多语言程序。', pathname: 'tutorials/', imagePath: tutorials[0].cover })}
 <body>
 <div class="romanticism-site" data-site style="--site-wallpaper:url('${pathUrl(config.basePath, config.homeImage)}');--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">
 ${experienceChrome()}
