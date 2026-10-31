@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+<rect width="1200" height="675" fill="#f1f3fd"/><rect x="78" y="79" width="1044" height="517" rx="26" fill="#fff" stroke="#dce0f3" stroke-width="3"/>
+<g font-family="-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif"><text x="140" y="235" font-size="76" font-weight="650" fill="#252a40">词间</text><text x="140" y="324" font-size="43" fill="#5059d6">六级词汇筛选</text><text x="143" y="425" font-size="29" fill="#566078">把熟悉的移走，</text><text x="143" y="473" font-size="29" fill="#566078">把需要记的留下。</text>
+<g font-size="31"><rect x="680" y="156" width="344" height="98" rx="15" fill="#eef0ff"/><text x="715" y="217" fill="#5059d6">abandon</text><circle cx="975" cy="205" r="18" fill="none" stroke="#5059d6" stroke-width="3"/>
+<rect x="680" y="290" width="344" height="98" rx="15" fill="#ecf5f1"/><text x="715" y="351" fill="#33806a">familiar</text><path d="M958 337l11 11 23-25" stroke="#33806a" stroke-width="4" fill="none" stroke-linecap="round"/>
+<rect x="680" y="424" width="344" height="98" rx="15" fill="#f6f7fc"/><text x="715" y="485" fill="#566078">precise</text><circle cx="975" cy="473" r="18" fill="none" stroke="#b9c0d5" stroke-width="3"/></g></g>
+</svg>

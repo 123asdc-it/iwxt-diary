@@ -13,6 +13,13 @@ import { readCmcCatalog } from './cmc-catalog.mjs';
 
 const tutorials = [
   {
+    slug: 'cet6-word-picker',
+    title: '词间：六级词汇筛选',
+    summary: '筛出生词、移走已会词，导出个人词表并备份完整筛选进度。',
+    detail: '英语学习 · 5,407 词条 · 筛选与进度备份',
+    cover: 'uploads/covers/5ba639a519efb55c890018523fefeba7d34e692ad85f13d582212f7e324783df.png',
+  },
+  {
     slug: 'fixed-window-advanced',
     title: '定长滑动窗口进阶：23 题交互教程',
     summary: '从窗口转化到正确性说明，逐题演示、C++17 参考实现与错因复盘。',
@@ -334,7 +341,7 @@ function tutorialIndexPage(config, entries) {
     <span class="post-card-shade"></span>
     <span class="post-card-copy"><strong>${escapeHtml(tutorial.title)}</strong><small>${escapeHtml(tutorial.detail)}</small><em>${escapeHtml(tutorial.summary)}</em></span>
   </a>`).join('\n');
-  return `${pageHead({ config, title: `交互教程 · ${config.title}`, description: '可以动手操作的学习笔记与练习：算法与滑动窗口、大模型基础、数学竞赛、网络基础、多语言程序。', pathname: 'tutorials/', imagePath: tutorials[0].cover })}
+  return `${pageHead({ config, title: `交互教程 · ${config.title}`, description: '可以动手操作的学习笔记与练习：英语词汇、算法与滑动窗口、大模型基础、数学竞赛、网络基础、多语言程序。', pathname: 'tutorials/', imagePath: tutorials[0].cover })}
 <body>
 <div class="romanticism-site" data-site style="--site-wallpaper:url('${pathUrl(config.basePath, config.homeImage)}');--index-hero:url('${pathUrl(config.basePath, config.homeImage)}')">
 ${experienceChrome()}

@@ -146,6 +146,7 @@ updatedAt: "2026-09-02T08:00:00.000Z"
 
 教程目录位于 <https://iwxt.cn/tutorials/>，博客导航及对应入口文章均可进入。
 
+- 词间六级词汇筛选：<https://iwxt.cn/tutorials/cet6-word-picker/>。保留原 HTML 界面、5,407 词条及原进度导入导出；桌面先导出进度 JSON，再在网站确认恢复。
 - 定长滑动窗口进阶：<https://iwxt.cn/tutorials/fixed-window-advanced/>。对应截图的 19 道进阶与 4 道扩展，附逐题讲解、C++17 代码、81 帧窗口示例、可修改输入的基础实验及独立练习记录。
 - 多语言程序：<https://iwxt.cn/tutorials/polyglot/>。
 - 4bit 模型量化：<https://iwxt.cn/tutorials/model-4bit/>。沿视频的四个权重、两组输入理解数值近似，附刻度、排序、分组、单样本补偿与空间估算实验；单文件可下载离线使用。
@@ -169,6 +170,8 @@ updatedAt: "2026-09-02T08:00:00.000Z"
 4bit 教程为内嵌 CSS/JS 的独立 HTML，页面可直接下载离线使用。数值核心同样内嵌在页面中，`test/quantization-tutorial.test.mjs` 读取该实际实现，核对原视频算例、裁剪与舍入、误差传播、分组、补偿和元数据开销。正文的来源章节区分片中算例与补充实验；不包含视频媒体、字幕全文或真实模型评测。
 
 滑窗进阶页使用 `fixed-window-advanced-v1` 独立存储键，备份格式为 `app: fixed-window-advanced`、`version: 1`。记录只在浏览器内，按题号存状态、笔记和更新时间；导入先完整校验，再按时间合并。`test/fixed-window-tutorial.test.mjs` 直接读取 HTML 内的数据和实际 C++ 代码，编译后与 23 题独立暴力基准比较。会员题公开来源边界保留在题目页。
+
+词汇筛选页延续原 `cet6-word-picker.progress.v1` 键与 `ecdict-cet6-ab22ad3-basic-v1` 词库版本。`app: cet6-word-picker`、`version: 1` 的完整 JSON 可从原文件恢复到网站。其导入语义为可撤销的替换，和其他教程按时间合并的记录方式不同。
 
 ### 后续视频教程的默认约定
 
