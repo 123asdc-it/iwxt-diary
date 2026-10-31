@@ -146,6 +146,7 @@ updatedAt: "2026-09-02T08:00:00.000Z"
 
 教程目录位于 <https://iwxt.cn/tutorials/>，博客导航及对应入口文章均可进入。
 
+- 离散数学全书逐章教程：<https://iwxt.cn/tutorials/discrete-math/>。按第2版19章组织原创讲解、推导、例子、19个实验与38道自测，保留75小节的印刷页/PDF页索引。
 - 词间六级词汇筛选：<https://iwxt.cn/tutorials/cet6-word-picker/>。保留原 HTML 界面、5,407 词条及原进度导入导出；桌面先导出进度 JSON，再在网站确认恢复。
 - 定长滑动窗口进阶：<https://iwxt.cn/tutorials/fixed-window-advanced/>。对应截图的 19 道进阶与 4 道扩展，附逐题讲解、C++17 代码、81 帧窗口示例、可修改输入的基础实验及独立练习记录。
 - 多语言程序：<https://iwxt.cn/tutorials/polyglot/>。
@@ -172,6 +173,8 @@ updatedAt: "2026-09-02T08:00:00.000Z"
 滑窗进阶页使用 `fixed-window-advanced-v1` 独立存储键，备份格式为 `app: fixed-window-advanced`、`version: 1`。记录只在浏览器内，按题号存状态、笔记和更新时间；导入先完整校验，再按时间合并。`test/fixed-window-tutorial.test.mjs` 直接读取 HTML 内的数据和实际 C++ 代码，编译后与 23 题独立暴力基准比较。会员题公开来源边界保留在题目页。
 
 词汇筛选页延续原 `cet6-word-picker.progress.v1` 键与 `ecdict-cet6-ab22ad3-basic-v1` 词库版本。`app: cet6-word-picker`、`version: 1` 的完整 JSON 可从原文件恢复到网站。其导入语义为可撤销的替换，和其他教程按时间合并的记录方式不同。
+
+离散数学页为无外部运行依赖的单文件，独立存储键 `discrete-math-course-v1`，备份 `app: discrete-math-course`、`version: 1`，按章节保存手动状态、笔记、自测选择和更新时间；全量校验后按时间合并。`test/discrete-tutorial.test.mjs` 读取实际内嵌核心，穷举关系闭包/二部匹配、对照小图最小生成树及全部55种RSA教学消息。教材PDF与核对扫描图不发布。
 
 ### 后续视频教程的默认约定
 

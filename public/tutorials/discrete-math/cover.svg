@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+<rect width="1200" height="675" fill="#17322c"/>
+<g font-family="PingFang SC,Microsoft YaHei,sans-serif"><text x="80" y="115" fill="#ddebcc" font-size="28">从判断、对象，到结构与连接</text><text x="80" y="206" fill="#fafbf7" font-size="65" font-weight="650">离散数学</text><text x="80" y="267" fill="#ddebcc" font-size="31">19 章 · 推导、例子与交互实验</text>
+<g transform="translate(80 330)"><rect width="300" height="240" rx="16" fill="#fafbf7"/><rect x="330" width="300" height="240" rx="16" fill="#e8efdb"/><rect x="660" width="300" height="240" rx="16" fill="#ddebcc"/>
+<text x="32" y="60" fill="#214c40" font-size="25">逻辑与集合</text><text x="32" y="155" fill="#17322c" font-size="57">∀x ∃y</text><text x="362" y="60" fill="#214c40" font-size="25">代数与计数</text><text x="362" y="155" fill="#17322c" font-size="49">a ∗ b</text><text x="692" y="60" fill="#214c40" font-size="25">图论与数论</text>
+<path d="M715 180 L810 95 L905 180 Z M810 95 L810 180" stroke="#54774b" stroke-width="4" fill="none"/><g fill="#17322c"><circle cx="715" cy="180" r="13"/><circle cx="810" cy="95" r="13"/><circle cx="905" cy="180" r="13"/><circle cx="810" cy="180" r="13"/></g></g>
+<text x="80" y="626" fill="#bbd2c3" font-size="24">离散之间 · 全书逐章交互教程</text></g></svg>

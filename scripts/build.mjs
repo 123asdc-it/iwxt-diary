@@ -13,6 +13,13 @@ import { readCmcCatalog } from './cmc-catalog.mjs';
 
 const tutorials = [
   {
+    slug: 'discrete-math',
+    title: '离散数学：全书逐章交互教程',
+    summary: '从逻辑到图与数，逐章读概念、跟推导、改实验、做自测并记录理解。',
+    detail: '离散数学 · 19 章 · 19 个实验 · 38 道自测',
+    cover: 'uploads/covers/0411d668ca1893c16bb60e3f736cf991a578e3bd7bfc2fc5b5f6359c41aba5ae.png',
+  },
+  {
     slug: 'cet6-word-picker',
     title: '词间：六级词汇筛选',
     summary: '筛出生词、移走已会词，导出个人词表并备份完整筛选进度。',
