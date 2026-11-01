@@ -1,4 +1,4 @@
-# 2026-11-01 Article cover and card repair (implementation verified; publication pending)
+# 2026-11-01 Article cover and card repair (completed and live)
 
 - Goal: fix cropped and visually cluttered article/tutorial covers reported in the user screenshot of iwxt.cn.
 - Initial context: primary checkout clean at 18d5ddc; isolated worktree codex/blog-cover-fix-20261101. Existing GitHub Pages workflow retained.
@@ -7,7 +7,10 @@
 - Completed: full-image cards, image/title post headers, 8 editable SVG illustrations and new content-hashed PNGs. Desktop image/copy split; mobile stacked; balanced titles wrap without truncation.
 - Verified: npm run check, 58/58 tests, UTC production build, git diff --check. Playwright checked 86 cards/headers across 1440/768/390/320px, dark/light modes, contain rendering, no text/image overlap or clipped titles, focus and keyboard navigation, tutorial links and vocabulary default count; zero runtime/console errors. Desktop/mobile/dark/post screenshots inspected.
 - Final responsive check passed again after balancing long titles. CSS links now use a content version to fetch updated layout reliably.
-- Next: publish using existing Pages workflow and verify live asset hashes.
+- Published: 66434ba18955558f2cd11b626dc578c9755ec0f7, GitHub Pages run 41281338467 completed successfully.
+- Live verification: 12 HTTPS HTML/CSS/PNG assets match the build byte for byte using SITE_BASE_PATH=, SITE_URL=https://iwxt.cn and TZ=UTC. Local defaults use a localhost canonical URL, so production URL variables must be set for byte comparisons.
+- Live browser confirmed 10 home cards, 8 tutorial cards, the post header, complete covers and unclipped text at 1440/390/320px, with zero runtime or console errors.
+- Remaining required work: none. Changes are ready for the user to review at https://iwxt.cn/?v=66434ba#diary-feed.
 - Scope: no tutorial lesson/word-picker/check-in logic or browser storage changes. Keep wallpaper, main navigation and sidebar. Preserve old cover files.
 - Risks: new image/copy layout must wrap long titles at 320px; dark mode needs strong contrast; generated cover URLs and post metadata must stay in sync; do not overwrite concurrent changes on main.
 
