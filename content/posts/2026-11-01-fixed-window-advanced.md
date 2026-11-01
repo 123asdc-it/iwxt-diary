@@ -8,7 +8,7 @@ tags:
   - C++
   - 交互教程
 summary: "按截图整理 19 道进阶与 4 道思维扩展：窗口转化、维护量、证明、逐步演示、C++17 代码与练习笔记。"
-cover: "uploads/covers/e6ecb569f4df17c086d5da5c3844a2f15174c1c362c9ed076760edef014ca557.png"
+cover: "uploads/covers/a18582d80363e2f575d6a4119f2da436ddb0a2cb2ca71e9c41055f1e71681f12.png"
 coverFocusX: 50
 createdAt: "2026-10-31T19:36:10.449883+00:00"
 updatedAt: "2026-10-31T19:36:10.449883+00:00"

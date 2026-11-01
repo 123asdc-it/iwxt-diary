@@ -990,3 +990,94 @@ select:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 55%, 
 @media (max-width: 700px) {
   .appbar-tutorial-button { display: none; }
 }
+
+/* Keep the entire cover visible and give article text its own readable space. */
+.romanticism-post-card {
+  grid-template-columns: minmax(0, .92fr) minmax(0, 1.12fr);
+  min-height: 0;
+  padding: 0;
+  place-items: stretch;
+  border-radius: 20px;
+  background: var(--panel-strong);
+  color: var(--ink);
+  text-align: left;
+  backdrop-filter: saturate(120%) blur(18px);
+  -webkit-backdrop-filter: saturate(120%) blur(18px);
+}
+.romanticism-post-card:hover {
+  border-radius: 20px;
+  transform: translateY(-3px);
+}
+.romanticism-post-card:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+.romanticism-post-card::before,
+.romanticism-post-card::after { content: none; }
+.post-card-media {
+  display: block;
+  min-width: 0;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  align-self: center;
+  overflow: hidden;
+  background: #f4f3e9;
+}
+.post-card-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+.post-card-copy {
+  min-width: 0;
+  max-width: none;
+  align-content: center;
+  justify-items: start;
+  padding: 24px 26px;
+  text-shadow: none;
+}
+.post-card-copy strong { font-size: clamp(21px, 2.1vw, 27px); font-weight: 700; line-height: 1.55; overflow-wrap: anywhere; }
+.post-card-copy small { margin-top: 12px; color: var(--ink-muted); font-size: 13px; font-weight: 400; line-height: 1.8; overflow-wrap: anywhere; }
+.post-card-copy em { display: block; max-width: none; margin-top: 13px; color: var(--ink-muted); font-size: 14px; line-height: 1.9; opacity: 1; overflow-wrap: anywhere; }
+.post-hero.post-hero-cover-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  min-height: 0;
+  height: auto;
+  place-items: stretch;
+  background: var(--panel-strong);
+  color: var(--ink);
+  backdrop-filter: saturate(120%) blur(18px);
+  -webkit-backdrop-filter: saturate(120%) blur(18px);
+}
+.post-hero-cover-layout .post-hero-copy {
+  display: grid;
+  min-width: 0;
+  width: 100%;
+  align-content: center;
+  padding: 34px;
+  text-align: left;
+  text-shadow: none;
+  transform: none;
+}
+.post-hero-cover-layout .post-hero-copy h1 { font-size: clamp(25px, 3vw, 38px); line-height: 1.55; overflow-wrap: anywhere; }
+.post-hero-cover-layout .post-hero-copy p { color: var(--ink-muted); font-size: 14px; font-weight: 400; line-height: 1.9; overflow-wrap: anywhere; }
+@media (max-width: 700px) {
+  .romanticism-post-card,
+  .post-hero.post-hero-cover-layout { grid-template-columns: minmax(0, 1fr); }
+  .post-card-copy { padding: 20px 22px 23px; }
+  .post-card-copy strong { font-size: 23px; }
+  .post-card-copy small { font-size: 13px; }
+  .post-card-copy em { display: block; font-size: 14px; }
+  .post-hero-cover-layout .post-hero-copy { padding: 23px; }
+  .post-hero-cover-layout .post-hero-copy h1 { margin-bottom: 14px; font-size: 27px; }
+}
+@media (max-width: 380px) {
+  .post-card-copy { padding: 18px; }
+  .post-card-copy strong { font-size: 21px; }
+  .post-hero-cover-layout .post-hero-copy { padding: 20px; }
+  .post-hero-cover-layout .post-hero-copy h1 { font-size: 25px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .romanticism-post-card:hover { transform: none; }
+}
+.post-card-copy strong,
+.post-hero-cover-layout .post-hero-copy h1 { text-wrap: balance; }

@@ -6,7 +6,7 @@ tags:
   - 计算机基础
   - 交互教程
 summary: "复用现成的库，把不同工作交给合适的工具。用交互实验理解多语言协作、编译、链接与 ABI。"
-cover: "uploads/covers/dcd5159506e3388eb3b9c6d44b8644c5246b671a5fca9bc8406e5c8120c8c3a9.png"
+cover: "uploads/covers/184174207cc943496eb3c4f9a9e14a840a4b162c33939c2084c374b825397f69.png"
 coverFocusX: 50
 createdAt: "2026-10-31T18:22:32.632271+00:00"
 updatedAt: "2026-10-31T18:22:32.632271+00:00"

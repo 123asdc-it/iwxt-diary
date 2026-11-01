@@ -1,4 +1,5 @@
-import { cp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import {
@@ -11,62 +12,66 @@ import {
 } from './content.mjs';
 import { readCmcCatalog } from './cmc-catalog.mjs';
 
+const siteCssVersion = createHash('sha256')
+  .update(await readFile(path.join(PROJECT_DIR, 'src', 'site.css')))
+  .digest('hex').slice(0, 12);
+
 const tutorials = [
   {
     slug: 'mita-attention',
     title: 'MiTA：让注意力复用候选',
     summary: '从 Q/K/V 到 landmark、top-k、共享压缩与联合归一，亲手走完一遍论文公式。',
     detail: '论文导读 · 8 章 · 数值实验与证据边界',
-    cover: 'uploads/covers/1916e9a21570ee43efd6c0c1844e93e1cec337c00305f8a1501aa760f2c37f12.png',
+    cover: 'uploads/covers/75fdfca0d8d5f948eb66b92e5ced4f198304cb0cf9001eb4bb41f3049b6319f2.png',
   },
   {
     slug: 'discrete-math',
     title: '离散数学：全书逐章交互教程',
     summary: '从逻辑到图与数，逐章读概念、跟推导、改实验、做自测并记录理解。',
     detail: '离散数学 · 19 章 · 19 个实验 · 38 道自测',
-    cover: 'uploads/covers/0411d668ca1893c16bb60e3f736cf991a578e3bd7bfc2fc5b5f6359c41aba5ae.png',
+    cover: 'uploads/covers/522f54a2f21cee9f99c542fa9749df19332079cbc7f59ed853bfd235c790acff.png',
   },
   {
     slug: 'cet6-word-picker',
     title: '词间：六级词汇筛选',
     summary: '筛出生词、移走已会词，导出个人词表并备份完整筛选进度。',
     detail: '英语学习 · 5,407 词条 · 筛选与进度备份',
-    cover: 'uploads/covers/5ba639a519efb55c890018523fefeba7d34e692ad85f13d582212f7e324783df.png',
+    cover: 'uploads/covers/0862a39a1ad5a72f020b4ed54ae7b44a8c5db42b48c4e78fdbd83f4f63fc0e0f.png',
   },
   {
     slug: 'fixed-window-advanced',
     title: '定长滑动窗口进阶：23 题交互教程',
     summary: '从窗口转化到正确性说明，逐题演示、C++17 参考实现与错因复盘。',
     detail: '算法 · 19 道进阶 + 4 道扩展 · 81 帧窗口示例',
-    cover: 'uploads/covers/e6ecb569f4df17c086d5da5c3844a2f15174c1c362c9ed076760edef014ca557.png',
+    cover: 'uploads/covers/a18582d80363e2f575d6a4119f2da436ddb0a2cb2ca71e9c41055f1e71681f12.png',
   },
   {
     slug: 'model-4bit',
     title: '4bit 模型量化：压小之后，丢掉了什么？',
     summary: '动手改刻度、算得分，理解量化误差、分组、校准与运行开销。',
     detail: '大模型基础 · 8 章 · 5 个交互实验',
-    cover: 'uploads/covers/00a211d124f51264c08df42a8531c97561bd2a3eb6ce549551f20ce1b15be238.png',
+    cover: 'uploads/covers/86e1aa6b1c7e7faefafcdec4445128099578b10152a881c38ef952ed8c9701a3.png',
   },
   {
     slug: 'yeyu-practice',
     title: '夜雨知识点练习',
     summary: '按知识点独立动笔，对照参考解答，记录完成情况与错因笔记。',
     detail: '数学竞赛 · 11 章 · 179 个知识点 · 180 道独立题',
-    cover: 'uploads/covers/3581c37b1ded5c1a2569b195de3206a7197bf1539e2fcde49474164e2a64e81e.png',
+    cover: 'uploads/covers/56bb7a90e47d9bc819deebb6158b4d68bed7398f4e8709cfc321475c918bf776.png',
   },
   {
     slug: 'huawei-ict-network',
     title: '华为 ICT 网络赛道初赛：自上而下教程',
     summary: '从一次访问理解网络，结合章节阅读、拓扑演示和题库练习。',
     detail: '网络基础 · 交换与路由 · WLAN · 安全 · 数据中心',
-    cover: 'uploads/covers/986b23b4c31dd94bb622ef728e4361a5c432c291921e468c0077fbcb8a0fef4b.png',
+    cover: 'uploads/covers/2c9092cb1240b56bf52cb91029df07e5af89b8c540b32a72f281c845d44dceb7.png',
   },
   {
     slug: 'polyglot',
     title: '代码之间：多语言程序交互教程',
     summary: '从协作动机到编译、链接和 ABI，亲手组合一个 C/C++ 程序。',
     detail: '计算机基础 · 编译与链接 · ABI',
-    cover: 'uploads/covers/dcd5159506e3388eb3b9c6d44b8644c5246b671a5fca9bc8406e5c8120c8c3a9.png',
+    cover: 'uploads/covers/184174207cc943496eb3c4f9a9e14a840a4b162c33939c2084c374b825397f69.png',
   },
 ];
 
@@ -106,7 +111,7 @@ function pageHead({ config, title, description, pathname, imagePath }) {
   <link rel="icon" href="${pathUrl(config.basePath, 'favicon.svg')}">
   <link rel="preload" as="image" href="${wallpaper}" fetchpriority="high">
   <link rel="stylesheet" href="${pathUrl(config.basePath, 'assets/highlight.css')}">
-  <link rel="stylesheet" href="${pathUrl(config.basePath, 'assets/site.css')}">
+  <link rel="stylesheet" href="${pathUrl(config.basePath, 'assets/site.css')}?v=${siteCssVersion}">
   <meta property="og:type" content="article">
   <meta property="og:title" content="${escapeHtml(title)}">
   <meta property="og:description" content="${escapeHtml(description)}">
@@ -224,8 +229,8 @@ function indexPage(config, entries) {
   const tags = [...new Set(entries.flatMap((entry) => entry.tags))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
   const cards = entries.map((entry) => {
     const searchText = [entry.title, entry.summary, entry.displayDate, ...entry.tags, entry.content].join(' ').toLocaleLowerCase('zh-CN');
-    return `<a class="romanticism-post-card reveal-on-scroll" href="${pathUrl(config.basePath, `posts/${entry.slug}/`)}" data-entry-card data-tilt-card data-reveal data-month="${escapeHtml(entry.month)}" data-tags="${escapeHtml(entry.tags.join('|'))}" data-search="${escapeHtml(searchText)}" style="background-image:url('${pathUrl(config.basePath, entry.cover)}');--cover-focus-x:${entry.coverFocusX}%">
-  <span class="post-card-shade"></span>
+    return `<a class="romanticism-post-card reveal-on-scroll" href="${pathUrl(config.basePath, `posts/${entry.slug}/`)}" data-entry-card data-reveal data-month="${escapeHtml(entry.month)}" data-tags="${escapeHtml(entry.tags.join('|'))}" data-search="${escapeHtml(searchText)}">
+  <span class="post-card-media"><img src="${pathUrl(config.basePath, entry.cover)}" alt="" width="1200" height="675" loading="lazy" decoding="async"></span>
   <span class="post-card-copy">
     <strong>${escapeHtml(entry.title)}</strong>
     <small>${escapeHtml(entry.displayDate)} · ${escapeHtml(entry.tags.join('、'))}</small>
@@ -288,10 +293,9 @@ ${experienceChrome()}
 ${appbar(config)}
 ${drawer({ config, entries, months, tags })}
 <main>
-  <section class="post-hero glass-frame" data-hero style="background-image:url('${pathUrl(config.basePath, entry.cover)}');--cover-focus-x:${entry.coverFocusX}%" aria-labelledby="post-title">
-    <div class="image-shade"></div>
-    ${heroAtmosphere()}
-    <div class="post-hero-copy clear-in" data-hero-copy><span class="hero-eyebrow">DIARY ENTRY</span><h1 id="post-title">${escapeHtml(entry.title)}</h1><p>${escapeHtml(config.author)} · ${escapeHtml(entry.displayDate)} · ${escapeHtml(entry.tags.join('、'))}</p></div>
+  <section class="post-hero post-hero-cover-layout glass-frame" aria-labelledby="post-title">
+    <span class="post-card-media"><img src="${pathUrl(config.basePath, entry.cover)}" alt="" width="1200" height="675" decoding="async" fetchpriority="high"></span>
+    <div class="post-hero-copy clear-in"><h1 id="post-title">${escapeHtml(entry.title)}</h1><p>${escapeHtml(config.author)} · ${escapeHtml(entry.displayDate)} · ${escapeHtml(entry.tags.join('、'))}</p></div>
   </section>
   <section class="theme-surface post-surface">
     <div class="reading-tools glass"><a href="${pathUrl(config.basePath)}">← 返回主页</a><span>日记正文</span></div>
@@ -351,8 +355,8 @@ ${footer(config)}
 function tutorialIndexPage(config, entries) {
   const months = [...new Set(entries.map((entry) => entry.month))];
   const tags = [...new Set(entries.flatMap((entry) => entry.tags))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
-  const cards = tutorials.map((tutorial) => `<a class="romanticism-post-card reveal-on-scroll" href="${pathUrl(config.basePath, `tutorials/${tutorial.slug}/`)}" data-tutorial-card data-reveal style="background-image:url('${pathUrl(config.basePath, tutorial.cover)}')">
-    <span class="post-card-shade"></span>
+  const cards = tutorials.map((tutorial) => `<a class="romanticism-post-card reveal-on-scroll" href="${pathUrl(config.basePath, `tutorials/${tutorial.slug}/`)}" data-tutorial-card data-reveal>
+    <span class="post-card-media"><img src="${pathUrl(config.basePath, tutorial.cover)}" alt="" width="1200" height="675" loading="lazy" decoding="async"></span>
     <span class="post-card-copy"><strong>${escapeHtml(tutorial.title)}</strong><small>${escapeHtml(tutorial.detail)}</small><em>${escapeHtml(tutorial.summary)}</em></span>
   </a>`).join('\n');
   return `${pageHead({ config, title: `交互教程 · ${config.title}`, description: '可以动手操作的学习笔记与练习：英语词汇、算法与滑动窗口、论文与大模型基础、离散数学与数学竞赛、网络基础、多语言程序。', pathname: 'tutorials/', imagePath: tutorials[0].cover })}

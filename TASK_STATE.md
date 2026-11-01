@@ -1,3 +1,16 @@
+# 2026-11-01 Article cover and card repair (implementation verified; publication pending)
+
+- Goal: fix cropped and visually cluttered article/tutorial covers reported in the user screenshot of iwxt.cn.
+- Initial context: primary checkout clean at 18d5ddc; isolated worktree codex/blog-cover-fix-20261101. Existing GitHub Pages workflow retained.
+- Root cause: wide short cards use background-size:cover and put titles/metadata/summaries over text-heavy cover graphics.
+- Plan: separate media and copy on home/tutorial cards; contain whole covers; split post header image/title; redesign eight tutorial cover SVGs with sparse subject illustrations and generate new content-hashed PNGs; run project checks, responsive/keyboard/theme/navigation/browser tests, then publish with existing Pages workflow and verify live assets.
+- Completed: full-image cards, image/title post headers, 8 editable SVG illustrations and new content-hashed PNGs. Desktop image/copy split; mobile stacked; balanced titles wrap without truncation.
+- Verified: npm run check, 58/58 tests, UTC production build, git diff --check. Playwright checked 86 cards/headers across 1440/768/390/320px, dark/light modes, contain rendering, no text/image overlap or clipped titles, focus and keyboard navigation, tutorial links and vocabulary default count; zero runtime/console errors. Desktop/mobile/dark/post screenshots inspected.
+- Final responsive check passed again after balancing long titles. CSS links now use a content version to fetch updated layout reliably.
+- Next: publish using existing Pages workflow and verify live asset hashes.
+- Scope: no tutorial lesson/word-picker/check-in logic or browser storage changes. Keep wallpaper, main navigation and sidebar. Preserve old cover files.
+- Risks: new image/copy layout must wrap long titles at 320px; dark mode needs strong contrast; generated cover URLs and post metadata must stay in sync; do not overwrite concurrent changes on main.
+
 # TASK_STATE
 
 ## 2026-11-01 六级词汇筛选迁移（已完成）

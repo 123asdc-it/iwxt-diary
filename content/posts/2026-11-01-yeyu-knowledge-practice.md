@@ -7,7 +7,7 @@ tags:
   - 夜雨课程
   - 交互教程
 summary: "11 章、179 个知识点、180 道独立题。先动笔，再看参考解答，用状态和错因笔记记录练习。"
-cover: "uploads/covers/3581c37b1ded5c1a2569b195de3206a7197bf1539e2fcde49474164e2a64e81e.png"
+cover: "uploads/covers/56bb7a90e47d9bc819deebb6158b4d68bed7398f4e8709cfc321475c918bf776.png"
 coverFocusX: 50
 createdAt: "2026-10-31T19:00:02.159152+00:00"
 updatedAt: "2026-10-31T19:00:02.159152+00:00"

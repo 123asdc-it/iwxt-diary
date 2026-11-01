@@ -7,7 +7,7 @@ tags:
   - 注意力机制
   - 交互教程
 summary: "用8个手工token拆开MiTA的池化、可复用top-k专家、共享压缩、路由与联合softmax，区分公式算例和论文实证。"
-cover: "uploads/covers/1916e9a21570ee43efd6c0c1844e93e1cec337c00305f8a1501aa760f2c37f12.png"
+cover: "uploads/covers/75fdfca0d8d5f948eb66b92e5ced4f198304cb0cf9001eb4bb41f3049b6319f2.png"
 coverFocusX: 50
 createdAt: "2026-10-31T20:22:00Z"
 updatedAt: "2026-10-31T20:22:00Z"

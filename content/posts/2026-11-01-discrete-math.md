@@ -7,7 +7,7 @@ tags:
   - 学习笔记
   - 交互教程
 summary: "依离散数学第2版的19章结构，用原创讲解、推导、实验与自测串起逻辑、集合、代数、计数、图论和数论。"
-cover: "uploads/covers/0411d668ca1893c16bb60e3f736cf991a578e3bd7bfc2fc5b5f6359c41aba5ae.png"
+cover: "uploads/covers/522f54a2f21cee9f99c542fa9749df19332079cbc7f59ed853bfd235c790acff.png"
 coverFocusX: 50
 createdAt: "2026-10-31T20:10:00Z"
 updatedAt: "2026-10-31T20:10:00Z"

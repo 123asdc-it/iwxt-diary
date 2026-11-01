@@ -7,7 +7,7 @@ tags:
   - 华为ICT
   - 交互教程
 summary: "从一次网络访问出发，逐步理解交换、路由、WLAN、安全和数据中心网络，配合拓扑演示与题库练习。"
-cover: "uploads/covers/986b23b4c31dd94bb622ef728e4361a5c432c291921e468c0077fbcb8a0fef4b.png"
+cover: "uploads/covers/2c9092cb1240b56bf52cb91029df07e5af89b8c540b32a72f281c845d44dceb7.png"
 coverFocusX: 50
 createdAt: "2026-10-31T18:35:18.494716+00:00"
 updatedAt: "2026-10-31T18:35:18.494716+00:00"

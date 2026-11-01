@@ -7,7 +7,7 @@ tags:
   - 词汇
   - 学习工具
 summary: "保留原页面的词库、批量标记和导出功能，随时筛选生词，并用 JSON 迁移完整进度。"
-cover: "uploads/covers/5ba639a519efb55c890018523fefeba7d34e692ad85f13d582212f7e324783df.png"
+cover: "uploads/covers/0862a39a1ad5a72f020b4ed54ae7b44a8c5db42b48c4e78fdbd83f4f63fc0e0f.png"
 coverFocusX: 50
 createdAt: "2026-10-31T19:55:59.429423+00:00"
 updatedAt: "2026-10-31T19:55:59.429423+00:00"
