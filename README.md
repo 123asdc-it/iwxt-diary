@@ -146,6 +146,7 @@ updatedAt: "2026-09-02T08:00:00.000Z"
 
 教程目录位于 <https://iwxt.cn/tutorials/>，博客导航及对应入口文章均可进入。
 
+- 考研计组图解与练习：<https://iwxt.cn/tutorials/computer-organization/>。王道七章范围，28单元/56可操作图解，84原创题与16道可追溯408真题导读，含两道综合题；参照夜雨的手动状态/错因笔记/筛选/备份。
 - MiTA论文导读：<https://iwxt.cn/tutorials/mita-attention/>。固定arXiv v6，用8token数值实验演示landmark、top-k复用、共享压缩与联合softmax，另列实验设置与证据边界。
 - 离散数学全书逐章教程：<https://iwxt.cn/tutorials/discrete-math/>。按第2版19章组织原创讲解、推导、例子、19个实验与38道自测，保留75小节的印刷页/PDF页索引。
 - 词间六级词汇筛选：<https://iwxt.cn/tutorials/cet6-word-picker/>。保留原 HTML 界面、5,407 词条及原进度导入导出；桌面先导出进度 JSON，再在网站确认恢复。
@@ -178,6 +179,10 @@ updatedAt: "2026-09-02T08:00:00.000Z"
 离散数学页为无外部运行依赖的单文件，独立存储键 `discrete-math-course-v1`，备份 `app: discrete-math-course`、`version: 1`，按章节保存手动状态、笔记、自测选择和更新时间；全量校验后按时间合并。`test/discrete-tutorial.test.mjs` 读取实际内嵌核心，穷举关系闭包/二部匹配、对照小图最小生成树及全部55种RSA教学消息。教材PDF与核对扫描图不发布。
 
 MiTA页同样为单文件，纯JS数值核心独立编写、按论文式5–12统一温度；不是CUDA实现或性能复现。`test/mita-tutorial.test.mjs` 直接读取内嵌核心，核对32个网格设置的压缩/路由/联合归一、分支分区函数合并、重叠候选、最大m/k反例及完整相似度计数。页面不操作任何学习存储；8道自测选择仅保留本次打开期间。
+
+计组教程源文件位于 `scripts/tutorials/computer-organization/`，课程/真题数据、数值核心、图解、记录与UI分别维护。修改后先运行 `node scripts/tutorials/computer-organization/build.mjs`，重新生成独立单文件 `public/tutorials/computer-organization/index.html`，再做全站构建。生成不含时间戳，可重复得到相同内容。原卷PDF只链接院校公开档案，不上传教材或试卷。
+
+计组存储键 `co-exam-workbook-v1`，备份 `app: co-exam-workbook`、`version: 1`。按独立题号保存手动状态/笔记/ISO更新时间，导入先验证全部有效记录再合并较新项；图解参数仅保留当前打开期间。`test/computer-organization.test.mjs` 读取实际发布页核心，核验穷举加减/乘除、Cache独立基准、真题计算和记录合并。保持夜雨、词汇与打卡数据独立。
 
 ### 后续视频教程的默认约定
 

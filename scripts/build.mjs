@@ -18,6 +18,13 @@ const siteCssVersion = createHash('sha256')
 
 const tutorials = [
   {
+    slug: 'computer-organization',
+    title: '考研计组：边看边算，按知识点练习',
+    summary: '沿王道七章体系操作56个图解，结合原创练习与历年408真题导读。',
+    detail: '计算机考研 · 56图解 · 84原创题 + 16真题导读',
+    cover: 'uploads/covers/d0b3c8deab9d9cbcc240b37282385580983c2ce534d0b2cf56a65ec589c2352d.png',
+  },
+  {
     slug: 'mita-attention',
     title: 'MiTA：让注意力复用候选',
     summary: '从 Q/K/V 到 landmark、top-k、共享压缩与联合归一，亲手走完一遍论文公式。',
