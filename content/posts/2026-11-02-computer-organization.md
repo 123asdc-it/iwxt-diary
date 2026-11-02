@@ -9,6 +9,8 @@ tags:
 summary: "沿王道七章体系，用56个可操作图解、84道原创题与16道历年408真题导读，把原理落实到计算和过程。"
 cover: "uploads/covers/d0b3c8deab9d9cbcc240b37282385580983c2ce534d0b2cf56a65ec589c2352d.png"
 coverFocusX: 50
+createdAt: "2026-11-02T11:14:13+08:00"
+updatedAt: "2026-11-02T11:14:13+08:00"
 ---
 
 [打开《考研计组 · 图解与练习》 →](../../tutorials/computer-organization/)
