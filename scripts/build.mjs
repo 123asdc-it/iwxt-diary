@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { buildGeometryPapers } from './tutorials/geometry-papers/build.mjs';
 import { buildFoundations } from './tutorials/foundations/build.mjs';
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -18,6 +19,20 @@ const siteCssVersion = createHash('sha256')
   .digest('hex').slice(0, 12);
 
 const tutorials = [
+  {
+    slug: 'relift-3d',
+    title: 'ReLift：从像素轨迹到三维轨迹修复',
+    summary: '从像素、相机和深度学起，逐步操作遮挡缺口、三维抬升与时空修复。',
+    detail: '10章图解 · 轨迹/相机/深度/注意力',
+    cover: 'uploads/covers/d3decc432c8d6086027bced13a058ffe1fc9b9b80abcf26992a63ee8362fee36.png',
+  },
+  {
+    slug: 'honeycomb-surfels',
+    title: 'Honeycomb-Surfels：一片六边形怎样表示表面',
+    summary: '从表面小片到六边形软支撑、片内颜色与alpha合成，再看质量和资源取舍。',
+    detail: '10章图解 · 局部坐标/颜色/渲染/实验',
+    cover: 'uploads/covers/399504bf981fa3b8941592fbd5960f9e4f7d0e071b875347478c7ae0b6e97645.png',
+  },
   {
     slug: 'computer-organization',
     title: '考研计组：边看边算，按知识点练习',
@@ -397,6 +412,7 @@ function notFoundPage(config) {
 
 async function build() {
   await buildFoundations();
+  await buildGeometryPapers();
   const config = await loadSiteConfig();
   const entries = await readEntries();
   const cmcCatalog = await readCmcCatalog();

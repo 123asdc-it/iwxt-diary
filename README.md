@@ -274,3 +274,12 @@ npm run build
 首页与教程目录采用独立的封面区和文字区：桌面左右排列，手机上下排列。封面通过实际图片元素按完整比例显示，标题、日期、标签与摘要自然换行，不再叠在图片上，也不截断标题。文章页的封面和标题同样分区，支持深浅色模式。
 
 八个交互教程的封面改为统一纸色与深绿的主题图形，源文件保留在各自 `public/tutorials/<slug>/cover.svg`。发布图片使用 `public/uploads/covers/` 中新的内容哈希 PNG，入口文章的 `cover` 和 `scripts/build.mjs` 里的目录配置同步引用；旧图片保留。
+
+
+## 两篇三维视觉论文交互教程
+
+`/tutorials/relift-3d/` 与 `/tutorials/honeycomb-surfels/` 各有10章，先解释像素/射线/表面片等前提，再逐步操作方法图。来源数据与原创讲解在 `scripts/tutorials/geometry-papers/{relift,hexels}.mjs`，纯数值核心为 `math.js`，图解为 `figures.js`，样式和交互分别为 `style.css` 与 `ui.js`。`build.mjs` 生成两份独立HTML；全站构建会先调用它，避免手改生成文件被覆盖。
+
+两篇不写入任何学习记录，图解参数与自测仅在本次打开期间保留。离线下载保存完整源HTML，运行不依赖CDN、作者权重或网络。教学算例与论文报告分开标注，实验表保留版本、预算、单位和硬件范围；没有执行作者训练/测速。原论文及缓存仅在本地ignored `output/papers/`，不发布整篇PDF或作者照片。
+
+更新时保留固定v1来源和固定提交，核对表格及不利结果。运行 `node --test test/geometry-papers.test.mjs` 检查坐标、支撑、求交、混合、预算、报告数据、全部图解步骤与离线生成一致性。封面源SVG在对应public目录，PNG采用内容哈希并同步文章与目录引用。
