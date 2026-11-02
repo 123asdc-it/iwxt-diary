@@ -147,7 +147,7 @@ updatedAt: "2026-09-02T08:00:00.000Z"
 教程目录位于 <https://iwxt.cn/tutorials/>，博客导航及对应入口文章均可进入。
 
 - 考研计组图解与练习：<https://iwxt.cn/tutorials/computer-organization/>。王道七章范围，28单元/56可操作图解，84原创题与16道可追溯408真题导读，含两道综合题；参照夜雨的手动状态/错因笔记/筛选/备份。
-- MiTA论文导读：<https://iwxt.cn/tutorials/mita-attention/>。固定arXiv v6，用8token数值实验演示landmark、top-k复用、共享压缩与联合softmax，另列实验设置与证据边界。
+- MiTA论文导读：<https://iwxt.cn/tutorials/mita-attention/>。固定arXiv v6，默认先沿22个概念学token、向量、Transformer与KV Cache，再读原8章论文主线；8token数值实验配数据流图与实验对照图，保留证据边界。
 - 离散数学全书逐章教程：<https://iwxt.cn/tutorials/discrete-math/>。按第2版19章组织原创讲解、推导、例子、19个实验与38道自测，保留75小节的印刷页/PDF页索引。
 - 词间六级词汇筛选：<https://iwxt.cn/tutorials/cet6-word-picker/>。保留原 HTML 界面、5,407 词条及原进度导入导出；桌面先导出进度 JSON，再在网站确认恢复。
 - 定长滑动窗口进阶：<https://iwxt.cn/tutorials/fixed-window-advanced/>。对应截图的 19 道进阶与 4 道扩展，附逐题讲解、C++17 代码、81 帧窗口示例、可修改输入的基础实验及独立练习记录。
@@ -183,6 +183,18 @@ MiTA页同样为单文件，纯JS数值核心独立编写、按论文式5–12�
 计组教程源文件位于 `scripts/tutorials/computer-organization/`，课程/真题数据、数值核心、图解、记录与UI分别维护。修改后先运行 `node scripts/tutorials/computer-organization/build.mjs`，重新生成独立单文件 `public/tutorials/computer-organization/index.html`，再做全站构建。生成不含时间戳，可重复得到相同内容。原卷PDF只链接院校公开档案，不上传教材或试卷。
 
 计组存储键 `co-exam-workbook-v1`，备份 `app: co-exam-workbook`、`version: 1`。按独立题号保存手动状态/笔记/ISO更新时间，导入先验证全部有效记录再合并较新项；图解参数仅保留当前打开期间。`test/computer-organization.test.mjs` 读取实际发布页核心，核验穷举加减/乘除、Cache独立基准、真题计算和记录合并。保持夜雨、词汇与打卡数据独立。
+
+### 既有教程的基础阅读层
+
+九个教程均加入同页的概念解释：共92个原创基础单元，每点先给动机和分步图，再写定义/条件、小例子、自问与参考解释。正文虚线术语和章节旁入口可打开概念，并返回原文位置；各篇有自己的基础阅读路线，补充前提也可查找。新模块不读写localStorage，不把看图、展开答案或阅读自动记成掌握。
+
+维护源码位于 `scripts/tutorials/foundations/`：`catalog.mjs` 配各篇路线/章节对应，领域数据模块存讲解，`math.js` 是可独立核对的纯函数，`figures.js` / `ui.js` / `style.css` 绘图与阅读交互。MiTA原始八章模板在 `mita-base.html`，构建器加默认从零一章、六步数据流图与报告值图表；原MiTAMath核心保留。
+
+`npm run build` 自动生成九篇自包含HTML并同步夜雨离线ZIP；也可单独运行 `node scripts/tutorials/foundations/build.mjs`。离线ZIP同步使用系统`python3`的标准库zipfile，当前macOS与Pages runner均可运行，不安装额外Python包。每页内联所需内容/样式/脚本，文件与网络版都能补概念；外部原资料链接需网络。计组专用生成器也接入同一装饰器，避免重新生成后丢失学习层。生成前先去掉已生成区块，反复运行字节稳定。
+
+MiTA可用 `?concept=kv-cache#start`、`?concept=transformer#start` 直接进入相应概念；普通网址仍从token开始。KV复用图是固定投影的单层单头算例；缓存容量另以明确层数/头数/维度计算。MiTA论文未评估LLM decoding，不把这份背景教学当成其KV缓存压缩或生成性能验证。
+
+`test/tutorial-foundations.test.mjs` 核验92节点无缺前提/环、全部图解起止、单文件脚本/JSON/幂等、注意力/遮罩与缓存独立计算、带负数滑窗、图与计数、量化和网络地址边界。原题数据、答案、图片、记录键与导入语义继续沿用各教程约定。
 
 ### 后续视频教程的默认约定
 

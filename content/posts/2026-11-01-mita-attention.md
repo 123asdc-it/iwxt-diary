@@ -6,11 +6,11 @@ tags:
   - 论文阅读
   - 注意力机制
   - 交互教程
-summary: "用8个手工token拆开MiTA的池化、可复用top-k专家、共享压缩、路由与联合softmax，区分公式算例和论文实证。"
+summary: "从token、向量、Transformer与KV Cache学起，用分步图与数值实验理解MiTA，读懂方法、成本与证据范围。"
 cover: "uploads/covers/75fdfca0d8d5f948eb66b92e5ced4f198304cb0cf9001eb4bb41f3049b6319f2.png"
 coverFocusX: 50
 createdAt: "2026-10-31T20:22:00Z"
-updatedAt: "2026-10-31T20:22:00Z"
+updatedAt: "2026-11-02T04:09:34Z"
 ---
 
 [打开《MiTA注意力 · 论文交互教程》 →](../../tutorials/mita-attention/)
@@ -26,3 +26,5 @@ updatedAt: "2026-10-31T20:22:00Z"
 页面使用深绿与纸色、桌面20px和手机18px正文，包含8道自测，可以下载单文件离线使用。本页没有运行论文训练或性能复现。
 
 [查看全部交互教程与学习工具 →](../../tutorials/)
+
+新增从零开始的22个概念：从token、向量、点积、Q/K/V与softmax，到Transformer、生成、KV Cache，再接入MiTA。每点配分步图与自问；原六步实验增加数据流图，方法总图可直接进入对应步骤。

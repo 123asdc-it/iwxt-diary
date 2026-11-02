@@ -1,3 +1,4 @@
+import {enhanceTutorial} from '../foundations/decorate.mjs';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {dirname,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -12,4 +13,4 @@ if(points.length!==56||questions.length!==100||exams.length!==16||new Set(questi
 const data={version:1,title:'考研计组 · 图解与练习',source:{edition:'2027',isbn:'9787121517945',publisher:'https://www.phei.com.cn/module/goods/wssd_content.jsp?bookid=69045',examArchive:'https://www.xit.edu.cn/yjsfk/kyzykwtkw/list.htm'},chapters,units:units.map(u=>({id:u.id,chapter:u.chapter,title:u.title})),points,questions};
 const template=await readFile(resolve(folder,'template.html'),'utf8'),style=await readFile(resolve(folder,'style.css'),'utf8'),scripts=await Promise.all(['math.js','progress.js','visuals.js','ui.js'].map(name=>readFile(resolve(folder,name),'utf8')));
 const html=template.replace('<!-- COURSE_STYLE -->',`<style>${style}</style>`).replace('<!-- COURSE_DATA -->',`<script id="co-course-data" type="application/json">${JSON.stringify(data).replaceAll('<','\\u003c')}</script>`).replace('<!-- COURSE_SCRIPTS -->',scripts.map((s,i)=>`<script id="${['co-math','co-progress','co-visuals','co-ui'][i]}">\n${s}\n</script>`).join('\n'));
-const out=resolve(root,'public/tutorials/computer-organization');await mkdir(out,{recursive:true});await writeFile(resolve(out,'index.html'),html);console.log(`计组教程：${chapters.length}章 / ${units.length}单元 / ${points.length}图解 / ${questions.length}题（${exams.length}真题导读），${Buffer.byteLength(html)}字节`);
+const out=resolve(root,'public/tutorials/computer-organization');await mkdir(out,{recursive:true});await writeFile(resolve(out,'index.html'),await enhanceTutorial('computer-organization',html));console.log(`计组教程：${chapters.length}章 / ${units.length}单元 / ${points.length}图解 / ${questions.length}题（${exams.length}真题导读），${Buffer.byteLength(html)}字节`);

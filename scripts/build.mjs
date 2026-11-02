@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { buildFoundations } from './tutorials/foundations/build.mjs';
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
@@ -27,8 +28,8 @@ const tutorials = [
   {
     slug: 'mita-attention',
     title: 'MiTA：让注意力复用候选',
-    summary: '从 Q/K/V 到 landmark、top-k、共享压缩与联合归一，亲手走完一遍论文公式。',
-    detail: '论文导读 · 8 章 · 数值实验与证据边界',
+    summary: '先学token、Transformer与KV Cache，再通过分步数据流图和数值实验理解MiTA。',
+    detail: '22个前置概念 · 8章论文主线 · 分步图解',
     cover: 'uploads/covers/75fdfca0d8d5f948eb66b92e5ced4f198304cb0cf9001eb4bb41f3049b6319f2.png',
   },
   {
@@ -395,6 +396,7 @@ function notFoundPage(config) {
 }
 
 async function build() {
+  await buildFoundations();
   const config = await loadSiteConfig();
   const entries = await readEntries();
   const cmcCatalog = await readCmcCatalog();
