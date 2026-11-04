@@ -169,6 +169,7 @@ function drawer({ config, entries, months, tags }) {
     <a href="${home}">${icon('home')}<span>主页</span></a>
     <a href="${checkin}">${icon('check')}<span>每日打卡</span></a>
     <a href="${tutorial}">${icon('book')}<span>交互教程</span></a>
+    <a href="${pathUrl(config.basePath, 'apps/usv-inspection/')}">${icon('circle')}<span>巡检演示</span></a>
     <div class="drawer-section">
       <div class="drawer-section-title">${icon('archive')}<span>文章归档</span></div>
       <a href="${home}"><span>全部</span><b>${entries.length}</b></a>${monthButtons}

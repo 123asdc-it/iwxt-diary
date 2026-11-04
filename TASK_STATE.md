@@ -852,3 +852,14 @@ planning only and must be replaced when the user supplies a concrete notice.
   the two FLTRP events are recorded as 2026 because the notice was supplied in
   the active 2026 season. Change the year if the hidden notice header says
   otherwise. Baidu's national-final date remains pending final confirmation.
+
+## 2026-11-04 独立巡检原型发布（进行中）
+- 用户要求：放在博客上，只增加简单入口，不发布文章。
+- 原型来源：/Users/admin/Work/Project/无人船岸堤巡检网页-四页原型-20261027/dist。
+- 方案：独立静态目录 public/apps/usv-inspection/；侧边菜单增加“巡检演示”；原型增加返回博客。
+- 变更：scripts/build.mjs、public/apps/usv-inspection/、README.md、TASK_STATE.md。
+- 验证计划：语法与生产构建、已有测试、子目录四页/素材/下载、本地入口、文章集合不变；随后推送现有 main 并核验 Pages 线上结果。
+- 数据边界：保留演示标签；不发布录音、手记、源项目路径或工作区文档。原网页工程和独立原型源文件不改动。
+- 本地验证完成：语法、生产构建、差异空白检查通过；原13篇文章逐文件SHA-256未变，13个原型文件经HTTP读取与生产构建一致。
+- 原目录执行测试为85/86，失败项为既有C++测试使用URL.pathname处理中文路径；在英文临时目录用相同测试和当前发布文件复核，86/86通过，未修改测试。
+- 浏览器已通过首页菜单进入 /apps/usv-inspection/，视频及三维子页正常载入，返回博客链接正确。
