@@ -863,3 +863,12 @@ planning only and must be replaced when the user supplies a concrete notice.
 - 本地验证完成：语法、生产构建、差异空白检查通过；原13篇文章逐文件SHA-256未变，13个原型文件经HTTP读取与生产构建一致。
 - 原目录执行测试为85/86，失败项为既有C++测试使用URL.pathname处理中文路径；在英文临时目录用相同测试和当前发布文件复核，86/86通过，未修改测试。
 - 浏览器已通过首页菜单进入 /apps/usv-inspection/，视频及三维子页正常载入，返回博客链接正确。
+
+### 发布完成与线上验证
+- 状态：已完成。正式地址 https://iwxt.cn/apps/usv-inspection/；博客侧边菜单“巡检演示”直达，没有新增文章或教程卡片。
+- 发布提交：22dbafbde9fcc70aea6c001227bd7f52e3425b11；GitHub Pages 工作流 41813607279 成功。
+- HTTPS 核验：13个原型文件共约9.7MB，全部返回200并与本地生产构建逐字节一致；首页菜单链接已在线上出现。
+- 浏览器核验：首页菜单→独立原型跳转成功，地址为正式HTTPS路径；四页导航、回放和返回博客入口正常显示。
+- 验证边界：全套86项测试在英文临时目录通过；中文路径的既有C++测试路径问题未修改。自编源码空白检查通过，vendor保留上游CRLF行尾。
+- 已保存线上菜单截图与逐文件哈希到 output/shoreline-publish/（不上传）。原工程与本地独立原型源码保持原样。
+- 剩余必需工作：无。后续只需更新 public/apps/usv-inspection/ 并按现有Pages流程发布。
