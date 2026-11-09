@@ -1,15 +1,16 @@
-/* Self-contained WebGL point viewer. Scene and change mode are illustrative. */
+/* PLY-only WebGL viewer; markers are explicitly illustrative anchors on loaded points. */
 window.ShoreCloud = class ShoreCloud {
   constructor(canvas, onProject, onStatus) {
     this.canvas = canvas;
     this.onProject = onProject;
     this.onStatus = onStatus;
-    this.mode = "scene";
+    this.mode = "raw";
     this.panMode = true;
     this.epoch = "overlay";
     this.alive = true;
     this.reset();
-    this.points = this.makeScene();
+    this.points = { pos: new Float32Array(), col: new Float32Array() };
+    this.anchors = [];
     this.gl = canvas.getContext("webgl", { antialias: true, alpha: true });
     if (!this.gl) {
       onStatus("当前浏览器不支持 WebGL，三维预览不可用。");
@@ -146,101 +147,46 @@ window.ShoreCloud = class ShoreCloud {
   reset() {
     this.yaw = -0.2;
     this.pitch = -0.93;
-    this.dist = this.canvas?.clientWidth < 500 ? 11.5 : 9;
     this.panX = 0;
-    this.panY = -0.1;
-  }
-  makeScene(epoch = "current") {
-    const p = [],
-      c = [];
-    const put = (x, y, z, r, g, b) => {
-      p.push(x, y, z);
-      c.push(r, g, b);
-    };
-    for (let i = 0; i < 380; i++)
-      for (let j = 0; j < 100; j++) {
-        const x = -3.8 + i * 0.02,
-          y = -0.82 + j * 0.017;
-        let z =
-          y < -0.25
-            ? 0.1 + (y + 0.82) * 0.8
-            : y < 0.35
-              ? 0.556
-              : 0.556 + (y - 0.35) * 0.1;
-        const change = this.changeAt(x, y);
-        if (epoch === "current") z += change;
-        const mortar = i % 19 === 0 || j % 14 === 0 ? 0.52 : 0.87;
-        const noise = (Math.sin(i * 91.77 + j * 19.4) * 0.5 + 0.5) * 0.12;
-        const k = mortar - noise;
-        const attached =
-          epoch === "current" && x > 1.9 && x < 2.55 && y > -0.1 && y < 0.35;
-        put(
-          x,
-          y,
-          z,
-          k * 0.83 * (attached ? 0.65 : 1),
-          k * 0.89,
-          k * 0.91 * (attached ? 0.7 : 1),
-        );
-      }
-    for (let i = 0; i < 140; i++)
-      for (let j = 0; j < 40; j++) {
-        const x = -4 + i * 0.06,
-          y = -2.35 + j * 0.037,
-          z = 0.07 + Math.sin(x * 4 + y * 7) * 0.015;
-        put(x, y, z, 0.1, 0.29 + Math.sin(i + j) * 0.015, 0.36);
-      }
-    for (let i = 0; i < 250; i++)
-      for (let j = 0; j < 28; j++) {
-        const x = -3.8 + i * 0.03,
-          y = 0.87 + j * 0.027;
-        put(x, y, 0.59, 0.2, 0.32, 0.29);
-      }
-    for (let x = -5; x <= 5; x += 0.09)
-      for (const y of [-3, -2, -1, 0, 1, 2]) put(x, y, -0.03, 0.15, 0.26, 0.34);
-    for (let y = -3; y <= 2; y += 0.09)
-      for (const x of [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5])
-        put(x, y, -0.03, 0.15, 0.26, 0.34);
-    return { pos: new Float32Array(p), col: new Float32Array(c) };
-  }
-  changeAt(x, y) {
-    if (Math.abs(x - 0.2) < 0.42 && y > -0.58 && y < 0.14) return -0.19;
-    if (Math.abs(x + 2) < 0.055 && y > -0.5 && y < 0.45) return -0.075;
-    if (x > 1.9 && x < 2.55 && y > -0.1 && y < 0.35) return 0.11;
-    return 0;
-  }
-  makeComparison() {
-    const base = this.makeScene("previous"),
-      now = this.makeScene("current");
-    const p = [],
-      c = [];
-    for (let i = 0; i < now.pos.length; i += 3) {
-      const x = now.pos[i],
-        y = now.pos[i + 1],
-        changed = this.changeAt(x, y) !== 0 && i < 380 * 100 * 3;
-      const add = (cloud, color) => {
-        p.push(cloud.pos[i], cloud.pos[i + 1], cloud.pos[i + 2]);
-        c.push(...color);
-      };
-      if (!changed) {
-        add(this.epoch === "previous" ? base : now, [0.4, 0.51, 0.6]);
-        continue;
-      }
-      if (
-        this.epoch !== "current" &&
-        (this.epoch !== "overlay" || (i / 3) % 4 === 0)
-      )
-        add(base, [0.33, 0.82, 0.88]);
-      if (this.epoch !== "previous") add(now, [1, 0.57, 0.26]);
+    this.panY = 0;
+    this.dist = 11;
+    if (!this.points?.pos.length) return;
+    const rotated = [];
+    let minX = Infinity,
+      maxX = -Infinity,
+      minY = Infinity,
+      maxY = -Infinity;
+    const c = Math.cos(this.yaw),
+      s = Math.sin(this.yaw),
+      cp = Math.cos(this.pitch),
+      sp = Math.sin(this.pitch);
+    for (let i = 0; i < this.points.pos.length; i += 3) {
+      const [x, y, z] = this.points.pos.subarray(i, i + 3);
+      const qx = c * x - s * y,
+        qy = s * x + c * y;
+      const ry = cp * qy - sp * z,
+        rz = sp * qy + cp * z;
+      rotated.push([qx, ry, rz]);
+      minX = Math.min(minX, qx);
+      maxX = Math.max(maxX, qx);
+      minY = Math.min(minY, ry);
+      maxY = Math.max(maxY, ry);
     }
-    return { pos: new Float32Array(p), col: new Float32Array(c) };
-  }
-  setEpoch(epoch) {
-    this.epoch = epoch;
-    if (this.gl && this.mode === "change") {
-      this.points = this.makeComparison();
-      this.upload();
-    }
+    this.panX = -(minX + maxX) / 2;
+    this.panY = -(minY + maxY) / 2;
+    const aspect =
+      (this.canvas.clientWidth || 1) / (this.canvas.clientHeight || 1);
+    let distance = 4;
+    for (const [x, y, z] of rotated)
+      distance = Math.max(
+        distance,
+        z +
+          Math.max(
+            Math.abs(x + this.panX) / (0.42 * aspect * 0.8),
+            Math.abs(y + this.panY) / (0.42 * 0.8),
+          ),
+      );
+    this.dist = Math.min(18, distance);
   }
   upload() {
     const g = this.gl;
@@ -259,68 +205,149 @@ window.ShoreCloud = class ShoreCloud {
     }
   }
   async setMode(mode) {
-    this.mode = mode;
-    if (!this.gl) {
-      this.onStatus("当前浏览器不支持 WebGL，三维预览不可用。");
-      return;
-    }
-    if (mode === "raw") {
-      this.onStatus("正在载入原工程 PLY 素材…");
-      try {
-        if (!this.raw) {
-          const response = await fetch("assets/shoreline-sfm-web.ply");
-          if (!response.ok) throw Error("点云文件读取失败");
-          this.raw = this.parse(await response.arrayBuffer());
+    if (!this.gl) return;
+    this.mode = "raw";
+    this.onStatus("正在读取 PLY 点云…");
+    try {
+      const response = await fetch(
+        this.sourceUrl || "assets/shoreline-sfm-web.ply",
+      );
+      if (!response.ok) throw Error("点云文件读取失败");
+      const points = this.parse(await response.arrayBuffer());
+      if (!this.alive) return;
+      this.points = points;
+      // Attach illustrative markers to actual retained vertices, never screen pixels.
+      this.anchors = [-0.9, 0, 0.9].map((x) => {
+        let best = Infinity,
+          point = [0, 0, 0];
+        for (let i = 0; i < points.pos.length; i += 3) {
+          const d =
+            (points.pos[i] - x) ** 2 +
+            points.pos[i + 1] ** 2 +
+            points.pos[i + 2] ** 2;
+          if (d < best) {
+            best = d;
+            point = Array.from(points.pos.slice(i, i + 3));
+          }
         }
-        if (!this.alive || this.mode !== "raw") return;
-        this.points = this.raw;
-        this.upload();
-        this.reset();
-        this.onStatus("");
-      } catch (e) {
-        if (this.alive) this.onStatus(e.message);
-      }
-    } else {
-      this.epoch = "overlay";
-      this.points =
-        mode === "change" ? this.makeComparison() : this.makeScene();
+        return point;
+      });
       this.upload();
       this.reset();
       this.onStatus("");
+    } catch (error) {
+      if (this.alive) this.onStatus(error.message);
     }
   }
   parse(buffer) {
-    const head = new TextDecoder().decode(
-      new Uint8Array(buffer, 0, Math.min(4096, buffer.byteLength)),
+    const bytes = new Uint8Array(buffer);
+    const header = new TextDecoder().decode(
+      bytes.subarray(0, Math.min(bytes.length, 65536)),
     );
-    const end = head.indexOf("end_header");
-    if (end < 0) throw Error("PLY 格式无法识别");
-    const start = head.indexOf("\n", end) + 1;
-    const count = Number(head.match(/element vertex (\d+)/)?.[1]);
-    if (!count) throw Error("点云为空");
-    const view = new DataView(buffer, start),
-      raw = [],
-      col = [];
-    let min = [Infinity, Infinity, Infinity],
-      max = [-Infinity, -Infinity, -Infinity];
-    for (let i = 0; i < count; i++) {
-      const p = i * 27;
-      for (let k = 0; k < 3; k++) {
-        const v = view.getFloat64(p + k * 8, true);
-        raw.push(v);
-        min[k] = Math.min(min[k], v);
-        max[k] = Math.max(max[k], v);
+    const end = header.indexOf("end_header");
+    if (end < 0) throw Error("PLY 文件头无法识别");
+    const offset = header.indexOf("\n", end) + 1;
+    const lines = header.slice(0, end).split(/\r?\n/);
+    const format = lines.find((l) => l.startsWith("format "))?.split(" ")[1];
+    let count = 0,
+      inVertex = false,
+      props = [];
+    for (const line of lines) {
+      const parts = line.trim().split(/\s+/);
+      if (parts[0] === "element") {
+        inVertex = parts[1] === "vertex";
+        if (inVertex) count = +parts[2];
+      } else if (parts[0] === "property" && inVertex) {
+        if (parts[1] === "list") throw Error("不支持顶点列表属性");
+        props.push({ type: parts[1], name: parts[2] });
       }
-      col.push(
-        view.getUint8(p + 24) / 255,
-        view.getUint8(p + 25) / 255,
-        view.getUint8(p + 26) / 255,
+    }
+    const types = {
+      char: [1, "getInt8"],
+      int8: [1, "getInt8"],
+      uchar: [1, "getUint8"],
+      uint8: [1, "getUint8"],
+      short: [2, "getInt16"],
+      int16: [2, "getInt16"],
+      ushort: [2, "getUint16"],
+      uint16: [2, "getUint16"],
+      int: [4, "getInt32"],
+      int32: [4, "getInt32"],
+      uint: [4, "getUint32"],
+      uint32: [4, "getUint32"],
+      float: [4, "getFloat32"],
+      float32: [4, "getFloat32"],
+      double: [8, "getFloat64"],
+      float64: [8, "getFloat64"],
+    };
+    let stride = 0;
+    for (const p of props) {
+      if (!types[p.type]) throw Error("不支持的 PLY 属性类型");
+      p.offset = stride;
+      stride += types[p.type][0];
+    }
+    if (
+      !count ||
+      !["x", "y", "z"].every((n) => props.some((p) => p.name === n))
+    )
+      throw Error("PLY 缺少有效顶点");
+    if (
+      !["ascii", "binary_little_endian", "binary_big_endian"].includes(format)
+    )
+      throw Error("不支持的 PLY 编码");
+    if (format !== "ascii" && offset + count * stride > buffer.byteLength)
+      throw Error("PLY 数据不完整");
+    const rows =
+      format === "ascii"
+        ? new TextDecoder().decode(bytes.subarray(offset)).trim().split(/\r?\n/)
+        : null;
+    const view = new DataView(buffer),
+      raw = [],
+      colors = [],
+      axes = [[], [], []];
+    const step = Math.max(1, Math.ceil(count / 500000));
+    for (let i = 0; i < count; i += step) {
+      let values = {};
+      const row = rows?.[i]?.trim().split(/\s+/);
+      props.forEach((p, j) => {
+        values[p.name] = rows
+          ? Number(row?.[j])
+          : view[types[p.type][1]](
+              offset + i * stride + p.offset,
+              format === "binary_little_endian",
+            );
+      });
+      const xyz = [values.x, values.y, values.z];
+      if (!xyz.every(Number.isFinite)) continue;
+      raw.push(xyz);
+      xyz.forEach((v, k) => axes[k].push(v));
+      colors.push(
+        ["red", "green", "blue"].map((n) =>
+          Math.max(0, Math.min(1, (values[n] ?? 180) / 255)),
+        ),
       );
     }
-    const span = Math.max(...max.map((v, i) => v - min[i]));
-    for (let i = 0; i < raw.length; i++)
-      raw[i] = ((raw[i] - (min[i % 3] + max[i % 3]) / 2) / span) * 7;
-    return { pos: new Float32Array(raw), col: new Float32Array(col) };
+    if (!raw.length) throw Error("PLY 没有可用坐标");
+    // Robust framing: sparse far-away reconstruction outliers must not shrink the scene.
+    const bounds = axes.map((a) => {
+      a.sort((x, y) => x - y);
+      return [
+        a[Math.floor(a.length * 0.01)],
+        a[Math.min(a.length - 1, Math.floor(a.length * 0.99))],
+      ];
+    });
+    const span = Math.max(...bounds.map(([lo, hi]) => hi - lo));
+    if (!span) throw Error("点云范围无效");
+    const pos = [],
+      col = [];
+    raw.forEach((p, i) => {
+      if (p.some((v, k) => v < bounds[k][0] || v > bounds[k][1])) return;
+      p.forEach((v, k) =>
+        pos.push(((v - (bounds[k][0] + bounds[k][1]) / 2) / span) * 7),
+      );
+      col.push(...colors[i]);
+    });
+    return { pos: new Float32Array(pos), col: new Float32Array(col) };
   }
   project(p, w, h) {
     const [x, y, z] = p,
@@ -361,12 +388,8 @@ window.ShoreCloud = class ShoreCloud {
       g.uniform2f(this.loc.uPan, this.panX, this.panY);
       g.drawArrays(g.POINTS, 0, this.points.pos.length / 3);
       this.onProject(
-        [
-          [-2, -0.2, 0.481],
-          [0.2, -0.35, 0.29],
-          [2.2, 0.1, 0.666],
-        ].map((p) => this.project(p, w, h)),
-        this.mode !== "scene",
+        this.anchors.map((p) => this.project(p, w, h)),
+        !this.anchors.length,
       );
     }
     this.frame = requestAnimationFrame(() => this.draw());
