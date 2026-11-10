@@ -1,0 +1,2391 @@
+{
+  "sourceNotes": "第二代竞赛笔记合集 有封面版.pdf",
+  "notesPdfPages": 436,
+  "sourceSha256": "88b7ef58649aa3acffd0a7dba8a43a4cb84f4ff5dd1b226731b98682adf14129",
+  "reviewDate": "2026-11-10",
+  "policy": "解析按小节与题目成对选择；笔记有多解时可保留多解；题面与笔记差异显式说明。",
+  "solutions": [
+    {
+      "topicId": "t001",
+      "questionId": "q-2-238-278",
+      "method": "利用等价无穷小",
+      "notesPages": [
+        4
+      ],
+      "evidence": "笔记先取对数，用 ln(1+u) 与 e^u−1 的等价无穷小逐项计算。",
+      "changed": true,
+      "solution": "设 \\(A_n=(a^{1/n}+b^{1/n}+c^{1/n})/3\\)，原式为 \\(L_n=A_n^n\\)。因为 \\(A_n\\to1\\)，利用等价无穷小 \\(\\ln(1+u)=u[1+o(1)]\\)，\n\\[\\ln L_n=n(A_n-1)[1+o(1)].\\]\n再用 \\(e^u-1=u[1+o(1)]\\)：对任意固定 \\(d>0\\)，\n\\[n(d^{1/n}-1)=n(e^{\\ln d/n}-1)\\longrightarrow\\ln d.\\]\n\\(d=1\\) 时左边恒为0，结论也成立。因此\n\\[n(A_n-1)\\longrightarrow\\frac{\\ln a+\\ln b+\\ln c}{3}.\\]\n取指数得 \\(\\boxed{L_n\\to\\sqrt[3]{abc}}\\)。关键是先取对数，再逐项用等价无穷小；不需要对整个幂式作泰勒展开。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t001",
+      "questionId": "q-2-516-555",
+      "method": "利用等价无穷小",
+      "notesPages": [
+        4
+      ],
+      "evidence": "笔记先取对数，用 ln(1+u) 与 e^u−1 的等价无穷小逐项计算。",
+      "changed": true,
+      "solution": "令 \\(A(x)=\\frac1n\\sum_{k=1}^n e^{kx}\\)，其中 \\(n\\) 为固定正整数。原式 \\(L(x)=A(x)^{e/x}\\)，且 \\(A(x)\\to1\\)。由 \\(\\ln A\\sim A-1\\)，\n\\[\\ln L(x)=\\frac{e\\ln A(x)}x\n=\\frac en\\sum_{k=1}^n\\frac{e^{kx}-1}{x}\\,[1+o(1)].\\]\n逐项利用 \\(e^{kx}-1\\sim kx\\)，得到\n\\[\\ln L(x)\\longrightarrow\\frac en\\sum_{k=1}^n k=\\frac{e(n+1)}2.\\]\n所以 \\(\\boxed{L(x)\\to \\exp[e(n+1)/2]}\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t002",
+      "questionId": "q-4-588-623",
+      "method": "逆用等价无穷小",
+      "notesPages": [
+        7
+      ],
+      "evidence": "笔记逆用等价无穷小，将1−乘积转成负对数，再分解对数和。",
+      "changed": true,
+      "solution": "记 \\(P(x)=\\cos x\\,[\\cos(2x)]^{1/2}[\\cos(3x)]^{1/3}\\)。在零点附近各因子为正，且 \\(P(x)\\to1\\)。逆用 \\(\\ln u\\sim u-1\\)，把根式乘积变为对数和：\n\\[1-P(x)\\sim-\\ln P(x)=-\\sum_{k=1}^{3}\\frac1k\\ln\\cos(kx).\\]\n逐项用 \\(-\\ln\\cos(kx)\\sim1-\\cos(kx)\\sim k^2x^2/2\\)，因此\n\\[\\lim_{x\\to0}\\frac{1-P(x)}{x^2}=\\sum_{k=1}^{3}\\frac{k}{2}=\\boxed3.\\]\n这里“逆用”的作用是先把 \\(1-P\\) 换成 \\(-\\ln P\\)，消去乘积与根号。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t003",
+      "questionId": "q-6-143-178",
+      "method": "提项+逆用等价无穷小",
+      "notesPages": [
+        8
+      ],
+      "evidence": "笔记先提出 e，再把相对差换成对数差，使用 ln(1+t)−t 的二阶等价式。",
+      "changed": true,
+      "solution": "记 \\(A_n=(1+1/n)^n\\to e\\)。先提出 \\(e\\)，再逆用等价无穷小：\n\\[n(A_n-e)=en\\left(\\frac{A_n}{e}-1\\right)\n\\sim en\\ln\\frac{A_n}{e}.\\]\n于是\n\\[en\\ln\\frac{A_n}{e}=en^2\\left[\\ln(1+1/n)-\\frac1n\\right].\\]\n用笔记中 \\(t-\\ln(1+t)\\sim t^2/2\\)，取 \\(t=1/n\\)，得到\n\\[\\boxed{\\lim_{n\\to\\infty}n(A_n-e)=-\\frac e2}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t004",
+      "questionId": "q-8-651-688",
+      "method": "利用拉格朗日中值定理",
+      "notesPages": [
+        8,
+        10
+      ],
+      "evidence": "笔记第10页用拉格朗日中值定理处理差；同一幂差例题见第8页，本解按当前小节补写中值定理步骤。",
+      "changed": false,
+      "solution": "对 \\(t^\\alpha\\) 在 \\([n,n+1]\\) 上用拉格朗日中值定理，存在 \\(\\xi_n\\in(n,n+1)\\) 使\n\\[(n+1)^\\alpha-n^\\alpha=\\alpha\\xi_n^{\\alpha-1}.\\]\n因 \\(\\xi_n\\to\\infty\\)、\\(\\alpha-1<0\\)，故极限 \\(\\boxed0\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t006",
+      "questionId": "q-10-72-108",
+      "method": "技巧一：找等价无穷小",
+      "notesPages": [
+        11
+      ],
+      "evidence": "笔记“找等价无穷小”将相减式拆成可以分别等价替换的项，保留抵消阶数。",
+      "changed": true,
+      "solution": "相减处不能直接把两个趋于1的因子都换成1。先拆分，找出各项真正的无穷小：\n\\[1-\\sqrt{1-x^2}\\cos x=(1-\\cos x)+\\cos x(1-\\sqrt{1-x^2}).\\]\n由\n\\[1-\\cos x\\sim\\frac{x^2}{2},\\qquad\n1-\\sqrt{1-x^2}=\\frac{x^2}{1+\\sqrt{1-x^2}}\\sim\\frac{x^2}{2},\\]\n分子与 \\(x^2\\) 等价；分母\n\\[1+x^2-\\cos^2x=x^2+\\sin^2x\\sim2x^2.\\]\n故极限为 \\(\\boxed{1/2}\\)。两项同号相加，等价替换不会丢掉抵消后的阶数。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t007",
+      "questionId": "q-11-62-99",
+      "method": "技巧二：找中间项联系两个式子",
+      "notesPages": [
+        12
+      ],
+      "evidence": "笔记加减中间项，把无穷大之差分为两个可分别求极限的式子。",
+      "changed": false,
+      "solution": "加减 \\(\\sqrt{x^2+1}\\ln2\\)，得\n\\[\\sqrt{x^2+1}\\ln\\left(1+\\frac1{2x\\ln x}\\right)+(\\sqrt{x^2+1}-x)\\ln2.\\]\n第一项等价于 \\(1/(2\\ln x)\\to0\\)，第二项等于 \\(\\ln2/(\\sqrt{x^2+1}+x)\\to0\\)。故极限 \\(\\boxed0\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t008",
+      "questionId": "q-12-165-207",
+      "method": "差分法",
+      "notesPages": [
+        13
+      ],
+      "evidence": "笔记以相邻乘积之差作差分并求和，每阶贡献k/2。",
+      "changed": false,
+      "solution": "令 \\(P_n=\\prod_{k=1}^n[\\cos(kx)]^{1/k}\\)。用有限乘积拆差\n\\[1-P_n=\\sum_{k=1}^n\\left(1-[\\cos(kx)]^{1/k}\\right)\\prod_{j<k}[\\cos(jx)]^{1/j}.\\]\n由 \\(1-u^{1/k}\\sim(1-u)/k\\)，每项除以 \\(x^2\\) 后趋于 \\(k/2\\)，故 \\(\\boxed{n(n+1)/4}\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t009",
+      "questionId": "q-13-628-662",
+      "method": "利用泰勒展开",
+      "notesPages": [
+        15
+      ],
+      "evidence": "笔记用零点处二阶泰勒展开，第二题先求切线横截距。",
+      "changed": false,
+      "solution": "由给定条件，Peano 型泰勒展开为 \\(f(t)=3t^2+o(t^2)\\)。令 \\(t=\\sin^2x\\)，得\n\\[\\frac{f(\\sin^2x)}{x^4}=\\frac{f(t)}{t^2}\\left(\\frac{\\sin x}{x}\\right)^4\\to\\boxed3.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t009",
+      "questionId": "q-14-35-97",
+      "method": "利用泰勒展开",
+      "notesPages": [
+        15
+      ],
+      "evidence": "笔记用零点处二阶泰勒展开，第二题先求切线横截距。",
+      "changed": false,
+      "solution": "切线方程 \\(y-f(x)=f'(x)(X-x)\\)，其横轴截距 \\(u=x-f(x)/f'(x)\\)。设 \\(A=f''(0)>0\\)，则 \\(f(x)=Ax^2/2+o(x^2)\\)、\\(f'(x)=Ax+o(x)\\)，故 \\(u/x\\to1/2\\)。故\n\\[\\frac{x^3f(u)}{f(x)\\sin^3u}=\\frac{f(u)/u^2}{f(x)/x^2}\\frac{x}{u}\\left(\\frac{u}{\\sin u}\\right)^3\\to\\boxed2.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t010",
+      "questionId": "q-14-514-546",
+      "method": "利用 Stolz 定理",
+      "notesPages": [
+        16
+      ],
+      "evidence": "笔记取对数后对 ln(n!)/n² 使用 Stolz 定理。",
+      "changed": false,
+      "solution": "设原式为 \\(A_n\\)，其对数是 \\(\\ln(n!)/n^2\\)。Stolz 定理给出\n\\[\\lim\\frac{\\ln(n!)}{n^2}=\\lim\\frac{\\ln(n+1)}{(n+1)^2-n^2}=0.\\]\n故 \\(\\boxed{\\lim(n!)^{1/n^2}=1}\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t011",
+      "questionId": "q-16-178-213",
+      "method": "子数列极限与 Stolz 定理结合",
+      "notesPages": [
+        19
+      ],
+      "evidence": "笔记按下标模p分组，各子数列用 Stolz 后合并。",
+      "changed": false,
+      "solution": "固定 \\(r\\in\\{1,\\ldots,p\\}\\)，对下标 \\(n=kp+r\\) 的子数列应用 Stolz 定理：\n\\[\\lim_{k\\to\\infty}\\frac{a_{kp+r}}{kp+r}=\\lim_{k\\to\\infty}\\frac{a_{(k+1)p+r}-a_{kp+r}}p=\\frac\\lambda p.\\]\n所有 \\(p\\) 个剩余类子数列趋于同一值，故全数列 \\(\\boxed{a_n/n\\to\\lambda/p}\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t012",
+      "questionId": "q-17-62-103",
+      "method": "递推数列与 Stolz 定理综合",
+      "notesPages": [
+        20
+      ],
+      "evidence": "笔记先单调有界求零极限，再取倒数用 Stolz 计算收敛速度。",
+      "changed": false,
+      "solution": "因为 \\(0<\\ln(1+t)<t\\) 对 \\(t>0\\) 成立，\\(x_n\\) 正且递减。其极限满足 \\(l=\\ln(1+l)\\)，故 \\(l=0\\)。展开给出\n\\[\\frac1{x_n}-\\frac1{x_{n-1}}=\\frac{x_{n-1}-\\ln(1+x_{n-1})}{x_{n-1}\\ln(1+x_{n-1})}\\to\\frac12.\\]\nStolz 定理得 \\((1/x_n)/n\\to1/2\\)，故 \\(\\boxed{nx_n\\to2}\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t013",
+      "questionId": "q-18-583-628",
+      "method": "利用洛必达法则（去积分的利器）",
+      "notesPages": [
+        22
+      ],
+      "evidence": "笔记先处理被积函数中的x，再用洛必达和变上限积分求导。",
+      "changed": false,
+      "solution": "令 \\(F(x)=\\int_0^x f(t)dt\\)，换元给出 \\(\\int_0^x f(x-t)dt=F(x)\\)。分子设 \\(N(x)=2\\int_0^x(x-t)f(t)dt\\)，由含参求导 \\(N'(x)=2F(x)\\)。分母 \\(D=xF\\)，\\(D'=F+xf(x)\\)。利用 \\(F(x)\\sim f(0)x\\)、\\(f(x)\\to f(0)\\ne0\\)，\n\\[\\lim\\frac{N}{D}=\\lim\\frac{2F(x)}{F(x)+xf(x)}=\\boxed1.\\]\n也可直接用连续性得到 \\(N\\sim f(0)x^2\\)、\\(D\\sim f(0)x^2\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t014",
+      "questionId": "q-19-112-201",
+      "method": "变区域二重积分型极限",
+      "notesPages": [
+        23
+      ],
+      "evidence": "笔记给出代入可微主部的算法和交换次序/含参求导的思路；原解的主部算法保留并补严余项估计。",
+      "changed": false,
+      "solution": "由原点可微，\\(f(t,u)=3t+2u+o(\\sqrt{t^2+u^2})\\)。在 \\(0\\le t\\le x^2\\)、\\(x^2\\le u\\le\\sqrt t\\) 的积分中（下限高于上限的小区域按有向积分处理），主导项为\n\\[\\int_0^{x^2}\\!dt\\int_{x^2}^{\\sqrt t}\\!2u\\,du=\\frac{x^4}{2}-x^6.\\]\n\\(3t\\) 的积分为 \\(O(x^5)\\)；可微余项统一为 \\(o(x)\\)，积分面积为 \\(O(x^3)\\)，故其贡献 \\(o(x^4)\\)。分母 \\(1-\\sqrt[4]{1-x^4}\\sim x^4/4\\)，故极限 \\(\\boxed2\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t015",
+      "questionId": "q-20-566-612",
+      "method": "利用定积分定义求极限",
+      "notesPages": [
+        25
+      ],
+      "evidence": "笔记提取1/n，把和式识别成定积分的黎曼和。",
+      "changed": false,
+      "solution": "写成 \\(\\frac1n\\sum_{k=0}^n(1+k/n)^{-1}\\)。多出的一个端点项为 \\(O(1/n)\\)，其余是 \\([0,1]\\) 上连续函数的黎曼和，故\n\\[\\boxed{\\int_0^1\\frac{dt}{1+t}=\\ln2}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t016",
+      "questionId": "q-22-322-378",
+      "method": "定积分与和式之差的 n 倍极限",
+      "notesPages": [
+        28,
+        29
+      ],
+      "evidence": "笔记拆成小区间上积分与右端点值之差，用中值定理和积分中值定理得到黎曼和。",
+      "changed": true,
+      "solution": "将积分按 \\(x_k=k/n\\) 分段，并令 \\(h=1/n\\)。要计算\n\\[E_n=n\\left[\\int_0^1f(x)\\,dx-\\frac1n\\sum_{k=1}^nf(x_k)\\right]\n=n\\sum_{k=1}^n\\int_{x_{k-1}}^{x_k}[f(x)-f(x_k)]\\,dx.\\]\n在每个小区间用拉格朗日中值定理：\n\\[f(x)-f(x_k)=f'(\\xi_{k,x})(x-x_k),\\quad \\xi_{k,x}\\in[x_{k-1},x_k].\\]\n因为 \\(f'\\) 在闭区间上一致连续，可把 \\(f'(\\xi_{k,x})\\) 换为 \\(f'(x_k)\\)，误差一致不超过模连续度 \\(\\omega(h)\\to0\\)。又\n\\[\\int_{x_{k-1}}^{x_k}(x-x_k)\\,dx=-\\frac{h^2}{2},\\]\n故\n\\[E_n=-\\frac1{2n}\\sum_{k=1}^nf'(x_k)+r_n,\n\\qquad |r_n|\\le\\frac{\\omega(1/n)}2\\to0.\\]\n最后一个和是 \\(f'\\) 的黎曼和，所以\n\\[\\lim E_n=-\\frac12\\int_0^1f'(x)\\,dx=-\\frac{f(1)-f(0)}2=\\boxed{-\\frac12}.\\]\n本题只需连续一阶导数，不需要假设二阶可导。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t017",
+      "questionId": "q-23-475-513",
+      "method": "利用夹逼准则",
+      "notesPages": [
+        31
+      ],
+      "evidence": "笔记对正项分母放缩，用两侧相同极限夹逼。",
+      "changed": false,
+      "solution": "各 \\(\\sin(k\\pi/n)\\ge0\\)，且 \\(n^2+1\\le n^2+k\\le n^2+n\\)。故原和夹在\n\\[\\frac n{n^2+n}\\sum_{k=1}^n\\sin(k\\pi/n)\\quad\\text{与}\\quad\\frac n{n^2+1}\\sum_{k=1}^n\\sin(k\\pi/n)\\]\n之间。两端均趋于 \\(\\int_0^1\\sin(\\pi t)dt=\\boxed{2/\\pi}\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t017",
+      "questionId": "q-24-32-78",
+      "method": "利用夹逼准则",
+      "notesPages": [
+        31
+      ],
+      "evidence": "笔记对正项分母放缩，用两侧相同极限夹逼。",
+      "changed": false,
+      "solution": "由分母范围 \\(n^2+n+1\\le n^2+n+k\\le n^2+2n\\)，以及 \\(\\sum k=n(n+1)/2\\)，有\n\\[\\frac{n(n+1)}{2(n^2+2n)}\\le\\sum_{k=1}^n\\frac{k}{n^2+n+k}\\le\\frac{n(n+1)}{2(n^2+n+1)}.\\]\n两端趋于 \\(\\boxed{1/2}\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t018",
+      "questionId": "q-25-397-445",
+      "method": "利用导数的定义",
+      "notesPages": [
+        34
+      ],
+      "evidence": "笔记补出 f(u)−f(1) 与 u−1 的差商，直接用导数定义。",
+      "changed": true,
+      "solution": "令 \\(u=\\sin^2x+\\cos x\\)，则 \\(u\\to1\\)。补出导数定义中的差商：\n\\[\\frac{f(u)}{x^2+x\\tan x}\n=\\frac{f(u)-f(1)}{u-1}\\cdot\\frac{u-1}{x^2+x\\tan x}.\\]\n第一因子由 \\(f'(1)=2\\) 趋于2。第二因子中\n\\[u-1=\\sin^2x-2\\sin^2(x/2),\\]\n从而\n\\[\\frac{u-1}{x^2}\\to1-\\frac12=\\frac12,\n\\qquad\\frac{x^2+x\\tan x}{x^2}\\to2.\\]\n故原极限为 \\(2\\cdot\\frac{1/2}{2}=\\boxed{1/2}\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t019",
+      "questionId": "q-27-98-137",
+      "method": "积分放缩法",
+      "notesPages": [
+        36
+      ],
+      "evidence": "笔记利用1/x的单调性画出上下积分比较，控制调和和与对数之差。",
+      "changed": false,
+      "solution": "因 \\(1/x\\) 递减，积分比较给出\n\\[\\ln(n+1)\\le\\sum_{k=1}^n\\frac1k\\le1+\\ln n.\\]\n故 \\(0<\\sum1/k-\\ln n\\le1\\)，证明有界。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t020",
+      "questionId": "q-29-67-109",
+      "method": "利用单调有界准则",
+      "notesPages": [
+        38
+      ],
+      "evidence": "笔记作差判单调并用积分比较给下界。",
+      "changed": false,
+      "solution": "令 \\(u_n=\\sum_{k=1}^n1/k-\\ln n\\)。已有 \\(u_n>0\\)，且\n\\[u_{n+1}-u_n=\\frac1{n+1}-\\ln(1+1/n)<0,\\]\n因为 \\(\\ln(1+1/n)=\\int_n^{n+1}dt/t>1/(n+1)\\)。故单调有界，极限存在（此极限为欧拉常数）。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t022",
+      "questionId": "q-30-161-200",
+      "method": "利用级数收敛的必要条件",
+      "notesPages": [
+        40
+      ],
+      "evidence": "笔记先用比值判别证明正项级数收敛，再用一般项趋零。",
+      "changed": false,
+      "solution": "令 \\(u_n=n!/n^n>0\\)。有\n\\[u_{n+1}/u_n=(n/(n+1))^n\\to e^{-1}<1.\\]\n故 \\(\\sum u_n\\) 由比值判别收敛，其一般项必须趋零，所求 \\(\\boxed0\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t023",
+      "questionId": "q-29-67-109",
+      "method": "利用无穷级数和数列极限的关系",
+      "notesPages": [
+        40,
+        41
+      ],
+      "evidence": "笔记把数列极限转成相邻项差构成级数的收敛性，并与1/n²比较。",
+      "changed": true,
+      "solution": "令 \\(u_n=\\sum_{k=1}^n1/k-\\ln n\\)。本节把数列极限转成差分级数：\n\\[u_n=u_1+\\sum_{k=1}^{n-1}(u_{k+1}-u_k),\\qquad\nu_{k+1}-u_k=\\frac1{k+1}-\\ln(1+1/k).\\]\n这个差为负，而且\n\\[|u_{k+1}-u_k|=\\int_k^{k+1}\\left(\\frac1t-\\frac1{k+1}\\right)dt\n=\\int_k^{k+1}\\frac{k+1-t}{t(k+1)}dt\\le\\frac1{2k(k+1)}.\\]\n右侧级数收敛，因此 \\(\\sum(u_{k+1}-u_k)\\) 绝对收敛，其部分和 \\(u_n-u_1\\) 有极限。\n所以 \\(\\boxed{\\lim u_n\\text{ 存在}}\\)。这正是笔记用“相邻差级数收敛”证明原数列收敛的路线；也可按笔记用 \\(|u_{k+1}-u_k|\\sim1/(2k^2)\\) 作极限比较。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t024",
+      "questionId": "q-31-451-491",
+      "method": "拟合法",
+      "notesPages": [
+        42
+      ],
+      "evidence": "笔记先猜测用一次项替代正弦，估计两和式之差，再算拟合和的极限。",
+      "changed": false,
+      "solution": "用 \\(|\\sin t-t|\\le |t|^3/6\\)，把正弦换成其一次项的总误差不超过\n\\[\\frac13\\sum_{k=1}^{n-1}(k\\pi/n^2)^3=O(n^{-2})\\to0.\\]\n替换后的和为 \\(\\frac\\pi n\\sum_{k=1}^{n-1}(k/n+(k/n)^2)\\)，是黎曼和，趋于 \\(\\pi\\int_0^1(t+t^2)dt=\\boxed{5\\pi/6}\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t025",
+      "questionId": "q-33-514-547",
+      "method": "利用极限的定义",
+      "notesPages": [
+        45
+      ],
+      "evidence": "笔记从epsilon定义出发，利用递推不等式累加并分开控制初始项与尾项。",
+      "changed": false,
+      "solution": "令 \\(b_n=2a_n+a_{n-1}\\to0\\)。给定 \\(\\varepsilon>0\\)，取 \\(N\\) 使 \\(|b_n|<\\varepsilon\\) 对 \\(n>N\\) 成立。由递推 \\(|a_n|\\le|a_{n-1}|/2+\\varepsilon/2\\)，归纳得 \\(|a_n|\\le2^{-(n-N)}|a_N|+\\varepsilon\\)。令 \\(n\\to\\infty\\)，再令 \\(\\varepsilon\\to0\\)，得到 \\(\\boxed{a_n\\to0}\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t026",
+      "questionId": "q-34-454-515",
+      "method": "函数列积分的极限：区间拆分",
+      "notesPages": [
+        47
+      ],
+      "evidence": "笔记在epsilon处拆分区间，一段用长度控制，另一段一致趋零。",
+      "changed": false,
+      "solution": "被积函数非负且随 \\(n\\) 递减，故 \\(u_n\\) 非负递减，收敛。为求其极限，任取 \\(\\delta\\in(0,1)\\)，\n\\[0\\le u_n\\le\\delta+\\frac{1-\\delta}{(1+\\delta^4)^n}.\\]\n令 \\(n\\to\\infty\\) 再令 \\(\\delta\\downarrow0\\)，得 \\(\\boxed{u_n\\to0}\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t027",
+      "questionId": "q-14-514-546",
+      "method": "利用斯特林公式",
+      "notesPages": [
+        48
+      ],
+      "evidence": "笔记直接代入斯特林等价式，取对数消去指数。",
+      "changed": true,
+      "solution": "本节直接用斯特林公式：\n\\[n!=\\sqrt{2\\pi n}\\left(\\frac ne\\right)^n[1+o(1)].\\]\n设 \\(A_n=(n!)^{1/n^2}\\)，取对数得\n\\[\\ln A_n=\\frac{\\ln n-1}{n}+\\frac{\\ln(2\\pi n)}{2n^2}\n+\\frac{\\ln[1+o(1)]}{n^2}\\longrightarrow0.\\]\n因此 \\(\\boxed{A_n\\to1}\\)。同一道题在“Stolz定理”小节另用差商求极限，这里使用的是斯特林公式。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t028",
+      "questionId": "q-37-87-126",
+      "method": "利用欧拉常数",
+      "notesPages": [
+        49
+      ],
+      "evidence": "笔记用 H_n=ln n+欧拉常数+o(1)，常数相消。",
+      "changed": false,
+      "solution": "原和为 \\(H_{2n}-H_{n-1}\\)。由 \\(H_m=\\ln m+\\gamma+o(1)\\)，有 \\(H_{2n}-H_{n-1}=\\ln[2n/(n-1)]+o(1)\\to\\boxed{\\ln2}\\)。\\(n=1\\) 不影响极限。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t030",
+      "questionId": "q-37-307-350",
+      "method": "递推数列：通项可求",
+      "notesPages": [
+        50
+      ],
+      "evidence": "笔记累加相邻差并用等比求和写出通项。",
+      "changed": false,
+      "solution": "从 \\(a_0=0\\) 开始累加递推：\\(a_n=\\sum_{k=1}^n2^{-k}=1-2^{-n}\\)。故 \\(\\boxed{a_n\\to1}\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t032",
+      "questionId": "q-39-127-163",
+      "method": "递推数列：单调有界准则",
+      "notesPages": [
+        52
+      ],
+      "evidence": "笔记作差得到递减，再由非负和递推方程求极限。",
+      "changed": false,
+      "solution": "\\(x_1=2>0\\)，递推保证各项正，且 \\(x_{n+1}-x_n=-x_n/(1+x_n)<0\\)。于是极限 \\(l\\ge0\\) 存在，代入连续递推 \\(l=l^2/(1+l)\\) 得 \\(\\boxed{l=0}\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t033",
+      "questionId": "q-42-33-76",
+      "method": "递推数列：压缩映射",
+      "notesPages": [
+        60
+      ],
+      "evidence": "笔记先解不动点，再用1/4压缩系数控制误差。",
+      "changed": true,
+      "solution": "由 \\(x_1=2\\) 及 \\(2+1/[2,5/2]\\subset[2,5/2]\\)，归纳可知递推将 \\([2,5/2]\\) 映入自身，正不动点为 \\(r=1+\\sqrt2\\)。对 \\(x_n,r\\ge2\\)，\n\\[|x_{n+1}-r|=\\left|\\frac1{x_n}-\\frac1r\\right|\\le\\frac14|x_n-r|.\\]\n误差逐步缩小，\\(|x_n-r|\\le4^{-(n-1)}|2-r|\\to0\\)，故 \\(\\boxed{1+\\sqrt2}\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t035",
+      "questionId": "q-44-244-287",
+      "method": "有理函数的积分",
+      "notesPages": [
+        62,
+        63
+      ],
+      "evidence": "笔记先分解有理分式，凑分母导数；第二题用一次因子与不可约二次因子分解。",
+      "changed": false,
+      "solution": "将分子写成分母导数与常数之和：\n\\[2x-4=(2x+2)-6.\\]\n因此\n\\[\\int_0^2\\frac{2x-4}{x^2+2x+4}\\,dx=\\left[\\ln(x^2+2x+4)-2\\sqrt3\\arctan\\frac{x+1}{\\sqrt3}\\right]_0^2.\\]\n由 \\(\\arctan\\sqrt3=\\pi/3\\)，\\(\\arctan(1/\\sqrt3)=\\pi/6\\)，故原积分为\n\\[\\boxed{\\ln3-\\frac{\\pi}{\\sqrt3}}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t035",
+      "questionId": "q-44-400-445",
+      "method": "有理函数的积分",
+      "notesPages": [
+        62,
+        63
+      ],
+      "evidence": "笔记先分解有理分式，凑分母导数；第二题用一次因子与不可约二次因子分解。",
+      "changed": true,
+      "solution": "先按有理函数的方法分解分母：\\(x^3+1=(x+1)(x^2-x+1)\\)。设\n\\[\\frac{x-1}{x^3+1}=\\frac A{x+1}+\\frac{Bx+C}{x^2-x+1}.\\]\n通分比较系数得到 \\(A=-2/3,B=2/3,C=-1/3\\)，即\n\\[\\frac{x-1}{x^3+1}=-\\frac2{3(x+1)}+\\frac{2x-1}{3(x^2-x+1)}.\\]\n将两项合并积分，\n\\[\\int_0^R\\frac{x-1}{x^3+1}dx\n=\\left[\\frac13\\ln(x^2-x+1)-\\frac23\\ln(x+1)\\right]_0^R\n=\\frac13\\ln\\frac{R^2-R+1}{(R+1)^2}.\\]\n令 \\(R\\to\\infty\\)，比值趋于1，故 \\(\\boxed{I=0}\\)。不能把两个发散的无穷积分分开求值，必须先在同一个有限上限内合并。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t037",
+      "questionId": "q-45-390-425",
+      "method": "三角有理函数：利用奇偶结构换元",
+      "notesPages": [
+        66
+      ],
+      "evidence": "笔记同时变换sin、cos符号后不变，取tan x化为有理函数。",
+      "changed": false,
+      "solution": "令 \\(t=\\tan x\\)，则 \\(dx=dt/(1+t^2)\\)，且\n\\[\\sin^2x+2\\cos^2x=\\frac{t^2+2}{1+t^2}.\\]\n故\n\\[\\boxed{\\int\\frac{dx}{\\sin^2x+2\\cos^2x}=\\int\\frac{dt}{t^2+2}=\\frac1{\\sqrt2}\\arctan\\frac{\\tan x}{\\sqrt2}+C}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t038",
+      "questionId": "q-46-164-200",
+      "method": "三角有理函数：万能代换",
+      "notesPages": [
+        67
+      ],
+      "evidence": "笔记用tan(x/2)万能代换消去一次三角函数。",
+      "changed": false,
+      "solution": "令 \\(t=\\tan(x/2)\\)，则\n\\[\\sin x=\\frac{2t}{1+t^2},\\quad \\cos x=\\frac{1-t^2}{1+t^2},\\quad dx=\\frac{2dt}{1+t^2}.\\]\n于是\n\\[\\int\\frac{dx}{\\sin x+\\cos x+2}=\\int\\frac{2dt}{(t+1)^2+2}.\\]\n故\n\\[\\boxed{\\int\\frac{dx}{\\sin x+\\cos x+2}=\\sqrt2\\arctan\\frac{\\tan(x/2)+1}{\\sqrt2}+C}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t040",
+      "questionId": "q-46-411-446",
+      "method": "无理函数：线性根式换元",
+      "notesPages": [
+        68
+      ],
+      "evidence": "笔记令t=√x去根号，再作部分分式。",
+      "changed": false,
+      "solution": "令 \\(t=\\sqrt x\\)，则 \\(x=t^2,dx=2t\\,dt\\)。有\n\\[\\frac{2t}{(t+1)(t^2+3)}=-\\frac1{2(t+1)}+\\frac{t+3}{2(t^2+3)}.\\]\n积分并代回得\n\\[\\boxed{-\\frac12\\ln(\\sqrt x+1)+\\frac14\\ln(x+3)+\\frac{\\sqrt3}{2}\\arctan\\sqrt{\\frac{x}{3}}+C}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t041",
+      "questionId": "q-46-599-639",
+      "method": "无理函数：分式根式换元",
+      "notesPages": [
+        69
+      ],
+      "evidence": "笔记令t=√((1+x)/x)，消去分式根式后有理积分。",
+      "changed": false,
+      "solution": "令\n\\[t=\\sqrt{\\frac{1+x}{x}},\\qquad x=\\frac1{t^2-1},\\qquad dx=-\\frac{2t}{(t^2-1)^2}dt.\\]\n则原积分为\n\\[\\int\\frac1x\\sqrt{\\frac{1+x}{x}}\\,dx=-2\\int\\frac{t^2}{t^2-1}dt=-2t-\\ln\\left|\\frac{t-1}{t+1}\\right|+C.\\]\n所以\n\\[\\boxed{-2\\sqrt{\\frac{1+x}{x}}+\\ln\\left|\\frac{\\sqrt{(1+x)/x}+1}{\\sqrt{(1+x)/x}-1}\\right|+C}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t043",
+      "questionId": "q-47-450-491",
+      "method": "二次根式：欧拉代换",
+      "notesPages": [
+        70
+      ],
+      "evidence": "笔记用两个实根选择欧拉第三代换 t=√((3x+1)/(x−1))，化为−2/(1+t²)。",
+      "changed": true,
+      "solution": "先因式分解 \\(3x^2-2x-1=(3x+1)(x-1)\\)。按笔记的欧拉第三代换，在 \\(x>1\\) 令\n\\[t=\\frac{\\sqrt{3x^2-2x-1}}{x-1}\n=\\sqrt{\\frac{3x+1}{x-1}}.\\]\n于是\n\\[x=\\frac{t^2+1}{t^2-3},\\quad\n dx=-\\frac{8t}{(t^2-3)^2}dt,\\quad\n\\sqrt{3x^2-2x-1}=t(x-1)=\\frac{4t}{t^2-3}.\\]\n代入后根号完全消去：\n\\[\\frac{dx}{x\\sqrt{3x^2-2x-1}}=-\\frac{2}{t^2+1}dt.\\]\n当 \\(x\\downarrow1\\) 时 \\(t\\to\\infty\\)，当 \\(x=2\\) 时 \\(t=\\sqrt7\\)。故\n\\[I=2\\int_{\\sqrt7}^\\infty\\frac{dt}{1+t^2}\n=\\boxed{\\pi-2\\arctan\\sqrt7}.\\]\n此值也等于 \\(\\arccos(3/4)\\)，因为前者在 \\((0,\\pi/2)\\) 且其余弦为 \\(3/4\\)。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t044",
+      "questionId": "q-48-182-225",
+      "method": "二次根式：三角代换",
+      "notesPages": [
+        71
+      ],
+      "evidence": "笔记令x=secθ，将二次根式和dx约掉。",
+      "changed": false,
+      "solution": "在区间 \\([\\sqrt2,2]\\) 上令 \\(x=\\sec\\theta\\)，则 \\(dx=\\sec\\theta\\tan\\theta\\,d\\theta\\)，\\(\\sqrt{x^2-1}=\\tan\\theta\\)。故\n\\[\\int_{\\sqrt2}^{2}\\frac{dx}{x\\sqrt{x^2-1}}=\\int_{\\pi/4}^{\\pi/3}d\\theta=\\boxed{\\frac\\pi{12}}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t045",
+      "questionId": "q-49-247-288",
+      "method": "分部积分法",
+      "notesPages": [
+        72,
+        74
+      ],
+      "evidence": "笔记按反对幂指三选择分部积分，第二题连续两次分部。",
+      "changed": false,
+      "solution": "取\n\\[u=x,\\qquad dv=\\tan x\\sec^2x\\,dx.\\]\n则\n\\[du=dx,\\qquad v=\\frac12\\tan^2x.\\]\n由分部积分公式，\n\\[\\begin{aligned}\nI&=\\left[\\frac x2\\tan^2x\\right]_0^{\\pi/4}-\\frac12\\int_0^{\\pi/4}\\tan^2x\\,dx\\\\\n&=\\frac\\pi8-\\frac12\\left[\\tan x-x\\right]_0^{\\pi/4}\\\\\n&=\\frac\\pi8-\\frac12\\left(1-\\frac\\pi4\\right)=\\frac\\pi4-\\frac12.\n\\end{aligned}\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t045",
+      "questionId": "q-50-35-74",
+      "method": "分部积分法",
+      "notesPages": [
+        72,
+        74
+      ],
+      "evidence": "笔记按反对幂指三选择分部积分，第二题连续两次分部。",
+      "changed": false,
+      "solution": "取 \\(u=\\arctan x\\)、\\(dv=x\\ln(1+x^2)\\,dx\\)，则\n\\[du=\\frac{dx}{1+x^2},\\qquad v=\\frac12(1+x^2)\\bigl[\\ln(1+x^2)-1\\bigr].\\]\n于是\n\\[\\begin{aligned}\nI={}&\\frac12(1+x^2)\\bigl[\\ln(1+x^2)-1\\bigr]\\arctan x\\\\\n&-\\frac12\\int\\bigl[\\ln(1+x^2)-1\\bigr]dx.\n\\end{aligned}\\]\n再由分部积分，\n\\[\\begin{aligned}\n\\int\\ln(1+x^2)\\,dx\n&=x\\ln(1+x^2)-2\\int\\frac{x^2}{1+x^2}\\,dx\\\\\n&=x\\ln(1+x^2)-2x+2\\arctan x.\n\\end{aligned}\\]\n代回整理得\n\\[\\begin{aligned}\nI={}&\\frac{(1+x^2)\\ln(1+x^2)-x^2-3}{2}\\arctan x\\\\\n&-\\frac x2\\ln(1+x^2)+\\frac{3x}{2}+C.\n\\end{aligned}\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t046",
+      "questionId": "q-50-348-383",
+      "method": "表格积分法",
+      "notesPages": [
+        75
+      ],
+      "evidence": "笔记把x³连续求导、e^(−ax)连续积分按交错符号配成表格。",
+      "changed": true,
+      "solution": "用表格积分法：左列把 \\(x^3\\) 逐次求导直到0；右列把 \\(e^{-ax}\\) 逐次积分。这里 \\(a>0\\)。\n\\[\\begin{array}{c|c|c}\n\\text{符号}&\\text{逐次求导}&\\text{逐次积分}\\\\\\hline\n+&x^3&-e^{-ax}/a\\\\\n-&3x^2&e^{-ax}/a^2\\\\\n+&6x&-e^{-ax}/a^3\\\\\n-&6&e^{-ax}/a^4\\\\\n &0&\n\\end{array}\\]\n按同一行两列的乘积，配上左侧交错符号求和，得到\n\\[\\int x^3e^{-ax}dx=-e^{-ax}\\left(\\frac{x^3}a+\\frac{3x^2}{a^2}+\\frac{6x}{a^3}+\\frac6{a^4}\\right)+C.\\]\n因 \\(a>0\\)，多项式乘 \\(e^{-ax}\\) 在无穷远趋零，代入0与无穷上限得\n\\[\\boxed{\\int_0^\\infty x^3e^{-ax}dx=\\frac6{a^4}}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t047",
+      "questionId": "q-51-38-83",
+      "method": "利用递推公式",
+      "notesPages": [
+        77
+      ],
+      "evidence": "笔记作 I_n−I_(n−1)，用三角平方差得到1/(2n−1)，然后累加。",
+      "changed": false,
+      "solution": "记\n\\[I_n=\\int_0^{\\pi/2}\\frac{\\sin^2(n\\theta)}{\\sin\\theta}d\\theta.\\]\n利用 \\(\\sin^2A-\\sin^2B=\\sin(A+B)\\sin(A-B)\\)，有\n\\[I_n-I_{n-1}=\\int_0^{\\pi/2}\\sin((2n-1)\\theta)d\\theta=\\frac1{2n-1}.\\]\n而 \\(I_0=0\\)，故\n\\[\\boxed{I_n=\\sum_{k=1}^n\\frac1{2k-1}=H_{2n}-\\frac12H_n}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t048",
+      "questionId": "q-52-316-352",
+      "method": "参数化解积分",
+      "notesPages": [
+        82
+      ],
+      "evidence": "笔记令y=tx，解出x(t)、y(t)后统一积分变量。",
+      "changed": false,
+      "solution": "令 \\(t=y/x\\)。由 \\(y^2(x-y)=x^2\\) 得\n\\[x=\\frac1{t^2(1-t)},\\qquad y=\\frac1{t(1-t)}.\\]\n计算\n\\[\\frac{dx}{y^2}=\\left(3-\\frac2t\\right)dt.\\]\n因此\n\\[\\boxed{\\int\\frac{dx}{y^2}=3t-2\\ln|t|+C=\\frac{3y}{x}-2\\ln\\left|\\frac yx\\right|+C}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t049",
+      "questionId": "q-53-112-158",
+      "method": "特殊不定积分：待定系数法",
+      "notesPages": [
+        85
+      ],
+      "evidence": "笔记先令t=sin x，设原函数e^(−t)h(t)，用 h(t)=(At+B)/(1−t) 比较系数。",
+      "changed": true,
+      "solution": "先令 \\(t=\\sin x\\)，利用 \\(\\sin2x=2\\sin x\\cos x\\)，原积分化为\n\\[\\int e^{-t}\\frac{2t}{(1-t)^2}dt.\\]\n按笔记的待定法，设原函数为 \\(e^{-t}h(t)\\)。求导后应有\n\\[h'(t)-h(t)=\\frac{2t}{(1-t)^2}.\\]\n根据右侧分母，设 \\(h(t)=(At+B)/(1-t)\\)。计算\n\\[h'(t)-h(t)=\\frac{At^2+(B-A)t+A}{(1-t)^2}.\\]\n比较系数：\\(A=0,B-A=2\\)，得到 \\(B=2\\)。因此\n\\[\\boxed{\\int\\frac{e^{-\\sin x}\\sin2x}{(1-\\sin x)^2}dx\n=\\frac{2e^{-\\sin x}}{1-\\sin x}+C}.\\]\n积分常数在每个不跨越分母零点的区间上选取。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t050",
+      "questionId": "q-54-66-106",
+      "method": "利用无穷级数",
+      "notesPages": [
+        87
+      ],
+      "evidence": "笔记把ln(1−x)展开成幂级数，逐项积分后裂项求和。",
+      "changed": true,
+      "solution": "展开 \\(\\ln(1-x)=-\\sum_{n=1}^\\infty x^n/n\\)，并用\n\\[\\int_0^1x^n\\ln x\\,dx=-\\frac1{(n+1)^2}.\\]\n因为展开后各项乘以 \\(-\\ln x\\) 均非负，可由单调收敛定理交换求和与积分。于是\n\\[I=\\sum_{n=1}^\\infty\\frac1{n(n+1)^2}.\\]\n分解\n\\[\\frac1{n(n+1)^2}=\\frac1n-\\frac1{n+1}-\\frac1{(n+1)^2},\\]\n从而\n\\[I=1-\\left(\\frac{\\pi^2}{6}-1\\right)=\\boxed{2-\\frac{\\pi^2}{6}}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t051",
+      "questionId": "q-55-144-190",
+      "method": "倒代换",
+      "notesPages": [
+        90
+      ],
+      "evidence": "笔记先做x=1/t，再将两种表达相加消去一个分母因子。",
+      "changed": true,
+      "solution": "设 \\(I=\\int_0^\\infty x^2/(1+x^2)^2\\,dx\\)。在0附近被积函数为 \\(O(x^2)\\)，在无穷远为 \\(O(x^{-2})\\)，因此收敛，可以作倒代换 \\(x=1/t\\)：\n\\[I=\\int_0^\\infty\\frac{dt}{(1+t^2)^2}.\\]\n把变量名改回x，与原式相加：\n\\[2I=\\int_0^\\infty\\frac{x^2+1}{(1+x^2)^2}dx\n=\\int_0^\\infty\\frac{dx}{1+x^2}\n=\\left[\\arctan x\\right]_0^\\infty=\\frac\\pi2.\\]\n所以 \\(\\boxed{I=\\pi/4}\\)。关键步骤是倒代换后与原积分配对相加。",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t052",
+      "questionId": "q-56-309-348",
+      "method": "区间再现公式",
+      "notesPages": [
+        91
+      ],
+      "evidence": "笔记用区间对称变换x→π/2−x，使两被积函数之和为1。",
+      "changed": false,
+      "solution": "令 \\(f(x)=1/(1+\\tan^\\alpha x)\\)。在 \\(x\\mapsto\\pi/2-x\\) 下，\n\\[f(\\pi/2-x)=\\frac1{1+\\cot^\\alpha x}=\\frac{\\tan^\\alpha x}{1+\\tan^\\alpha x}=1-f(x).\\]\n因此\n\\[2I=\\int_0^{\\pi/2}1\\,dx=\\frac\\pi2,\\qquad \\boxed{I=\\frac\\pi4}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t053",
+      "questionId": "q-57-494-537",
+      "method": "带符号的积分（绝对值符号、取整符号）",
+      "notesPages": [
+        93,
+        94
+      ],
+      "evidence": "笔记按取整区间拆分，再用有限余弦和区分m是否整除n。",
+      "changed": true,
+      "solution": "在 \\([k-1,k)\\) 上有 \\(\\lfloor x+1\\rfloor=k\\)。端点不改变积分值，故\n\\[\\int_0^m\\cos\\frac{2\\pi n\\lfloor x+1\\rfloor}{m}dx\n=\\sum_{k=1}^m\\cos(k\\theta),\\quad \\theta=\\frac{2\\pi n}{m}.\\]\n按笔记的有限余弦和公式，若 \\(m\\nmid n\\)，则 \\(\\sin(\\theta/2)\\ne0\\)，且\n\\[\\sum_{k=1}^m\\cos(k\\theta)\n=\\frac{\\sin(m\\theta/2)\\cos((m+1)\\theta/2)}{\\sin(\\theta/2)}=0,\\]\n因为 \\(\\sin(m\\theta/2)=\\sin(n\\pi)=0\\)。若 \\(m\\mid n\\)，每项余弦都等于1，和为m。\n因此 \\(f(n)=\\sum_{m\\mid n}m\\)，即正因子和。由 \\(2021=43\\times47\\)，\n\\[\\boxed{f(2021)=(1+43)(1+47)=2112}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t055",
+      "questionId": "q-58-393-437",
+      "method": "利用分部积分法",
+      "notesPages": [
+        97
+      ],
+      "evidence": "笔记分部积分把sin x/x改为边界项和绝对收敛的cos x/x²积分。",
+      "changed": false,
+      "solution": "对任意 \\(1\\le A<B\\) 分部积分：\n\\[\\int_A^B\\frac{\\sin x}{x}dx=\\left[-\\frac{\\cos x}{x}\\right]_A^B-\\int_A^B\\frac{\\cos x}{x^2}dx.\\]\n当 \\(B\\to\\infty\\) 时边界项有极限，而 \\(\\int_A^\\infty|\\cos x|/x^2dx\\le\\int_A^\\infty x^{-2}dx<\\infty\\)。故尾积分存在，结合 \\([0,1]\\) 上 \\(\\sin x/x\\) 连续可知\n\\[\\boxed{\\int_0^\\infty\\frac{\\sin x}{x}dx\\text{ 收敛}}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t056",
+      "questionId": "q-59-355-400",
+      "method": "反常积分：等价比较与 p 型积分",
+      "notesPages": [
+        99
+      ],
+      "evidence": "笔记分别检查0与1两个瑕点，等价到p型积分。",
+      "changed": false,
+      "solution": "唯一需要检查的无界点是 \\(x=0,1\\)。当 \\(x\\to0^+\\) 时，被积函数与 \\(x^{-1/2}\\) 同阶，局部可积；当 \\(x\\to1^-\\) 时，\n\\[\\sqrt x-1=\\frac{x-1}{\\sqrt x+1}\\sim\\frac{x-1}{2},\\]\n故\n\\[\\frac1{\\sqrt x(\\sqrt x-1)^2}\\sim\\frac4{(1-x)^2}.\\]\n而 \\(\\int^{1}(1-x)^{-2}dx\\) 发散，所以\n\\[\\boxed{\\int_0^1\\frac{dx}{\\sqrt x(\\sqrt x-1)^2}\\text{ 发散}}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t057",
+      "questionId": "q-60-179-217",
+      "method": "利用积分和级数敛散性关系",
+      "notesPages": [
+        101
+      ],
+      "evidence": "笔记按π长度拆分正项积分，再与调和级数比较。",
+      "changed": false,
+      "solution": "绝对值函数以 \\(\\pi\\) 为周期。对 \\(k\\ge1\\)，\n\\[\\int_{k\\pi}^{(k+1)\\pi}\\frac{|\\sin x|}{x}dx\\ge\\frac1{(k+1)\\pi}\\int_{k\\pi}^{(k+1)\\pi}|\\sin x|dx=\\frac{2}{(k+1)\\pi}.\\]\n右侧调和级数发散，故\n\\[\\int_0^\\infty\\frac{|\\sin x|}{x}dx=\\infty.\\]\n结合前题所证 \\(\\int_0^\\infty\\sin x/x\\,dx\\) 收敛，得到\n\\[\\boxed{\\int_0^\\infty\\frac{\\sin x}{x}dx\\text{ 条件收敛而非绝对收敛}}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t058",
+      "questionId": "q-61-82-116",
+      "method": "泊松积分",
+      "notesPages": [
+        106
+      ],
+      "evidence": "笔记使用泊松积分并通过尺度换元处理参数x。",
+      "changed": false,
+      "solution": "对 \\(x>0\\)，令 \\(s=\\sqrt x\\,t\\)，则 \\(dt=ds/\\sqrt x\\)。利用泊松积分，\n\\[u(x)=\\int_0^\\infty e^{-xt^2}dt=\\frac1{\\sqrt x}\\int_0^\\infty e^{-s^2}ds=\\boxed{\\frac{\\sqrt\\pi}{2\\sqrt x}}.\\]",
+      "verification": "已核对笔记对应方法、原题条件与终值；更改处按当前小节显式展开关键操作。"
+    },
+    {
+      "topicId": "t060",
+      "questionId": "q-63-279-319",
+      "method": "还原法",
+      "notesPages": [
+        108
+      ],
+      "evidence": "笔记由目标等式除以x(1-x)，积分并指数化，还原F=x(1-x)e^f。",
+      "changed": true,
+      "solution": "本节用还原法，从所求等式反推辅助函数。在 \\(0<x<1\\) 上，形式上把等式写成\n\\[f'(x)+\\frac{1-2x}{x(1-x)}=0.\\]\n注意第二项是 \\([\\ln(x(1-x))]'\\)，积分并取指数，启发我们构造\n\\[F(x)=x(1-x)e^{f(x)}.\\]\n这个函数本身在 \\([0,1]\\subset(-2,2)\\) 上连续可导，且 \\(F(0)=F(1)=0\\)。由罗尔定理，存在 \\(\\xi\\in(0,1)\\) 使\n\\[0=F'(\\xi)=e^{f(\\xi)}\\{\\xi(1-\\xi)f'(\\xi)+1-2\\xi\\}.\\]\n指数因子非零，故所求等式成立。这里的形式积分只用于找函数，真正的存在性由罗尔定理保证。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t061",
+      "questionId": "q-66-33-85",
+      "method": "微分方程法",
+      "notesPages": [
+        112
+      ],
+      "evidence": "笔记先解h'-h=sin x，再把积分常数移到一侧构造辅助函数。",
+      "changed": true,
+      "solution": "按微分方程法，先把目标看作方程 \\(h'-h=\\sin x\\)。乘积分因子 \\(e^{-x}\\)，得\n\\[(e^{-x}h)'=e^{-x}\\sin x,\\qquad\n\\int e^{-x}\\sin x\\,dx=-\\frac12e^{-x}(\\sin x+\\cos x).\\]\n于是通解可整理成\n\\[e^{-x}\\left[h(x)+\\frac{\\sin x+\\cos x}{2}\\right]=C.\\]\n据此构造 \\(F(x)=e^{-x}[f(x)+(\\sin x+\\cos x)/2]\\)。条件给出 \\(F(0)=F(\\pi/2)=0\\)，所以罗尔定理保证某个 \\(\\xi\\in(0,\\pi/2)\\) 满足\n\\[0=F'(\\xi)=e^{-\\xi}[f'(\\xi)-f(\\xi)-\\sin\\xi].\\]\n因此 \\(f'(\\xi)-f(\\xi)=\\sin\\xi\\)，且 \\(\\xi\\in(0,\\pi)\\)。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t062",
+      "questionId": "q-69-89-149",
+      "method": "万能构造",
+      "notesPages": [
+        116
+      ],
+      "evidence": "笔记对f'−2f/x使用万能构造的积分因子x^{-2}。",
+      "changed": true,
+      "solution": "把结论写成 \\(f'(\\xi)-2f(\\xi)/\\xi=0\\)，套用万能构造\n\\[G(x)=f(x)e^{\\int p(x)\\,dx},\\qquad p(x)=-2/x.\\]\n在 \\([1,2]\\) 上 \\(e^{\\int -2/x\\,dx}=x^{-2}\\)，因此取 \\(G(x)=f(x)/x^2\\)。条件给出\n\\[G(1)=\\frac12,\\qquad G(2)=\\frac{2}{4}=\\frac12.\\]\n罗尔定理给出 \\(\\xi\\in(1,2)\\) 使\n\\[0=G'(\\xi)=\\frac{\\xi f'(\\xi)-2f(\\xi)}{\\xi^3}.\\]\n所以 \\(f'(\\xi)=2f(\\xi)/\\xi\\)。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t063",
+      "questionId": "q-72-610-663",
+      "method": "需要二次构造辅助函数的情形",
+      "notesPages": [
+        121
+      ],
+      "evidence": "笔记先由目标式构造x²(f'−x)，再构造f−x²/2联系端点；两次Rolle。",
+      "changed": true,
+      "solution": "先由给定极限和可导性得 \\(f(0)=1,f'(0)=0\\)。为了得到\n\\[xf''(x)+2f'(x)-3x=0,\\]\n先想到 \\(G(x)=x^2[f'(x)-x]\\)，因为\n\\[G'(x)=x[xf''(x)+2f'(x)-3x].\\]\n但只有 \\(G(0)=0\\)，还缺另一个零点。为此进行第二次构造：令\n\\[H(x)=f(x)-1-\\frac{x^2}{2}.\\]\n由 \\(f(1)=3/2\\) 得 \\(H(0)=H(1)=0\\)。罗尔定理给 \\(c\\in(0,1)\\)，使 \\(H'(c)=f'(c)-c=0\\)，从而 \\(G(c)=0\\)。再对 \\(G\\) 在 \\([0,c]\\) 用罗尔定理，得 \\(\\xi\\in(0,c)\\) 使 \\(G'(\\xi)=0\\)。因 \\(\\xi>0\\)，故\n\\[\\boxed{\\xi f''(\\xi)+2f'(\\xi)=3\\xi}.\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t064",
+      "questionId": "q-74-155-192",
+      "method": "万能构造在不等式和极限中的应用",
+      "notesPages": [
+        123
+      ],
+      "evidence": "此页给出G=he^{∫p}的万能构造模板，选题下方无手写解；按模板补全G=e^xf与洛必达。",
+      "changed": false,
+      "solution": "将原式写成 \\((e^xf(x))'=e^x[f(x)+f'(x)]\\)。因分母 \\(e^x\\to\\infty\\)，可用洛必达法则的 \\(*/\\infty\\) 型：\n\\[\\lim_{x\\to\\infty}f(x)=\\lim\\frac{e^xf(x)}{e^x}=\\lim[f(x)+f'(x)]=\\boxed A.\\]\n这里不需要先证明分子趋于无穷，只需导数商有给定有限极限。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t065",
+      "questionId": "q-76-113-174",
+      "method": "推广的罗尔定理",
+      "notesPages": [
+        125
+      ],
+      "evidence": "笔记对(f(x)−f(0))/x检查单侧端点极限，使用推广Rolle，并给连续延拓的解释。",
+      "changed": true,
+      "solution": "给定 \\(\\lim_{x\\to0^+}[f(x)-f(1)]/x^2=2\\)，先得 \\(f(0)=f(1)\\)，再得\n\\[f'(0)=\\lim_{x\\to0^+}\\frac{f(x)-f(0)}x=0.\\]\n在 \\((0,1]\\) 上构造 \\(G(x)=[f(x)-f(0)]/x\\)。于是\n\\[\\lim_{x\\to0^+}G(x)=f'(0)=0=G(1).\\]\n按推广的罗尔定理（也可先令 \\(G(0)=0\\) 作连续延拓，再用普通罗尔定理），存在 \\(\\eta\\in(0,1)\\) 使\n\\[0=G'(\\eta)=\\frac{\\eta f'(\\eta)-f(\\eta)+f(0)}{\\eta^2}.\\]\n因此 \\(f'(\\eta)=[f(\\eta)-f(0)]/\\eta\\)。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t066",
+      "questionId": "q-78-196-292",
+      "method": "常数 λ 值法",
+      "notesPages": [
+        127,
+        128
+      ],
+      "evidence": "笔记常数λ值法将端点常数与中值部分分离；第128页同题未写解，按模板补全两问。",
+      "changed": true,
+      "solution": "两问都用本节的常数 \\(\\lambda\\) 值法：先把端点表达式记作常数，再构造端点值相等的函数。\n\n（1）令 \\(\\lambda=[bf(a)-af(b)]/(b-a)\\)，取\n\\[F(x)=\\frac{f(x)-\\lambda}{x}.\\]\n直接代入可验 \\(F(a)=F(b)\\)。由于 \\(a>0\\)，罗尔定理适用，某个 \\(\\xi\\in(a,b)\\) 满足\n\\[0=F'(\\xi)=\\frac{\\xi f'(\\xi)-f(\\xi)+\\lambda}{\\xi^2}.\\]\n故 \\(\\lambda=f(\\xi)-\\xi f'(\\xi)\\)。\n\n（2）令 \\(\\mu=ab[f(b)-f(a)]/(b-a)\\)，取\n\\[H(x)=f(x)+\\frac{\\mu}{x}.\\]\n由 \\(H(b)-H(a)=f(b)-f(a)+\\mu(1/b-1/a)=0\\)，再次用罗尔定理得到某个 \\(\\eta\\in(a,b)\\) 使 \\(f'(\\eta)=\\mu/\\eta^2\\)。于是\n\\[\\frac{f(b)-f(a)}{b-a}=\\frac{\\eta^2f'(\\eta)}{ab}.\\]\n两问中的中值无需相同。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t067",
+      "questionId": "q-78-196-292",
+      "method": "利用柯西中值定理",
+      "notesPages": [
+        129
+      ],
+      "evidence": "笔记要求将端点和中值分别凑为差商和导数商；该页同题未写解，按柯西中值定理补全两问。",
+      "changed": true,
+      "solution": "两问都先把结论整理成差商与导数商，再用柯西中值定理。\n\n（1）取 \\(F(x)=f(x)/x\\)、\\(G(x)=1/x\\)。因 \\(a>0\\) 且 \\(G'\\ne0\\)，存在 \\(\\xi\\in(a,b)\\) 使\n\\[\\begin{aligned}\n\\frac{bf(a)-af(b)}{b-a}\n&=\\frac{f(b)/b-f(a)/a}{1/b-1/a}\\\\\n&=\\frac{F'(\\xi)}{G'(\\xi)}\n=f(\\xi)-\\xi f'(\\xi).\n\\end{aligned}\\]\n（2）取 \\(U(x)=f(x)\\)、\\(V(x)=-1/x\\)。柯西中值定理给 \\(\\eta\\in(a,b)\\) 使\n\\[\\frac{f(b)-f(a)}{(b-a)/(ab)}\n=\\frac{U'(\\eta)}{V'(\\eta)}=\\eta^2f'(\\eta).\\]\n整理即得第二问。两问中的中值无需相同。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t068",
+      "questionId": "q-81-27-96",
+      "method": "多次运用柯西中值定理",
+      "notesPages": [
+        130,
+        131
+      ],
+      "evidence": "第130页说明二阶结论需两次柯西；第131页同题未写解，按F(a)=G(a)=F'(a)=G'(a)=0补全。",
+      "changed": false,
+      "solution": "令 \\(F=f-f(a)-f'(a)(x-a)\\)、\\(G=g-g(a)-g'(a)(x-a)\\)。两函数及其一次导数在 \\(a\\) 为零。先对 \\(F,G\\) 用柯西中值定理得到端点差商 \\(F(b)/G(b)=F'(c)/G'(c)\\)，再对 \\(f',g'\\) 在 \\([a,c]\\) 用一次得到 \\(F'(c)/G'(c)=f''(\\xi)/g''(\\xi)\\)。\\(g''\\ne0\\) 保证相关分母非零，合并完成证明。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t069",
+      "questionId": "q-82-136-194",
+      "method": "拉格朗日中值定理的几何意义",
+      "notesPages": [
+        132
+      ],
+      "evidence": "笔记取最低点c，比较两条弦斜率m/c与m/(c−1)，再用导数介值性。",
+      "changed": true,
+      "solution": "由 \\(f''>0\\)，函数严格凸；结合 \\(f(0)=f(1)=0\\)，内部有 \\(f(x)<0\\)。最小值 \\(m<0\\) 在某个 \\(c\\in(0,1)\\) 取得。\n\n按笔记的几何思路，连接最低点 \\((c,m)\\) 与两个端点。分别在 \\([0,c]\\)、\\([c,1]\\) 上用拉格朗日中值定理，得\n\\[f'(u)=\\frac mc<m,\\qquad\nf'(v)=\\frac{0-m}{1-c}>0>m,\\]\n其中 \\(0<u<c<v<1\\)。由于 \\(f\\) 二阶可导，\\(f'\\) 在 \\([u,v]\\) 连续；由介值定理有 \\(\\xi\\in(u,v)\\) 使 \\(f'(\\xi)=m\\)。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t070",
+      "questionId": "q-86-27-90",
+      "method": "双中值问题：几何、分点与消元",
+      "notesPages": [
+        137,
+        139,
+        140
+      ],
+      "evidence": "笔记介绍几何、插入分点、消去一个中值三种路线；选题在137/139页未写解，按140页分点模板补全。",
+      "changed": false,
+      "solution": "对 \\([-1,0]\\)、\\([0,1]\\) 用中值定理，得两个不同点，使导数分别为 \\(f(0)-f(-1)\\)、\\(f(1)-f(0)\\)。由 \\(f(-1)=f(1)\\)，两导数和为零。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t070",
+      "questionId": "q-87-532-589",
+      "method": "双中值问题：几何、分点与消元",
+      "notesPages": [
+        137,
+        139,
+        140
+      ],
+      "evidence": "笔记介绍几何、插入分点、消去一个中值三种路线；选题在137/139页未写解，按140页分点模板补全。",
+      "changed": false,
+      "solution": "由介值定理取 \\(c\\in(0,1)\\) 使 \\(f(c)+3c-2=0\\)，即 \\(f(c)=2-3c\\)。两段中值定理给 \\(f'(\\xi)=f(c)/c\\)、\\(f'(\\eta)=[1-f(c)]/(1-c)\\)。于是\n\\[1+f'(\\xi)=\\frac{2(1-c)}c,\\quad1+f'(\\eta)=\\frac{2c}{1-c}.\\]\n乘积为 \\(4\\)，两点分处 \\((0,c)\\)、\\((c,1)\\)，故不同。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t071",
+      "questionId": "q-90-167-214",
+      "method": "利用泰勒中值定理",
+      "notesPages": [
+        142
+      ],
+      "evidence": "笔记把f(±1)在0处展开到三阶，再对两个三阶导数的平均值用介值性。",
+      "changed": false,
+      "solution": "分别在零点展开至三阶：\n\\[f(1)=f(0)+f'(0)+f''(0)/2+f'''(u)/6,\\quad f(-1)=f(0)-f'(0)+f''(0)/2-f'''(v)/6,\\]\n其中 \\(u\\in(0,1),v\\in(-1,0)\\)。两式相减并用端点相等，得到 \\([f'''(u)+f'''(v)]/2=-6f'(0)\\)。\\(f'''\\) 连续，故两点之间有 \\(\\xi\\) 取得这个平均值，证明结论。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t072",
+      "questionId": "q-95-104-206",
+      "method": "带积分的处理",
+      "notesPages": [
+        151
+      ],
+      "evidence": "笔记先令G(x)=∫₀ˣf，再把G(0)、G(1)在1/2处展开，消去积分符号。",
+      "changed": true,
+      "solution": "（1）按“带积分的处理”，先构造\n\\[G(x)=\\int_0^x f(t)\\,dt.\\]\n这样 \\(G'=f,G''=f',G'''=f''\\)，积分变成 \\(G(1)-G(0)\\)。以 \\(c=1/2\\) 为展开点，泰勒中值定理给\n\\[\\begin{aligned}\nG(1)&=G(c)+\\tfrac12G'(c)+\\tfrac18G''(c)+\\tfrac1{48}G'''(u),\\\\\nG(0)&=G(c)-\\tfrac12G'(c)+\\tfrac18G''(c)-\\tfrac1{48}G'''(v),\n\\end{aligned}\\]\n其中 \\(u\\in(c,1),v\\in(0,c)\\)。相减得\n\\[\\int_0^1 f(x)\\,dx=f(1/2)+\\frac{f''(u)+f''(v)}{48}.\\]\n由 \\(f''\\) 连续，两值的平均值等于某个 \\(\\xi\\in[v,u]\\subset(0,1)\\) 处的 \\(f''(\\xi)\\)，即得第一问。\n\n（2）直接将 \\(f(1)\\)、\\(f(0)\\) 在 \\(c=1/2\\) 处展开到三阶并相减：\n\\[f(1)-f(0)-f'(1/2)=\\frac{f'''(u)+f'''(v)}{48}.\\]\n利用 \\(|f'''|\\le1\\)，绝对值不超过 \\(2/48=1/24\\)。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t073",
+      "questionId": "q-97-379-421",
+      "method": "利用泰勒中值定理求中值极限",
+      "notesPages": [
+        154
+      ],
+      "evidence": "笔记给出佩亚诺泰勒展开模板与比值模板；同题未写演算，原解符合第一个模板。",
+      "changed": false,
+      "solution": "两边分别展开：\\(f(x)-f(0)=xf'(0)+f''(0)x^2/2+o(x^2)\\)，\\(xf'(\\theta x)=xf'(0)+f''(0)\\theta x^2+o(x^2)\\)。余项对 \\(0<\\theta<1\\) 统一，因 \\(|\\theta x|\\le|x|\\)。相等后除以 \\(x^2f''(0)\\)，得 \\(\\boxed{\\theta\\to1/2}\\)。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t074",
+      "questionId": "q-98-601-659",
+      "method": "多项式拟合法",
+      "notesPages": [
+        155,
+        156
+      ],
+      "evidence": "笔记用一次多项式拟合两个积分值，使新函数两积分为零；选题下方无手写解，补完零点链。",
+      "changed": false,
+      "solution": "取 \\(p(x)=3x+1\\)，它满足同样的两个积分条件。令 \\(h=f-p\\)，则 \\(\\int h=\\int xh=0\\)。再令 \\(H(x)=\\int_0^x h\\)，\\(H(0)=H(1)=0\\)，且分部积分给 \\(\\int_0^1 H=-\\int_0^1xh=0\\)。故 \\(H\\) 内部有零点 \\(c\\)（恒零情形直接成立）。两段 Rolle 定理给 \\(h\\) 的两个不同内部零点，再对 \\(h\\) 用 Rolle 定理得 \\(h'(\\xi)=0\\)，即 \\(f'(\\xi)=3\\)。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t075",
+      "questionId": "q-101-156-205",
+      "method": "利用分部积分公式",
+      "notesPages": [
+        157,
+        158
+      ],
+      "evidence": "笔记明确两次分部积分与加权积分中值定理；同题未写演算，原解的x(1−x)符合该模板。",
+      "changed": false,
+      "solution": "令 \\(p=x(1-x)\\)，两次分部积分得\n\\[\\int_0^1 f''p=f(0)+f(1)-2\\int_0^1f=1-2=-1.\\]\n\\(p\\) 内部正、积分 \\(1/6\\)，加权积分中值定理给 \\(f''(\\xi)/6=-1\\)，即 \\(f''(\\xi)=-6\\)。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t077",
+      "questionId": "q-104-65-109",
+      "method": "交换积分次序",
+      "notesPages": [
+        160
+      ],
+      "evidence": "笔记画出0≤x≤t≤2π三角形并交换积分次序，内层积分x。",
+      "changed": false,
+      "solution": "积分区域为 \\(0\\le x\\le t\\le2\\pi\\)。交换积分次序：\n\\[I=\\int_0^{2\\pi}\\frac{\\sin^2t}{t^2}\\left(\\int_0^t xdx\\right)dt=\\frac12\\int_0^{2\\pi}\\sin^2t dt.\\]\n因此 \\[\\boxed{I=\\frac\\pi2}.\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t078",
+      "questionId": "q-104-65-109",
+      "method": "利用分部积分法降阶",
+      "notesPages": [
+        160,
+        161
+      ],
+      "evidence": "笔记把变限积分记作f(x)，求导后与x作分部积分；不使用交换次序。",
+      "changed": true,
+      "solution": "按本节的分部积分法，令\n\\[F(x)=\\int_x^{2\\pi}\\frac{\\sin^2t}{t^2}\\,dt.\\]\n把被积函数在 \\(t=0\\) 处连续补为 \\(1\\)，则 \\(F\\) 有界，且 \\(F'(x)=-\\sin^2x/x^2\\)。取 \\(u=F(x),dv=x\\,dx\\)，得到\n\\[\\begin{aligned}\nI&=\\left[\\frac{x^2}{2}F(x)\\right]_0^{2\\pi}\n-\\frac12\\int_0^{2\\pi}x^2F'(x)\\,dx\\\\\n&=\\frac12\\int_0^{2\\pi}\\sin^2x\\,dx\n=\\boxed{\\frac\\pi2}.\n\\end{aligned}\\]\n边界项在上端因 \\(F(2\\pi)=0\\) 消失，在下端因 \\(F\\) 有界而消失。这一步通过求导把内层积分消去了。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t079",
+      "questionId": "q-105-320-362",
+      "method": "对称性简化计算",
+      "notesPages": [
+        162
+      ],
+      "evidence": "笔记先消去关于x/y的奇函数，再轮换x、y相加，最后用极坐标。",
+      "changed": false,
+      "solution": "在单位圆盘上，\\(x\\) 与 \\(y\\) 的积分均为零。因此\n\\[I=-\\iint_Dx^2dxdy=-\\frac12\\iint_D(x^2+y^2)dxdy.\\]\n极坐标计算得 \\[\\boxed{I=-\\frac12\\int_0^{2\\pi}\\int_0^1r^3drd\\theta=-\\frac\\pi4}.\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t079",
+      "questionId": "q-105-476-520",
+      "method": "对称性简化计算",
+      "notesPages": [
+        162
+      ],
+      "evidence": "笔记先消去关于x/y的奇函数，再轮换x、y相加，最后用极坐标。",
+      "changed": false,
+      "solution": "被积函数按图中排版理解为 \\(\\sin(x^2)\\cos(y^2)+x\\sqrt{x^2+y^2}\\)。第二项关于 \\(x\\) 为奇函数。又\n\\[2\\sin(x^2)\\cos(y^2)=\\sin(x^2+y^2)+\\sin(x^2-y^2),\\]\n后一项在交换 \\(x,y\\) 后变号。因此\n\\[I=\\frac12\\int_0^{2\\pi}\\int_0^{\\sqrt\\pi}\\sin(r^2)rdrd\\theta=\\boxed{\\pi}.\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t081",
+      "questionId": "q-106-191-237",
+      "method": "利用换元法简化被积函数或积分区域",
+      "notesPages": [
+        164,
+        165
+      ],
+      "evidence": "笔记具体取u=x+y、v=y/x，雅可比u/(1+v)²，分离两项积分。",
+      "changed": true,
+      "solution": "按笔记取 \\(u=x+y\\)、\\(v=y/x\\)，使根号和对数各依赖一个新变量。反解为\n\\[x=\\frac{u}{1+v},\\qquad y=\\frac{uv}{1+v},\\qquad\n\\left|\\frac{\\partial(x,y)}{\\partial(u,v)}\\right|=\\frac{u}{(1+v)^2}.\\]\n三角形内部变成 \\(0<u<1,0<v<\\infty\\)。于是\n\\[I=\\left(\\int_0^1\\frac{u^2}{\\sqrt{1-u}}\\,du\\right)\n\\left(\\int_0^\\infty\\frac{\\ln(1+v)}{(1+v)^2}\\,dv\\right).\\]\n第一项令 \\(s=\\sqrt{1-u}\\)，得\n\\[2\\int_0^1(1-s^2)^2\\,ds=\\frac{16}{15}.\\]\n第二项分部积分，边界项 \\(-\\ln(1+v)/(1+v)\\) 在两端均为零，余项为 \\(\\int_0^\\infty(1+v)^{-2}dv=1\\)。因此\n\\[\\boxed{I=\\frac{16}{15}}.\\]\n边界上的对数与根式奇点按上述收敛的广义积分处理。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t082",
+      "questionId": "q-107-105-145",
+      "method": "二重积分：极坐标变换",
+      "notesPages": [
+        166
+      ],
+      "evidence": "笔记给出普通极坐标和偏心圆平移后极坐标；同题以圆心(1/2,1/2)为极点实际计算。",
+      "changed": true,
+      "solution": "先配方识别圆心：\n\\[(x-\\tfrac12)^2+(y-\\tfrac12)^2\\le\\tfrac32.\\]\n按笔记对此偏心圆采用极点在 \\((1/2,1/2)\\) 的极坐标：\n\\[x=\\tfrac12+r\\cos\\theta,\\quad y=\\tfrac12+r\\sin\\theta,\n\\quad 0\\le r\\le\\sqrt{3/2},\\quad0\\le\\theta\\le2\\pi.\\]\n面积元为 \\(r\\,dr\\,d\\theta\\)，所以\n\\[\\begin{aligned}\nI&=\\int_0^{2\\pi}\\int_0^{\\sqrt{3/2}}\n[1+r(\\cos\\theta+\\sin\\theta)]r\\,dr\\,d\\theta\\\\\n&=2\\pi\\int_0^{\\sqrt{3/2}}r\\,dr\n=\\boxed{\\frac{3\\pi}{2}}.\n\\end{aligned}\\]\n其中正弦、余弦在一个完整周期上的积分都为零。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t083",
+      "questionId": "q-107-105-145",
+      "method": "二重积分：平移变换",
+      "notesPages": [
+        166
+      ],
+      "evidence": "同页将偏心圆配方并平移到原点；本入口保留只用平移和奇偶性的解法。",
+      "changed": false,
+      "solution": "配方得 \\((x-1/2)^2+(y-1/2)^2\\le3/2\\)。令 \\(u=x-1/2,v=y-1/2\\)，则 \\(x+y=u+v+1\\)，奇函数项积分为零。圆盘面积为 \\(3\\pi/2\\)，故 \\[\\boxed{\\iint_D(x+y)dxdy=\\frac{3\\pi}{2}}.\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t084",
+      "questionId": "q-107-279-321",
+      "method": "二重积分：平移后的极坐标变换",
+      "notesPages": [
+        167
+      ],
+      "evidence": "笔记直接用x=1+r cosθ、y=1+r sinθ，θ从π/4到5π/4，没有先旋转。",
+      "changed": true,
+      "solution": "按本节“平移后的极坐标”，直接令\n\\[x=1+r\\cos\\theta,\\qquad y=1+r\\sin\\theta.\\]\n圆盘条件给 \\(0\\le r\\le\\sqrt2\\)，而 \\(y\\ge x\\) 等价于 \\(\\sin\\theta\\ge\\cos\\theta\\)，故可取\n\\[\\frac\\pi4\\le\\theta\\le\\frac{5\\pi}4.\\]\n面积元为 \\(r\\,dr\\,d\\theta\\)，被积函数为 \\(r(\\cos\\theta-\\sin\\theta)\\)。于是\n\\[\\begin{aligned}\nI&=\\int_{\\pi/4}^{5\\pi/4}\\int_0^{\\sqrt2}\nr^2(\\cos\\theta-\\sin\\theta)\\,dr\\,d\\theta\\\\\n&=\\frac{2\\sqrt2}{3}\n[\\sin\\theta+\\cos\\theta]_{\\pi/4}^{5\\pi/4}\n=\\boxed{-\\frac83}.\n\\end{aligned}\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t085",
+      "questionId": "q-107-687-730",
+      "method": "二重积分：伸缩变换",
+      "notesPages": [
+        167
+      ],
+      "evidence": "笔记伸缩变换把椭圆化圆；原解先x=u、y=√2v再按圆盘对称性计算，方法相符。",
+      "changed": false,
+      "solution": "令 \\(x=u,y=\\sqrt2v\\)，则区域为单位圆盘，雅可比为 \\(\\sqrt2\\)。由对称性，\n\\[I=\\sqrt2\\iint u^2dudv=\\frac{\\sqrt2}{2}\\int_0^{2\\pi}\\int_0^1r^3drd\\theta=\\boxed{\\frac{\\pi\\sqrt2}{4}}.\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "extra1",
+      "questionId": "q-107-687-730",
+      "method": "二重积分：广义极坐标变换",
+      "notesPages": [
+        167
+      ],
+      "evidence": "笔记广义极坐标直接取x=r cosθ、y=√2r sinθ，面积元√2r。",
+      "changed": true,
+      "solution": "按广义极坐标直接令\n\\[x=r\\cos\\theta,\\qquad y=\\sqrt2r\\sin\\theta.\\]\n椭圆化为 \\(0\\le r\\le1,0\\le\\theta\\le2\\pi\\)，雅可比为 \\(\\sqrt2r\\)。因此\n\\[\\begin{aligned}\nI&=\\int_0^{2\\pi}\\int_0^1\nr^2\\cos^2\\theta\\cdot\\sqrt2r\\,dr\\,d\\theta\\\\\n&=\\sqrt2\\left(\\int_0^1r^3dr\\right)\n\\left(\\int_0^{2\\pi}\\cos^2\\theta\\,d\\theta\\right)\n=\\boxed{\\frac{\\pi\\sqrt2}{4}}.\n\\end{aligned}\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "extra2",
+      "questionId": "q-108-96-140",
+      "method": "二重积分：旋转变换",
+      "notesPages": [
+        168
+      ],
+      "evidence": "笔记旋转到u=(3x+4y)/5轴，使绝对值变成5|u|；原解相符。",
+      "changed": false,
+      "solution": "作正交变换 \\(u=(3x+4y)/5,v=(-4x+3y)/5\\)。单位圆盘不变，且 \\(|3x+4y|=5|u|\\)。因此\n\\[I=5\\iint_{u^2+v^2\\le1}|u|dudv=20\\int_0^1u\\sqrt{1-u^2}du=\\boxed{\\frac{20}{3}}.\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t086",
+      "questionId": "q-109-162-272",
+      "method": "二重积分：正交变换",
+      "notesPages": [
+        170,
+        171
+      ],
+      "evidence": "笔记先用圆盘与正方形包含关系夹逼，再正交化二次型分离一维积分，并反证非负特征值。",
+      "changed": false,
+      "solution": "设 \\(B_R=\\{x^2+y^2\\le R^2\\}\\)、\\(Q_t=[-t,t]^2\\)。当 \\(t\\ge R\\) 时 \\(B_R\\subset Q_t\\subset B_{\\sqrt2t}\\)。由于 \\(f\\ge0\\)，有 \\[\\iint_{B_R}f\\le\\iint_{Q_t}f\\le\\iint_{B_{\\sqrt2t}}f.\\] 圆盘截断积分随半径单调趋于 \\(I\\)。先固定 \\(R\\)，再令 \\(t\\to\\infty\\)，最后令 \\(R\\to\\infty\\)，由夹逼定理得到 \\[\\boxed{\\lim_{t\\to\\infty}\\iint_{-t\\le x,y\\le t}f(x,y)d\\sigma=I}.\\]\n\n正交变换保持面积元，将二次型化为 \\(\\lambda_1u^2+\\lambda_2v^2\\)。于是非负函数的广义积分可分离为 \\[I=\\left(\\int_{-\\infty}^{\\infty}e^{\\lambda_1u^2}du\\right)\\left(\\int_{-\\infty}^{\\infty}e^{\\lambda_2v^2}dv\\right).\\] 若某个 \\(\\lambda_i\\ge0\\)，相应的一维积分发散，从而二重积分发散，与题设矛盾。因此 \\[\\boxed{\\lambda_1<0,\\qquad\\lambda_2<0}.\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t087",
+      "questionId": "q-110-78-124",
+      "method": "极坐标下角度定限问题",
+      "notesPages": [
+        171
+      ],
+      "evidence": "笔记首题为(x²+y²)²=2a²xy，手写r²=2a²cosθsinθ，角度[0,π/2]与[π,3π/2]。原解误换另一条双纽线，已纠正。",
+      "changed": true,
+      "solution": "注意原题是 \\((x^2+y^2)^2=2a^2xy\\)。代入 \\(x=r\\cos\\theta,y=r\\sin\\theta\\)，得\n\\[r^4=2a^2r^2\\cos\\theta\\sin\\theta,\n\\qquad r^2=a^2\\sin2\\theta.\\]\n由 \\(r^2\\ge0\\) 直接确定角度：两瓣分别位于\n\\[\\theta\\in[0,\\pi/2]\\quad\\text{和}\\quad\\theta\\in[\\pi,3\\pi/2].\\]\n因此两瓣总面积为\n\\[\\begin{aligned}\nS&=2\\int_0^{\\pi/2}\\int_0^{a\\sqrt{\\sin2\\theta}}r\\,dr\\,d\\theta\\\\\n&=a^2\\int_0^{\\pi/2}\\sin2\\theta\\,d\\theta\n=\\boxed{a^2}.\n\\end{aligned}\\]\n这里不能把右边的 \\(xy\\) 换成 \\(x^2-y^2\\)；那会改变双纽线及面积系数。",
+      "verification": "原题明确为2a²xy；极坐标面积积分得到a²。已纠正旧解误写曲线造成的2倍错误。 独立笛卡尔网格面积检验a=1，1600×1600网格误差小于0.001。"
+    },
+    {
+      "topicId": "t089",
+      "questionId": "q-111-101-145",
+      "method": "带绝对值符号的积分",
+      "notesPages": [
+        173
+      ],
+      "evidence": "笔记按单位圆分区去绝对值，并用整正方形积分加两倍负区域的补偿。",
+      "changed": false,
+      "solution": "记 \\(Q=[0,1]^2\\)，\\(A=Q\\cap\\{x^2+y^2\\le1\\}\\)。先算\n\\[\\iint_Q(x^2+y^2-1)dxdy=-\\frac13.\\]\n在四分之一单位圆 \\(A\\) 内，\n\\[\\iint_A(1-x^2-y^2)dxdy=\\int_0^{\\pi/2}\\int_0^1(1-r^2)rdrd\\theta=\\frac\\pi8.\\]\n翻转负区域符号后 \\[\\boxed{I=-\\frac13+2\\cdot\\frac\\pi8=\\frac\\pi4-\\frac13}.\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t090",
+      "questionId": "q-112-66-115",
+      "method": "带取整符号的积分",
+      "notesPages": [
+        175
+      ],
+      "evidence": "笔记原题带根号√[y−x²]，按y=x²+1、x²+2分区，权重0、1、√2。原解遗漏根号，已纠正。",
+      "changed": true,
+      "solution": "原题被积函数为 \\(\\sqrt{\\lfloor y-x^2\\rfloor}\\)，根号不能遗漏。区域满足 \\(0\\le y-x^2\\le3\\)。按笔记以曲线 \\(y=x^2+1\\)、\\(y=x^2+2\\) 分区，三个区域上被积函数分别为 \\(0,1,\\sqrt2\\)；边界曲线的面积为零，不影响积分。\n\n令 \\(E_k=\\{(x,y):x^2+k\\le y\\le3\\}\\)。对 \\(k=1,2\\)，\n\\[|E_k|=\\int_{-\\sqrt{3-k}}^{\\sqrt{3-k}}(3-k-x^2)\\,dx\n=\\frac43(3-k)^{3/2}.\\]\n取整值为1的区域面积是 \\(|E_1|-|E_2|\\)，取整值为2的区域面积是 \\(|E_2|\\)，故\n\\[\\begin{aligned}\nI&=(|E_1|-|E_2|)+\\sqrt2|E_2|\\\\\n&=\\frac43(2\\sqrt2-1)+\\frac{4\\sqrt2}{3}\n=\\boxed{4\\sqrt2-\\frac43}.\n\\end{aligned}\\]",
+      "verification": "原题明确有根号；分区面积4/3(2√2−1)与4/3，权重1与√2，复算得4√2−4/3。 独立原坐标1300×1300中点积分与解析值误差小于0.002。"
+    },
+    {
+      "topicId": "t091",
+      "questionId": "q-112-580-634",
+      "method": "带最值符号的积分",
+      "notesPages": [
+        176
+      ],
+      "evidence": "笔记按y=x分成两半平面，分别取min为x或y，再利用轮换对称性化成单个迭代积分。",
+      "changed": true,
+      "solution": "按笔记沿 \\(y=x\\) 分成两个半平面：在 \\(x\\le y\\) 时最小值为 \\(x\\)，在 \\(y\\le x\\) 时最小值为 \\(y\\)。交换 \\(x,y\\) 可知两部分积分相等，故\n\\[I=2\\int_{-\\infty}^{\\infty}e^{-y^2}\n\\left(\\int_{-\\infty}^y xe^{-x^2}\\,dx\\right)dy.\\]\n内层积分为\n\\[\\int_{-\\infty}^y xe^{-x^2}\\,dx=-\\frac12e^{-y^2}.\\]\n于是\n\\[I=-\\int_{-\\infty}^{\\infty}e^{-2y^2}\\,dy\n=-\\frac1{\\sqrt2}\\int_{-\\infty}^{\\infty}e^{-t^2}\\,dt\n=\\boxed{-\\sqrt{\\frac\\pi2}}.\\]\n多项式乘高斯函数绝对可积，因此上述分区及换序合法。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t092",
+      "questionId": "q-113-344-390",
+      "method": "带符号函数的积分",
+      "notesPages": [
+        177
+      ],
+      "evidence": "笔记以y²=x²+2分正负区域，负域为上下两帽；在x∈[−1,1]对两根式作差求面积。",
+      "changed": true,
+      "solution": "按符号函数的定义，以 \\(x^2-y^2+2=0\\) 划分圆盘。负区域满足 \\(y^2>x^2+2\\)，是圆内上、下两个对称的帽形区域；其余区域取值 \\(+1\\)。\n\n圆与双曲线相交时 \\(x^2+y^2=4\\)、\\(y^2=x^2+2\\)，得 \\(x^2=1\\)。因此一个上帽的面积为\n\\[A=2\\int_0^1[\\sqrt{4-x^2}-\\sqrt{x^2+2}]\\,dx.\\]\n由根式积分公式，\n\\[\\int_0^1\\sqrt{4-x^2}\\,dx=\\frac{\\sqrt3}{2}+\\frac\\pi3,\\]\n\\[\\int_0^1\\sqrt{x^2+2}\\,dx=\\frac{\\sqrt3}{2}\n+\\ln\\frac{1+\\sqrt3}{\\sqrt2}.\\]\n两帽总面积为 \\(2A\\)。将这部分从 \\(+1\\) 改成 \\(-1\\) 须减去其两倍，故\n\\[\\begin{aligned}\nI&=4\\pi-4A\\\\\n&=\\frac{4\\pi}{3}+8\\ln\\frac{1+\\sqrt3}{\\sqrt2}\n=\\boxed{\\frac{4\\pi}{3}+4\\ln(2+\\sqrt3)}.\n\\end{aligned}\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t093",
+      "questionId": "q-114-58-109",
+      "method": "边界曲线是参数方程形式的积分",
+      "notesPages": [
+        179
+      ],
+      "evidence": "笔记先按竖条积分，再代入摆线参数；原解同法，补充三个积分的由来。",
+      "changed": true,
+      "solution": "先用竖条把二重积分化为一重积分：若摆线高度为 \\(Y(x)\\)，则\n\\[I=\\int_0^{2\\pi}\\int_0^{Y(x)}(x+2y)\\,dy\\,dx\n=\\int_0^{2\\pi}[xY(x)+Y(x)^2]dx.\\]\n代入边界参数 \\(x=t-\\sin t\\)、\\(Y=1-\\cos t\\)、\\(dx=(1-\\cos t)dt\\)，得\n\\[I=\\int_0^{2\\pi}\\{t(1-\\cos t)^2-\\sin t(1-\\cos t)^2+(1-\\cos t)^3\\}\\,dt.\\]\n第一项用 \\(t\\mapsto2\\pi-t\\) 对称性为 \\(\\pi\\int_0^{2\\pi}(1-\\cos t)^2dt=3\\pi^2\\)；第二项是 \\(-[(1-\\cos t)^3/3]_0^{2\\pi}=0\\)；第三项展开后积分为 \\(2\\pi+3\\pi=5\\pi\\)。所以\n\\[\\boxed{I=3\\pi^2+5\\pi}.\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t094",
+      "questionId": "q-114-385-454",
+      "method": "逆用格林公式求二重积分",
+      "notesPages": [
+        180
+      ],
+      "evidence": "笔记由格林公式S=−∮y dx算星形线面积；明确采用正向全边界。",
+      "changed": true,
+      "solution": "按逆用格林公式，取 \\(P=-y,Q=0\\)，则对正向边界 \\(\\partial D\\)，\n\\[S=\\iint_D1\\,dxdy=-\\oint_{\\partial D}y\\,dx.\\]\n题面星形线为 \\(x^{2/3}+y^{2/3}=a^{2/3}\\)，相应参数应为\n\\[x=a\\cos^3t,\\qquad y=a\\sin^3t,\\qquad0\\le t\\le2\\pi.\\]\n原题下方参数提示漏写了尺度 \\(a\\)；这里按题面的星形线计算。于是\n\\[S=3a^2\\int_0^{2\\pi}\\sin^4t\\cos^2t\\,dt\n=12a^2\\int_0^{\\pi/2}(\\sin^4t-\\sin^6t)\\,dt.\\]\n用偶次幂三角积分 \\(\\int_0^{\\pi/2}\\sin^4t\\,dt=3\\pi/16\\)、\\(\\int_0^{\\pi/2}\\sin^6t\\,dt=5\\pi/32\\)，得到\n\\[\\boxed{S=\\frac{3\\pi a^2}{8}}.\\]",
+      "verification": "参数式补尺度a；积分3a²∫sin⁴t cos²t dt=3πa²/8。"
+    },
+    {
+      "topicId": "t096",
+      "questionId": "q-116-327-405",
+      "method": "二重积分的分部积分公式",
+      "notesPages": [
+        182,
+        183
+      ],
+      "evidence": "笔记以x−1、y−1作为分部积分辅助因子，边界项因f(0,y)=f(x,0)=0消失；原解用换序，已改。",
+      "changed": true,
+      "solution": "按二重积分的分部积分思路，取辅助因子 \\(x-1\\) 与 \\(y-1\\)。先对 \\(x\\) 分部积分：\n\\[\\begin{aligned}\nI&=\\int_0^1\\left([(x-1)f(x,y)]_{x=0}^{1}\n-\\int_0^1(x-1)f_x(x,y)\\,dx\\right)dy\\\\\n&=-\\iint_D(x-1)f_x(x,y)\\,dxdy.\n\\end{aligned}\\]\n边界项在 \\(x=1\\) 因因子为零，在 \\(x=0\\) 因 \\(f(0,y)=0\\) 为零。再对 \\(y\\) 分部积分；由 \\(f(x,0)\\equiv0\\) 得 \\(f_x(x,0)=0\\)，所以边界项再次消失，得到\n\\[I=\\iint_D(x-1)(y-1)f_{xy}(x,y)\\,dxdy.\\]\n在单位正方形上 \\((x-1)(y-1)\\ge0\\)，结合题设 \\(f_{xy}\\le A\\)，\n\\[I\\le A\\int_0^1(1-x)dx\\int_0^1(1-y)dy\n=\\boxed{\\frac A4}.\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t097",
+      "questionId": "q-120-487-575",
+      "method": "二元泰勒展开",
+      "notesPages": [
+        186,
+        187
+      ],
+      "evidence": "笔记沿线段作二元二阶泰勒，再用三项柯西和圆盘极坐标界定积分。",
+      "changed": false,
+      "solution": "沿原点到 \\((x,y)\\) 的线段作二阶泰勒展开。因 \\(f(0,0)=f_x(0,0)=f_y(0,0)=0\\)，存在 \\(0<\\theta<1\\) 使\n\\[f(x,y)=\\frac12(x^2f_{xx}+2xyf_{xy}+y^2f_{yy})(\\theta x,\\theta y).\\]\n由柯西不等式，\n\\[|f(x,y)|\\le\\frac12\\sqrt{f_{xx}^2+2f_{xy}^2+f_{yy}^2}\\sqrt{x^4+2x^2y^2+y^4}\\le\\frac{\\sqrt M}{2}(x^2+y^2).\\]\n所以\n\\[\\left|\\iint_{x^2+y^2\\le1}f dxdy\\right|\\le\\frac{\\sqrt M}{2}\\int_0^{2\\pi}\\int_0^1r^3drd\\theta=\\boxed{\\frac{\\pi\\sqrt M}{4}}.\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t099",
+      "questionId": "q-123-145-198",
+      "method": "先一后二法（先计算一个一重积分再计算一个二重积分）",
+      "notesPages": [
+        190
+      ],
+      "evidence": "笔记先固定(x,y)对z积分，再在投影圆盘做二重积分。",
+      "changed": true,
+      "solution": "按先一后二法，先向 \\(xOy\\) 平面投影。上界面是 \\(z=\\sqrt{4-x^2-y^2}\\)，下界面是 \\(z=\\sqrt{x^2+y^2}\\)。两面相交给出 \\(x^2+y^2=2\\)，故投影是 \\(D:x^2+y^2\\le2\\)。\n\n先对 \\(z\\) 积分：\n\\[\\begin{aligned}\nI&=\\iint_D\\left[\\int_{\\sqrt{x^2+y^2}}^{\\sqrt{4-x^2-y^2}}z\\,dz\\right]dxdy\\\\\n&=\\iint_D(2-x^2-y^2)\\,dxdy.\n\\end{aligned}\\]\n再对投影圆盘用极坐标计算二重积分：\n\\[I=\\int_0^{2\\pi}\\int_0^{\\sqrt2}(2-r^2)r\\,dr\\,d\\theta\n=\\boxed{2\\pi}.\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t100",
+      "questionId": "q-123-145-198",
+      "method": "先二后一法（先计算一个二重积分再计算一个一重积分）",
+      "notesPages": [
+        191,
+        192
+      ],
+      "evidence": "笔记用水平截面面积；球锥题在z=√2处分段，球缺题截面为圆。",
+      "changed": true,
+      "solution": "按先二后一法，固定高度 \\(z\\)，先求水平截面面积。区域满足\n\\[x^2+y^2\\le z^2,\\quad x^2+y^2\\le4-z^2,\\quad0\\le z\\le2.\\]\n两种半径在 \\(z=\\sqrt2\\) 时相等，故\n\\[|D_z|=\\begin{cases}\\pi z^2,&0\\le z\\le\\sqrt2,\\\\\n\\pi(4-z^2),&\\sqrt2\\le z\\le2.\n\\end{cases}\\]\n被积函数 \\(z\\) 在同一截面上是常数，所以先做截面上的二重积分，得到 \\(\\iint_{D_z}z\\,dxdy=z|D_z|\\)。再沿高度积分：\n\\[\\begin{aligned}\nI&=\\pi\\int_0^{\\sqrt2}z^3\\,dz\n+\\pi\\int_{\\sqrt2}^{2}z(4-z^2)\\,dz\\\\\n&=\\pi+\\pi=\\boxed{2\\pi}.\n\\end{aligned}\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t100",
+      "questionId": "q-124-34-78",
+      "method": "先二后一法（先计算一个二重积分再计算一个一重积分）",
+      "notesPages": [
+        191,
+        192
+      ],
+      "evidence": "笔记用水平截面面积；球锥题在z=√2处分段，球缺题截面为圆。",
+      "changed": false,
+      "solution": "取球心为原点，球缺为 \\(R-h\\le z\\le R\\)。故\n\\[\n\\begin{aligned}\nV&=\\pi\\int_{R-h}^{R}(R^2-z^2)\\,dz\\\\\n&=\\pi\\left[R^2z-\\frac{z^3}{3}\\right]_{R-h}^{R}\n=\\boxed{\\frac{\\pi}{3}(3R-h)h^2}.\n\\end{aligned}\n\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t102",
+      "questionId": "q-124-535-579",
+      "method": "奇偶对称性",
+      "notesPages": [
+        193
+      ],
+      "evidence": "笔记将x映到−x，指出区域不变、sin(x³)变号。",
+      "changed": false,
+      "solution": "区域关于平面 \\(yOz\\) 对称，而 \\(y^2z^2\\sin(x^3)\\) 关于 \\(x\\) 为奇函数：\\(\\sin((-x)^3)=-\\sin(x^3)\\)。成对点的贡献相消，故\n\\[\\iiint_\\Omega y^2z^2\\sin(x^3)\\,dV=0.\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t103",
+      "questionId": "q-125-33-79",
+      "method": "轮换对称性",
+      "notesPages": [
+        193
+      ],
+      "evidence": "笔记轮换x,y,z相加，将x⁴+2x²y²积分改成(1/3)∫(x²+y²+z²)²，再球坐标。",
+      "changed": true,
+      "solution": "设 \\(I=\\iiint_\\Omega(x^4+2x^2y^2)\\,dV\\)。单位球对 \\(x,y,z\\) 轮换不变，故同一积分也可写成\n\\[I=\\iiint_\\Omega(y^4+2y^2z^2)\\,dV\n=\\iiint_\\Omega(z^4+2z^2x^2)\\,dV.\\]\n三式相加，恰好凑成完全平方：\n\\[3I=\\iiint_\\Omega(x^2+y^2+z^2)^2\\,dV.\\]\n现在被积函数只依赖到原点的距离，球坐标给出\n\\[3I=\\int_0^{2\\pi}\\int_0^\\pi\\int_0^1\n\\rho^4\\rho^2\\sin\\varphi\\,d\\rho\\,d\\varphi\\,d\\theta\n=\\frac{4\\pi}{7}.\\]\n所以 \\(\\boxed{I=4\\pi/21}\\)。轮换相加是本题简化的关键。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t105",
+      "questionId": "q-125-598-654",
+      "method": "柱面坐标变换",
+      "notesPages": [
+        194,
+        195
+      ],
+      "evidence": "题面第一球条件印为≤4，但笔记手写改作≥4并画球壳；主解保持题面≤，另列手写区域解释，两者都用柱坐标。",
+      "changed": true,
+      "solution": "先按原题图中的 \\(x^2+y^2+(z-2)^2\\le4\\) 解答。两个球内切，小球包含在大球内，且小球全部在 \\(z\\ge0\\)。柱坐标取\n\\[x=r\\cos\\theta,\\quad y=r\\sin\\theta,\\quad dV=r\\,dr\\,d\\theta\\,dz.\\]\n此时 \\(0\\le z\\le4\\)、\\(0\\le r\\le\\sqrt{4-(z-2)^2}\\)、\\(0\\le\\theta\\le2\\pi\\)，故\n\\[\\begin{aligned}\nI&=\\int_0^{2\\pi}\\int_0^4\\int_0^{\\sqrt{4-(z-2)^2}}r^3\\,dr\\,dz\\,d\\theta\\\\\n&=\\frac\\pi2\\int_0^4[4-(z-2)^2]^2\\,dz\n=\\boxed{\\frac{256\\pi}{15}}.\n\\end{aligned}\\]\n笔记区域说明：PDF第194—195页的手写图与积分限把第一条件改为 \\(\\ge4\\)，表示大球内、小球外、\\(z\\ge0\\) 的球壳，和印刷题面不同。若按这个手写区域，则径向限为\n\\[\\sqrt{4-(z-2)^2}\\le r\\le\\sqrt{9-(z-1)^2},\\quad0\\le z\\le4,\\]\n相应结果是\n\\[I_{\\rm shell}=\\frac\\pi2\\int_0^4\\{[9-(z-1)^2]^2-[4-(z-2)^2]^2\\}\\,dz\n=\\boxed{\\frac{256\\pi}{3}}.\\]\n两种答案对应不同区域，不能混用。",
+      "verification": "原题图≤与笔记手写≥分开；精确多项式积分分别为256π/15和256π/3。 两种区域分别作4000子区间Simpson积分，绝对误差均小于1e-7。"
+    },
+    {
+      "topicId": "t107",
+      "questionId": "q-123-145-198",
+      "method": "球面坐标：画图定限",
+      "notesPages": [
+        197
+      ],
+      "evidence": "笔记画出球锥夹域，球坐标ρ∈[0,2]、φ∈[0,π/4]，计算zρ²sinφ。",
+      "changed": true,
+      "solution": "按本节画图定限，用球坐标\n\\[x=\\rho\\sin\\varphi\\cos\\theta,\\quad y=\\rho\\sin\\varphi\\sin\\theta,\n\\quad z=\\rho\\cos\\varphi.\\]\n球面半径为2；圆锥上半面为 \\(\\varphi=\\pi/4\\)。所围区域位于圆锥内、球面内，故\n\\[0\\le\\rho\\le2,\\quad0\\le\\varphi\\le\\pi/4,\\quad0\\le\\theta\\le2\\pi.\\]\n注意球坐标体积元是 \\(\\rho^2\\sin\\varphi\\,d\\rho\\,d\\varphi\\,d\\theta\\)，所以\n\\[\\begin{aligned}\nI&=\\int_0^{2\\pi}\\int_0^{\\pi/4}\\int_0^2\n\\rho^3\\cos\\varphi\\sin\\varphi\\,d\\rho\\,d\\varphi\\,d\\theta\\\\\n&=2\\pi\\cdot4\\cdot\\frac14=\\boxed{2\\pi}.\n\\end{aligned}\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t108",
+      "questionId": "q-127-299-354",
+      "method": "球面坐标：由曲面方程定限",
+      "notesPages": [
+        199
+      ],
+      "evidence": "笔记由曲面代入球坐标得到ρ³=sinφcosθ，按x≥0限制θ后求体积。",
+      "changed": false,
+      "solution": "球坐标下边界满足 \\(\\rho^4=\\rho\\sin\\varphi\\cos\\theta\\)，即 \\(\\rho^3=\\sin\\varphi\\cos\\theta\\)。只有 \\(-\\pi/2\\le\\theta\\le\\pi/2\\) 有正半径。于是\n\\[V=\\frac13\\int_{-\\pi/2}^{\\pi/2}\\!\\int_0^\\pi\\rho_{\\max}^3\\sin\\varphi\\,d\\varphi\\,d\\theta=\\frac13\\int_{-\\pi/2}^{\\pi/2}\\cos\\theta\\,d\\theta\\int_0^\\pi\\sin^2\\varphi\\,d\\varphi=\\frac\\pi3.\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t109",
+      "questionId": "q-128-367-409",
+      "method": "三重积分：伸缩变换",
+      "notesPages": [
+        202
+      ],
+      "evidence": "笔记先伸缩到单位球，雅可比abc，再算单位球上的w²积分。",
+      "changed": false,
+      "solution": "作伸缩 \\(x=au,y=bv,z=cw\\)，则椭球化为单位球，\\(dV=abc\\,dudvdw\\)，且 \\(z^2=c^2w^2\\)。故\n\\[\\iiint_\\Omega z^2\\,dV=abc^3\\iiint_{u^2+v^2+w^2\\le1}w^2\\,dudvdw=abc^3\\cdot\\frac{4\\pi}{15}=\\frac{4\\pi abc^3}{15}.\\]\n这里 \\(a,b,c\\) 作为半轴均取正。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t110",
+      "questionId": "q-128-367-409",
+      "method": "三重积分：广义球面坐标",
+      "notesPages": [
+        202
+      ],
+      "evidence": "笔记直接广义球坐标x=aρsinφcosθ、y=bρsinφsinθ、z=cρcosφ，雅可比abcρ²sinφ。",
+      "changed": true,
+      "solution": "按广义球坐标直接取\n\\[x=a\\rho\\sin\\varphi\\cos\\theta,\\quad\n y=b\\rho\\sin\\varphi\\sin\\theta,\\quad z=c\\rho\\cos\\varphi,\\]\n其中半轴 \\(a,b,c>0\\)，\\(0\\le\\rho\\le1\\)、\\(0\\le\\varphi\\le\\pi\\)、\\(0\\le\\theta\\le2\\pi\\)。雅可比为 \\(abc\\rho^2\\sin\\varphi\\)，因此\n\\[\\begin{aligned}\nI&=abc^3\\int_0^{2\\pi}\\int_0^\\pi\\int_0^1\n\\rho^4\\cos^2\\varphi\\sin\\varphi\\,d\\rho\\,d\\varphi\\,d\\theta\\\\\n&=abc^3\\cdot2\\pi\\cdot\\frac23\\cdot\\frac15\n=\\boxed{\\frac{4\\pi abc^3}{15}}.\n\\end{aligned}\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t111",
+      "questionId": "q-129-139-207",
+      "method": "三重积分：平移变换",
+      "notesPages": [
+        203
+      ],
+      "evidence": "笔记配方平移三个1/2，再伸缩第三轴；奇函数项消去。",
+      "changed": false,
+      "solution": "配方并平移 \\(u=x-\\tfrac12,v=y-\\tfrac12,w=z-\\tfrac12\\)，区域成为\n\\[u^2+v^2+2w^2\\le1.\\]\n密度展开为 \\(u^2+v^2+w^2+u+v+w+3/4\\)，一次项由中心对称性积分为零。再令 \\(t=\\sqrt2w\\)，由单位球二阶矩\n\\[\\iiint u^2\\,dV=\\iiint v^2\\,dV=\\frac{4\\pi}{15\\sqrt2},\\quad \\iiint w^2\\,dV=\\frac{2\\pi}{15\\sqrt2},\\quad |\\Omega|=\\frac{4\\pi}{3\\sqrt2}.\\]\n所以\n\\[M=\\frac{2\\pi}{3\\sqrt2}+\\frac34\\frac{4\\pi}{3\\sqrt2}=\\frac{5\\pi}{3\\sqrt2}=\\frac{5\\sqrt2\\pi}{6}.\\]",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t112",
+      "questionId": "q-130-117-224",
+      "method": "与高斯公式相关的问题",
+      "notesPages": [
+        206
+      ],
+      "evidence": "笔记对向量场f∇f用高斯公式，得到∫|∇f|²=−∫fΔf，再柯西与基本不等式。",
+      "changed": true,
+      "solution": "本节先用高斯公式。取向量场 \\(\\mathbf F=f\\nabla f\\)，则\n\\[\\nabla\\cdot\\mathbf F=|\\nabla f|^2+f\\Delta f.\\]\n由于边界上 \\(f=0\\)，其通量为零，从而\n\\[0=\\iint_\\Sigma f\\nabla f\\cdot\\mathbf n\\,dS\n=\\iiint_\\Omega(|\\nabla f|^2+f\\Delta f)\\,dV.\\]\n记 \\(A=\\iiint_\\Omega f^2dV\\)、\\(B=\\iiint_\\Omega(\\Delta f)^2dV\\)、\\(E=\\iiint_\\Omega|\\nabla f|^2dV\\)。由上式及柯西不等式，\n\\[E=-\\iiint_\\Omega f\\Delta f\\,dV\\le\\sqrt{AB}.\\]\n再对任意 \\(C>0\\) 使用基本不等式，\n\\[CA+\\frac BC\\ge2\\sqrt{AB}\\ge2E,\\]\n即得结论。等号也可由\n\\[CA+\\frac BC-2E\n=\\iiint_\\Omega\\left(\\sqrt C f+\\frac{\\Delta f}{\\sqrt C}\\right)^2dV\\]\n看出：当且仅当 \\(\\Delta f=-Cf\\) 时成立。",
+      "verification": "已目视核对原题条件与笔记相应页；复算换元、边界、常数或中值定理适用条件。"
+    },
+    {
+      "topicId": "t114",
+      "questionId": "q-132-427-467",
+      "method": "第一类曲线积分的对称性",
+      "notesPages": [
+        208
+      ],
+      "evidence": "PDF208将椭圆的奇函数项抵消并以曲线方程化常数；PDF209将x²、y²、z²按轮换对称平均。",
+      "changed": false,
+      "solution": "椭圆关于两坐标轴对称，故 \\(\\oint_L2xy\\,ds=0\\)。在椭圆上恒有\n\\[3x^2+4y^2=12\\left(\\frac{x^2}{4}+\\frac{y^2}{3}\\right)=12.\\]\n若周长记为 \\(a\\)，则\n\\[\\oint_L(2xy+3x^2+4y^2)\\,ds=12\\oint_Lds=12a.\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t114",
+      "questionId": "q-133-239-280",
+      "method": "第一类曲线积分的对称性",
+      "notesPages": [
+        209
+      ],
+      "evidence": "PDF208将椭圆的奇函数项抵消并以曲线方程化常数；PDF209将x²、y²、z²按轮换对称平均。",
+      "changed": false,
+      "solution": "交线是球心在原点、半径为 \\(a\\) 的大圆，故总弧长为 \\(2\\pi a\\)。曲线在 \\(x,y,z\\) 的轮换下不变，因此\n\\[\\oint_\\Gamma x^2ds=\\oint_\\Gamma y^2ds=\\oint_\\Gamma z^2ds=\\frac13\\oint_\\Gamma(x^2+y^2+z^2)ds=\\frac{2\\pi a^3}{3}.\\]\n于是\n\\[\\oint_\\Gamma(1+x^2)ds=2\\pi a+\\frac{2\\pi a^3}{3}.\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t115",
+      "questionId": "q-134-113-168",
+      "method": "第二类曲线积分的对称性",
+      "notesPages": [
+        210,
+        211
+      ],
+      "evidence": "笔记先用关于y轴的有向弧两点法消去f(x)dy，再参数化圆周计算剩余项。",
+      "changed": false,
+      "solution": "由圆关于 \\(y\\) 轴对称且 \\(f\\) 为偶函数，左右对称弧上的 \\(dy\\) 反向，故\n\\[\n\\oint_Lf(x)\\,dy=0.\n\\]\n圆上 \\(x^2+y^2=-2y\\)。取正向参数\n\\[\nx=\\cos t,\\qquad y=-1+\\sin t,\\qquad 0\\le t\\le2\\pi,\n\\]\n则\n\\[\n\\begin{aligned}\nI&=\\int_0^{2\\pi}(-1+\\sin t)\\operatorname{sgn}(\\sin t)\\,dt\\\\\n&=\\boxed{4}.\n\\end{aligned}\n\\]\n根式端点按上述参数化取可积极限。",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t116",
+      "questionId": "q-135-27-83",
+      "method": "曲线方程参数化化定积分",
+      "notesPages": [
+        214
+      ],
+      "evidence": "本题笔记给出以z为参数和三角参数两种定积分计算；主解采用同页的三角参数法并按A到B定向。",
+      "changed": true,
+      "solution": "按本节的曲线参数化方法，取\n\\[x=\\frac{1+\\cos t}{2},\\quad y=\\frac{\\sin t}{\\sqrt2},\\quad z=\\frac{1-\\cos t}{2},\\qquad 0\\le t\\le\\pi.\\]\n它满足球面和平面方程，且随 \\(t:0\\to\\pi\\) 正好从 \\(A\\) 到 \\(B\\)。因此\n\\[dx=-\\tfrac12\\sin t\\,dt,\\quad dy=\\tfrac1{\\sqrt2}\\cos t\\,dt,\\quad dz=\\tfrac12\\sin t\\,dt.\\]\n逐项代入，得到\n\\[\\begin{aligned}\nI&=\\int_0^\\pi\\left[-\\frac{\\sin^2t}{2\\sqrt2}+\\frac{(1-\\cos t)\\cos t}{2\\sqrt2}+\\frac{(1+\\cos t)\\sin t}{4}\\right]dt\\\\\n&=\\int_0^\\pi\\left[\\frac{\\cos t-1}{2\\sqrt2}+\\frac{\\sin t+\\sin t\\cos t}{4}\\right]dt\\\\\n&=\\boxed{\\frac12-\\frac{\\sqrt2\\pi}{4}}.\n\\end{aligned}\\]",
+      "verification": "按笔记所用方法重推，结果与独立代入/积分核对一致。"
+    },
+    {
+      "topicId": "t117",
+      "questionId": "q-136-357-420",
+      "method": "格林公式化二重积分",
+      "notesPages": [
+        217
+      ],
+      "evidence": "笔记使用隐式求导计算Q_x-P_y=2，再用格林公式乘单位圆面积。",
+      "changed": true,
+      "solution": "按笔记使用格林公式。记\n\\[P=-(2xz+yz^2),\\qquad Q=xz^2+2yz.\\]\n将 \\(z=z(x,y)\\) 当作隐函数求导，得到\n\\[Q_x-P_y=2\\{z^2+(xz+y)z_x+(x+yz)z_y\\}.\\]\n由题设隐函数关系可得\n\\[(xz+y)z_x+(x+yz)z_y=1-z^2.\\]\n因而 \\(Q_x-P_y=2\\)。对单位圆的正向，由格林公式\n\\[\\boxed{I=\\iint_{x^2+y^2\\le1}2\\,dxdy=2\\pi}.\\]\n\n补充核验隐函数恒等式：直接写出 \\(z_x,z_y\\) 的商式可能除到零，不能仅以“唯一可微”断言分母非零。可用以下不依赖该分母的说明。在一点 \\((x_0,y_0,z_0)\\) 固定\n\\[u_0=x_0z_0-y_0,\\qquad v_0=x_0-y_0z_0.\\]\n若 \\(z_0^2\\ne1\\)，令 \\(t\\) 在 \\(z_0\\) 附近变化，并取\n\\[x(t)=\\frac{v_0-u_0t}{1-t^2},\\qquad y(t)=\\frac{v_0t-u_0}{1-t^2}.\\]\n则 \\(x(t)t-y(t)=u_0\\)、\\(x(t)-y(t)t=v_0\\)，一直满足原隐式关系。由题设给定分支的局部唯一性，\\(z(x(t),y(t))=t\\)。在 \\(t=z_0\\) 处求导，利用\n\\[x'(z_0)=\\frac{x_0z_0+y_0}{1-z_0^2},\\quad y'(z_0)=\\frac{x_0+y_0z_0}{1-z_0^2},\\]\n即可得到所用恒等式。对 \\(z=\\pm1\\) 的点：若附近恒为该常数，则两偏导为零，恒等式直接成立；其余点由连续性得到。因此未额外假设 \\(F_ux-F_vy\\ne0\\)。",
+      "verification": "已直接核对Q_x-P_y；补充以保持u,v不变的参数曲线证明隐函数恒等式，避免唯一可微被误当作F_ux-F_vy非零。"
+    },
+    {
+      "topicId": "t118",
+      "questionId": "q-137-164-219",
+      "method": "格林公式应用技巧一：补线",
+      "notesPages": [
+        218
+      ],
+      "evidence": "笔记以x轴上O到A线段补闭上半圆，用格林公式并扣除补线积分。",
+      "changed": false,
+      "solution": "用 \\(x\\) 轴线段 \\(\\Gamma:O\\to A\\) 补成逆时针闭曲线。令 \\(P=e^x\\sin y-b(x+y),Q=e^x\\cos y-ax\\)，则\n\\[Q_x-P_y=b-a.\\]\n半圆面积为 \\(\\pi a^2/2\\)，故\n\\[\\int_LPdx+Qdy+\\int_\\Gamma Pdx+Qdy=(b-a)\\frac{\\pi a^2}{2}.\\]\n在 \\(\\Gamma\\) 上 \\(y=0,dy=0\\)，所以 \\(\\int_\\Gamma Pdx=-b\\int_0^{2a}x\\,dx=-2ba^2\\)。从而\n\\[I=a^2\\left(2b+\\frac\\pi2(b-a)\\right).\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t119",
+      "questionId": "q-137-583-631",
+      "method": "格林公式应用技巧二：补圈挖点",
+      "notesPages": [
+        219
+      ],
+      "evidence": "笔记在原点挖去椭圆小圈4x²+y²=ε²；环域内Q_x-P_y=0，原圆积分化成小椭圆积分。",
+      "changed": true,
+      "solution": "记 \\(P=-y/(4x^2+y^2)\\)、\\(Q=x/(4x^2+y^2)\\)。原点是奇点，不能在整个圆盘上直接使用格林公式。挖去小椭圆\n\\[E_\\varepsilon:4x^2+y^2=\\varepsilon^2,\\qquad0<\\varepsilon<3,\\]\n并把它按逆时针定向。圆与小椭圆之间的环域内\n\\[Q_x=P_y=\\frac{y^2-4x^2}{(4x^2+y^2)^2}.\\]\n由格林公式（环域内边界的正向为顺时针）得\n\\[\\oint_LP\\,dx+Q\\,dy-\\oint_{E_\\varepsilon}P\\,dx+Q\\,dy=0.\\]\n在小椭圆上取 \\(x=(\\varepsilon/2)\\cos t\\)、\\(y=\\varepsilon\\sin t\\)，\\(0\\le t\\le2\\pi\\)，则\n\\[4x^2+y^2=\\varepsilon^2,\\quad x\\,dy-y\\,dx=\\frac{\\varepsilon^2}{2}\\,dt.\\]\n所以\n\\[I=\\oint_{E_\\varepsilon}\\frac{x\\,dy-y\\,dx}{4x^2+y^2}=\\frac12\\int_0^{2\\pi}dt=\\boxed\\pi.\\]",
+      "verification": "按笔记所用方法重推，结果与独立代入/积分核对一致。"
+    },
+    {
+      "topicId": "t120",
+      "questionId": "q-138-455-517",
+      "method": "空间曲线积分化平面曲线积分再利用格林公式",
+      "notesPages": [
+        221
+      ],
+      "evidence": "笔记先以z=3/2-x-y、dz=-dx-dy化为平面线积分，再用格林公式；投影为单位正方形去两个三角形。",
+      "changed": true,
+      "solution": "按本节先降到平面，再用格林公式。令 \\(z=3/2-x-y\\)，则 \\(dz=-dx-dy\\)。原线积分变为投影曲线 \\(L'\\) 上的\n\\[I=\\oint_{L'}\\widetilde P\\,dx+\\widetilde Q\\,dy,\\]\n其中\n\\[\\widetilde P=z^2+x^2-2y^2,\\qquad \\widetilde Q=2x^2-y^2-z^2,\\qquad z=\\tfrac32-x-y.\\]\n注意求偏导时 \\(z_x=z_y=-1\\)，故\n\\[\\widetilde Q_x-\\widetilde P_y=(4x+2z)-(-2z-4y)=4(x+y+z)=6.\\]\n投影区域为\n\\[D=\\{0\\le x,y\\le1,\\ \\tfrac12\\le x+y\\le\\tfrac32\\},\\]\n即单位正方形去掉两个直角边长为 \\(1/2\\) 的三角形，其面积为 \\(3/4\\)。若投影为逆时针，由格林公式\n\\[I=\\iint_D6\\,dxdy=\\frac92.\\]\n反向时变号，所以题目所求的绝对值为 \\(\\boxed{9/2}\\)。",
+      "verification": "按笔记所用方法重推，结果与独立代入/积分核对一致。"
+    },
+    {
+      "topicId": "t121",
+      "questionId": "q-141-27-105",
+      "method": "积分与路径无关问题",
+      "notesPages": [
+        225
+      ],
+      "evidence": "笔记用P_y=Q_x得到tf′+f=1；其手写结果选用了f(1)=0的分支。原题图含未定义u且t≠0的定义域不连通，下文保留并补充这两项题面限制。",
+      "changed": true,
+      "solution": "题面在 \\(y[2-f(x^2-y^2)]\\) 后多出未定义的 \\(u\\)。以下按笔记运算所采用的 \\(u=1\\)（即删去该字母）解释；若 \\(u\\) 另有所指，须先补足题设。\n\n本节方法是令混合偏导相等。设 \\(t=x^2-y^2\\ne0\\)，\\(P=y[2-f(t)]\\)、\\(Q=xf(t)\\)。路径无关要求\n\\[P_y=2-f(t)+2y^2f'(t)=Q_x=f(t)+2x^2f'(t),\\]\n即\n\\[tf'(t)+f(t)=1,\\qquad (tf(t))'=1.\\]\n在每个不跨零的区间上积分，得 \\(f(t)=1+C/t\\)。由于 \\(f(1)=0\\)，正半轴的常数为 \\(-1\\)，故\n\\[\\boxed{f(t)=1-\\frac1t\\quad(t>0)}.\\]\n需要区分定义域的两支：题设只要求 \\(t\\ne0\\)，正、负半轴不连通，\\(f(1)\\) 不能确定负半轴常数。因此完整地写为\n\\[f(t)=\\begin{cases}1-1/t,&t>0,\\\\1+C_-/t,&t<0,\\end{cases}\\qquad C_-\\text{为任意常数}.\\]\n于是对 \\(x^2>y^2\\)，\\(f(x^2-y^2)=1-1/(x^2-y^2)\\)；对 \\(x^2<y^2\\)，为 \\(1+C_-/(x^2-y^2)\\)。每个由直线 \\(y=\\pm x\\) 分出的区域均为凸域，且上述 \\(P_y=Q_x\\) 成立，故在各区域内确实路径无关。笔记写出的 \\(1-1/t\\) 可作为两支同取常数 \\(-1\\) 的一个选择，但题面不能保证它是全域唯一答案。",
+      "verification": "重新核对原题图，保留未定义u的题面疑点；微分方程的两支常数及路径无关的充分性分别检验。"
+    },
+    {
+      "topicId": "t122",
+      "questionId": "q-137-583-631",
+      "method": "直接积分法",
+      "notesPages": [
+        225,
+        226
+      ],
+      "evidence": "笔记直接识别微分1/2 d arctan(y/(2x))，并将圆拆成左右两弧处理原函数分支；不是整圆直接代原函数端点。",
+      "changed": true,
+      "solution": "按笔记的直接积分法，在 \\(x\\ne0\\) 的区域内凑微分：\n\\[\\frac{x\\,dy-y\\,dx}{4x^2+y^2}=\\frac12\\,d\\arctan\\frac{y}{2x}.\\]\n但 \\(\\arctan(y/(2x))\\) 不能作为绕原点整圈的单值连续原函数，不能用“闭曲线首尾相同”把积分算成零。\n\n将逆时针圆周分为右半圆 \\(L_R\\)（从 \\((0,-3)\\) 到 \\((0,3)\\)）和左半圆 \\(L_L\\)（从 \\((0,3)\\) 到 \\((0,-3)\\)）。在各半圆内部使用上式，并在两端取单侧极限。右半圆 \\(x>0\\)，比值 \\(y/(2x)\\) 从 \\(-\\infty\\) 变到 \\(+\\infty\\)，故\n\\[\\int_{L_R}\\frac{x\\,dy-y\\,dx}{4x^2+y^2}=\\frac12\\left(\\frac\\pi2-\\left(-\\frac\\pi2\\right)\\right)=\\frac\\pi2.\\]\n左半圆 \\(x<0\\)，沿规定方向比值同样从 \\(-\\infty\\) 变到 \\(+\\infty\\)，故左半圆积分也为 \\(\\pi/2\\)。相加得到 \\(\\boxed{I=\\pi}\\)。",
+      "verification": "按笔记所用方法重推，结果与独立代入/积分核对一致。"
+    },
+    {
+      "topicId": "t123",
+      "questionId": "q-142-153-220",
+      "method": "曲线积分中的斯托克斯公式",
+      "notesPages": [
+        228,
+        259
+      ],
+      "evidence": "PDF228仅列斯托克斯公式及本题，PDF259有完整斯托克斯计算：取球面片，旋度通量投影后奇函数项消失。",
+      "changed": true,
+      "solution": "取 \\(\\Gamma\\) 所围的上侧球面片\n\\[S:\\ z=\\sqrt{2Rx-x^2-y^2},\\quad D:\\ (x-r)^2+y^2\\le r^2.\\]\n上侧法向与题给的绕行方向相容。记\n\\[\\mathbf F=(y^2+z^2,z^2+x^2,x^2+y^2),\\]\n则\n\\[\\nabla\\times\\mathbf F=(2y-2z,2z-2x,2x-2y).\\]\n按斯托克斯公式先把曲线积分化为旋度通量，再投影到 \\(D\\)。因\n\\[z_x=\\frac{R-x}{z},\\qquad z_y=-\\frac y z,\\]\n上侧向量面积元为 \\(((x-R)/z,y/z,1)\\,dxdy\\)，从而\n\\[\\begin{aligned}\nI&=\\iint_D\\left[(2y-2z)\\frac{x-R}{z}+(2z-2x)\\frac y z+2x-2y\\right]dxdy\\\\\n&=\\iint_D\\left(2R-\\frac{2Ry}{\\sqrt{2Rx-x^2-y^2}}\\right)dxdy.\n\\end{aligned}\\]\n区域关于 \\(y=0\\) 对称，第二项关于 \\(y\\) 为奇函数，其积分为零。原点处投影表达式按极限处理；由 \\(y^2\\le2rx\\)、\\(z^2\\ge2(R-r)x\\) 知 \\(y/z\\) 有界，不影响积分。因此\n\\[\\boxed{I=2R\\,|D|=2\\pi Rr^2}.\\]",
+      "verification": "按笔记所用方法重推，结果与独立代入/积分核对一致。"
+    },
+    {
+      "topicId": "extra3",
+      "questionId": "q-144-605-655",
+      "method": "第一类曲面积分的对称性",
+      "notesPages": [
+        229,
+        230
+      ],
+      "evidence": "PDF230用轮换对称把两个系数3的混合项平均为三个系数2的混合项，从而补成(x²+y²+z²)²。",
+      "changed": true,
+      "solution": "这里首先用轮换对称性，把多项式补成球面方程的平方。记\n\\[A=\\iint_\\Sigma x^2y^2\\,dS=\\iint_\\Sigma y^2z^2\\,dS=\\iint_\\Sigma z^2x^2\\,dS.\\]\n原题中的两个系数为 \\(3\\) 的混合项积分之和为 \\(6A\\)，等于三个系数为 \\(2\\) 的混合项积分之和。因此\n\\[\\begin{aligned}\nI&=\\iint_\\Sigma[x^4+y^4+z^4+2x^2y^2+2y^2z^2+2z^2x^2]\\,dS\\\\\n&=\\iint_\\Sigma(x^2+y^2+z^2)^2\\,dS.\n\\end{aligned}\\]\n单位球面上 \\(x^2+y^2+z^2=1\\)，故 \\(I\\) 就是单位球面的面积：\\(\\boxed{I=4\\pi}\\)。",
+      "verification": "按笔记所用方法重推，结果与独立代入/积分核对一致。"
+    },
+    {
+      "topicId": "extra4",
+      "questionId": "q-155-538-597",
+      "method": "第二类曲面积分的对称性与两点法",
+      "notesPages": [
+        231,
+        232,
+        238
+      ],
+      "evidence": "PDF231—232讲有向面积元的对称/两点法；PDF238本题以法向量转第一类后消去x³、y³，剩下z³与常数项。",
+      "changed": true,
+      "solution": "本节采用对称性与两点法。上半球向上即向外，单位法向为 \\(\\mathbf n=(x,y,z)/R\\)。先写成第一类曲面积分：\n\\[I=\\frac1R\\iint_S[x^3+y^3+z^3-(x^2+y^2+z^2)]\\,dS.\\]\n在关于 \\(yOz\\) 平面对称的两点 \\((x,y,z)\\)、\\((-x,y,z)\\) 上，\\(dS\\) 相同而 \\(x^3\\) 反号，故其积分为零；同理 \\(y^3\\) 项为零。又球面上 \\(x^2+y^2+z^2=R^2\\)，所以\n\\[I=\\frac1R\\iint_Sz^3\\,dS-R\\iint_SdS.\\]\n上半球面积为 \\(2\\pi R^2\\)。采用高度参数 \\((\\theta,z)\\)，\\(0\\le\\theta\\le2\\pi\\)、\\(0\\le z\\le R\\)，有 \\(dS=R\\,d\\theta dz\\)，故\n\\[\\iint_Sz^3\\,dS=2\\pi R\\int_0^Rz^3dz=\\frac{\\pi R^5}{2}.\\]\n最终\n\\[\\boxed{I=\\frac{\\pi R^4}{2}-2\\pi R^3=\\frac{\\pi R^3}{2}(R-4)}.\\]",
+      "verification": "按笔记所用方法重推，结果与独立代入/积分核对一致。"
+    },
+    {
+      "topicId": "t125",
+      "questionId": "q-146-369-413",
+      "method": "第一类曲面积分：投影法",
+      "notesPages": [
+        235
+      ],
+      "evidence": "笔记写z=5-y，投影到圆盘并带入dS=√2 dxdy；x奇函数项为零。",
+      "changed": false,
+      "solution": "平面写成 \\(z=5-y\\)，其在 \\(xOy\\) 面投影为圆盘 \\(D:x^2+y^2\\le25\\)，且 \\(dS=\\sqrt{1+z_x^2+z_y^2}\\,dxdy=\\sqrt2\\,dxdy\\)。平面上 \\(x+y+z=x+5\\)，因此\n\\[I=\\sqrt2\\iint_D(x+5)dxdy=5\\sqrt2\\,|D|=125\\sqrt2\\pi.\\]\n其中 \\(x\\) 项由圆盘对称性为零。",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t126",
+      "questionId": "q-147-355-394",
+      "method": "第一类曲面积分：参数方程法",
+      "notesPages": [
+        236
+      ],
+      "evidence": "PDF236用球面的角度参数或高度参数证明球冠面积；PDF239用圆柱参数θ,z计算截得柱面面积。",
+      "changed": false,
+      "solution": "把球心置于原点，球冠对应极角 \\(0\\le\\varphi\\le\\varphi_0\\)，且 \\(h=R(1-\\cos\\varphi_0)\\)。球面面积元为 \\(R^2\\sin\\varphi\\,d\\varphi d\\theta\\)，故\n\\[S=\\int_0^{2\\pi}\\!\\int_0^{\\varphi_0}R^2\\sin\\varphi\\,d\\varphi d\\theta=2\\pi R^2(1-\\cos\\varphi_0)=2\\pi Rh.\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t126",
+      "questionId": "q-148-333-368",
+      "method": "第一类曲面积分：参数方程法",
+      "notesPages": [
+        239
+      ],
+      "evidence": "PDF236用球面的角度参数或高度参数证明球冠面积；PDF239用圆柱参数θ,z计算截得柱面面积。",
+      "changed": false,
+      "solution": "参数化柱面 \\(x=\\cos\\theta,y=\\sin\\theta,z=z\\)。上边界高度为\n\\[z_1=(\\cos\\theta-1)^2+(\\sin\\theta-1)^2=3-2\\cos\\theta-2\\sin\\theta>0,\\]\n且 \\(dS=d\\theta dz\\)。所以\n\\[S=\\int_0^{2\\pi}\\!\\int_0^{z_1}dz\\,d\\theta=\\int_0^{2\\pi}(3-2\\cos\\theta-2\\sin\\theta)d\\theta=6\\pi.\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t127",
+      "questionId": "q-149-332-401",
+      "method": "第一类曲面积分：正交变换",
+      "notesPages": [
+        240,
+        241
+      ],
+      "evidence": "笔记令新坐标u沿(a,b,c)，正交变换保持球面和面积元，再以u为轴参数化。",
+      "changed": false,
+      "solution": "若 \\((a,b,c)=0\\)，等式成立。下设 \\((a,b,c)\\ne0\\)，取正交变换使第一新坐标轴沿 \\((a,b,c)\\)，则 \\(ax+by+cz=\\sqrt{a^2+b^2+c^2}\\,u\\)，单位球面及面积元在正交变换下保持不变。因此\n\\[I=\\iint_{S^2}f(ku)dS,\\qquad k=\\sqrt{a^2+b^2+c^2}.\\]\n以 \\(u\\) 为极轴，球面纬带面积元满足 \\(dS=2\\pi\\,du\\)，\\(-1\\le u\\le1\\)。故\n\\[I=2\\pi\\int_{-1}^{1}f(ku)\\,du.\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t128",
+      "questionId": "q-150-326-386",
+      "method": "第二类曲面积分：投影法",
+      "notesPages": [
+        242
+      ],
+      "evidence": "笔记PDF242把x dy dz分成左右两片投影到yOz面，并将(z+a)² dxdy投影到xOy面；各片方向号和两个积分值均逐项对应。",
+      "changed": true,
+      "solution": "按本节的投影法分两项计算。球面上分母 \\(\\sqrt{x^2+y^2+z^2}=a\\)，所以\n\\[I=\\iint_Sx\\,dy\\,dz+\\frac1a\\iint_S(z+a)^2\\,dx\\,dy=:I_1+I_2.\\]\n对 \\(I_1\\)，将下半球分成 \\(x>0\\)、\\(x<0\\) 两片，均投影到 \\(D_{yz}:y^2+z^2\\le a^2,z\\le0\\)。所取为下半球上侧（内向），故右片 \\(dy\\,dz\\) 为负，左片为正。两片相加为\n\\[I_1=-2\\iint_{D_{yz}}\\sqrt{a^2-y^2-z^2}\\,dy\\,dz=-2\\pi\\int_0^a\\rho\\sqrt{a^2-\\rho^2}\\,d\\rho=-\\frac{2\\pi a^3}{3}.\\]\n对 \\(I_2\\)，直接向 \\(xOy\\) 面投影；因取上侧，\\(dx\\,dy\\) 为正，且 \\(z=-\\sqrt{a^2-x^2-y^2}\\)。故\n\\[\\begin{aligned}\nI_2&=\\frac{2\\pi}{a}\\int_0^a\\left(a-\\sqrt{a^2-r^2}\\right)^2r\\,dr\\\\\n&=\\frac{2\\pi}{a}\\int_0^a(a-s)^2s\\,ds=\\frac{\\pi a^3}{6},\n\\end{aligned}\\]\n其中令 \\(s=\\sqrt{a^2-r^2}\\)。合并得\n\\[\\boxed{I=-\\frac{\\pi a^3}{2}}.\\]",
+      "verification": "按笔记所用方法重推，结果与独立代入/积分核对一致。"
+    },
+    {
+      "topicId": "t129",
+      "questionId": "q-151-462-504",
+      "method": "第二类曲面积分：两类积分的联系",
+      "notesPages": [
+        244
+      ],
+      "evidence": "笔记明确先求下侧单位法向量，把第二类转成第一类曲面积分，再用dS=√2 dxdy投影；原通用解直接使用向量面积元，缺少本节这一步。",
+      "changed": true,
+      "solution": "令 \\(r=\\sqrt{x^2+y^2}\\)，曲面为 \\(z=r\\)、\\(1\\le r\\le2\\)。本节先用两类曲面积分的联系，而不是直接套合一投影公式。取下侧单位法向\n\\[\\mathbf n=\\frac1{\\sqrt2}\\left(\\frac x r,\\frac y r,-1\\right).\\]\n将原题向量场 \\(\\mathbf F=(xf(xy)+2x-y,\\ yf(xy)+2y+x,\\ zf(xy)+z)\\) 与它点乘。在 \\(z=r\\) 上\n\\[\\begin{aligned}\n\\mathbf F\\cdot\\mathbf n\n&=\\frac1{\\sqrt2}\\left[\\frac{x^2+y^2}{r}f(xy)-zf(xy)+\\frac{2x^2+2y^2}{r}-z\\right]\\\\\n&=\\frac r{\\sqrt2}.\n\\end{aligned}\\]\n故第二类曲面积分先化为第一类：\n\\[I=\\iint_S\\frac r{\\sqrt2}\\,dS.\\]\n再因 \\(z_x=x/r,z_y=y/r\\)，有 \\(dS=\\sqrt2\\,dxdy\\)。投影到圆环并用极坐标，得到\n\\[I=\\iint_{1\\le r\\le2}r\\,dxdy=\\int_0^{2\\pi}\\!\\int_1^2r^2\\,drd\\theta=\\boxed{\\frac{14\\pi}{3}}.\\]",
+      "verification": "按笔记所用方法重推，结果与独立代入/积分核对一致。"
+    },
+    {
+      "topicId": "t130",
+      "questionId": "q-151-462-504",
+      "method": "第二类曲面积分：合一投影法",
+      "notesPages": [
+        247,
+        248
+      ],
+      "evidence": "PDF247给出合一投影公式，PDF248把三个有向面积元统一投影到xOy面，f项相消后为r dxdy。",
+      "changed": false,
+      "solution": "曲面为 \\(z=r\\)、\\(1\\le r\\le2\\)，取下侧时向量面积元为 \\((x/r,y/r,-1)dxdy\\)。与题中向量场点乘后，含 \\(f(xy)\\) 的部分为\n\\[\\frac{x^2+y^2}{r}f(xy)-zf(xy)=rf(xy)-rf(xy)=0,\\]\n其余部分为\n\\[\\frac{x(2x-y)+y(2y+x)}r-z=2r-r=r.\\]\n故\n\\[I=\\int_0^{2\\pi}\\!\\int_1^2r\\cdot r\\,drd\\theta=\\frac{14\\pi}{3}.\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t132",
+      "questionId": "q-155-538-597",
+      "method": "高斯公式应用技巧一：补面",
+      "notesPages": [
+        249,
+        250,
+        251
+      ],
+      "evidence": "本题在PDF250补z=0底面、补面通量零，求散度2x+2y+2z-3；积分延续到PDF251。",
+      "changed": false,
+      "solution": "补底面圆盘后用高斯公式；补面通量为零。散度为 \\(2x+2y+2z-3\\)，故\n\\[I=2\\iiint z\\,dV-3V=2\\cdot\\frac{\\pi R^4}{4}-3\\cdot\\frac{2\\pi R^3}{3}=\\frac{\\pi R^3}{2}(R-4).\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t133",
+      "questionId": "q-158-33-98",
+      "method": "高斯公式应用技巧二：挖点",
+      "notesPages": [
+        254
+      ],
+      "evidence": "笔记在椭球内部挖小球，场在环域散度为零，椭球外向通量等于小球外向通量4π。",
+      "changed": false,
+      "solution": "向量场为 \\(F=(x,y,z)/(x^2+y^2+z^2)^{3/2}\\)，在原点外散度为零。椭球包围原点；挖去以原点为心的小球后用高斯公式，椭球通量等于小球外向通量。小球上 \\(F\\cdot n=1/\\varepsilon^2\\)，面积为 \\(4\\pi\\varepsilon^2\\)，故\n\\[I=4\\pi.\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t134",
+      "questionId": "q-159-100-188",
+      "method": "曲面积分恒为零问题",
+      "notesPages": [
+        257,
+        258
+      ],
+      "evidence": "笔记以任意闭曲面通量为零推出散度恒零，得到f″-f′+f=sin x，PDF258代入右极限初值。",
+      "changed": false,
+      "solution": "题设对半空间内任意闭曲面成立，由局部高斯公式知散度恒为零。三个通量分量的散度为\n\\[\\frac d{dx}[xf'(x)]+\\frac\\partial{\\partial y}\\{y[xf(x)-f'(x)]\\}+\\frac\\partial{\\partial z}\\{-xz[\\sin x+f'(x)]\\}=x[f''-f'+f-\\sin x].\\]\n因 \\(x>0\\)，得到\n\\[f''-f'+f=\\sin x.\\]\n通解为\n\\[f=e^{x/2}\\left(C_1\\cos\\frac{\\sqrt3x}{2}+C_2\\sin\\frac{\\sqrt3x}{2}\\right)+\\cos x.\\]\n由右极限 \\(f(0^+)=f'(0^+)=0\\)，得 \\(C_1=-1,C_2=1/\\sqrt3\\)。所以\n\\[f(x)=e^{x/2}\\left(-\\cos\\frac{\\sqrt3x}{2}+\\frac1{\\sqrt3}\\sin\\frac{\\sqrt3x}{2}\\right)+\\cos x.\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t135",
+      "questionId": "q-159-467-536",
+      "method": "曲面积分最值问题",
+      "notesPages": [
+        258
+      ],
+      "evidence": "笔记把通量转为体积分，选择散度为负的椭球内部作积分域，再缩放为单位球。",
+      "changed": false,
+      "solution": "由高斯公式\n\\[\nI=3\\iiint_\\Omega(x^2+2y^2+3z^2-1)\\,dV.\n\\]\n积分最小时，\\(\\Omega\\) 应恰为被积函数为负的区域，故\n\\[\n\\Sigma:\\ x^2+2y^2+3z^2=1\n\\]\n且取外侧。令 \\(u=x,\\ v=\\sqrt2y,\\ w=\\sqrt3z\\)，则\n\\[\n\\begin{aligned}\nI_{\\min}\n&=\\frac3{\\sqrt6}\\iiint_{u^2+v^2+w^2\\le1}(u^2+v^2+w^2-1)\\,du\\,dv\\,dw\\\\\n&=\\frac{12\\pi}{\\sqrt6}\\left(\\frac15-\\frac13\\right)\n=\\boxed{-\\frac{4\\sqrt6\\pi}{15}}.\n\\end{aligned}\n\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t136",
+      "questionId": "q-142-153-220",
+      "method": "斯托克斯公式化曲面积分",
+      "notesPages": [
+        259
+      ],
+      "evidence": "笔记本页按斯托克斯公式取上侧球面片，旋度投影后为2R-2Ry/z，奇函数部分抵消。",
+      "changed": true,
+      "solution": "取 \\(\\Gamma\\) 所围的上侧球面片\n\\[S:\\ z=\\sqrt{2Rx-x^2-y^2},\\quad D:\\ (x-r)^2+y^2\\le r^2.\\]\n上侧法向与题给的绕行方向相容。记\n\\[\\mathbf F=(y^2+z^2,z^2+x^2,x^2+y^2),\\]\n则\n\\[\\nabla\\times\\mathbf F=(2y-2z,2z-2x,2x-2y).\\]\n按斯托克斯公式先把曲线积分化为旋度通量，再投影到 \\(D\\)。因\n\\[z_x=\\frac{R-x}{z},\\qquad z_y=-\\frac y z,\\]\n上侧向量面积元为 \\(((x-R)/z,y/z,1)\\,dxdy\\)，从而\n\\[\\begin{aligned}\nI&=\\iint_D\\left[(2y-2z)\\frac{x-R}{z}+(2z-2x)\\frac y z+2x-2y\\right]dxdy\\\\\n&=\\iint_D\\left(2R-\\frac{2Ry}{\\sqrt{2Rx-x^2-y^2}}\\right)dxdy.\n\\end{aligned}\\]\n区域关于 \\(y=0\\) 对称，第二项关于 \\(y\\) 为奇函数，其积分为零。原点处投影表达式按极限处理；由 \\(y^2\\le2rx\\)、\\(z^2\\ge2(R-r)x\\) 知 \\(y/z\\) 有界，不影响积分。因此\n\\[\\boxed{I=2R\\,|D|=2\\pi Rr^2}.\\]",
+      "verification": "按笔记所用方法重推，结果与独立代入/积分核对一致。"
+    },
+    {
+      "topicId": "t138",
+      "questionId": "q-163-348-387",
+      "method": "可分离变量方程",
+      "notesPages": [
+        262
+      ],
+      "evidence": "笔记直接分离变量 e^y/(2-e^y) dy=dx/(x+1)，积分并用初值；原通用解的z=e^y线性化不是本节主方法。",
+      "changed": true,
+      "solution": "原方程为 \\((x+1)y'=2e^{-y}-1\\)。按本节直接分离变量：\n\\[\\frac{e^y}{2-e^y}\\,dy=\\frac{dx}{x+1}.\\]\n在初始点附近 \\(x+1>0\\)、\\(2-e^y>0\\)，积分得\n\\[-\\ln|2-e^y|=\\ln|x+1|+C,\\]\n即 \\((x+1)(2-e^y)=C_1\\)。由 \\(y(0)=0\\) 得 \\(C_1=1\\)，所以\n\\[e^y=2-\\frac1{x+1}=\\frac{2x+1}{x+1},\\qquad\\boxed{y=\\ln\\frac{2x+1}{x+1}}.\\]\n包含初始点的最大实解区间是 \\(\\boxed{(-1/2,+\\infty)}\\)。分离时除去了 \\(2-e^y\\)；相应常值解 \\(y\\equiv\\ln2\\) 不满足本题初值，故不影响所求特解。",
+      "verification": "按笔记所用方法重推，结果与独立代入/积分核对一致。"
+    },
+    {
+      "topicId": "t139",
+      "questionId": "q-164-428-464",
+      "method": "变量代换化为可分离变量方程",
+      "notesPages": [
+        267
+      ],
+      "evidence": "笔记令z=x+y+1，得到z′=1+1/z，分离变量并另补z=-1的常值解；原通用解颠倒变量属于另一节。",
+      "changed": true,
+      "solution": "按本节作变量代换 \\(z=x+y+1\\)。原式给出 \\(y'=1/z\\)，故\n\\[z'=1+y'=1+\\frac1z=\\frac{z+1}{z}.\\]\n当 \\(z\\ne-1\\) 时分离变量：\n\\[\\frac z{z+1}\\,dz=dx,\\qquad z-\\ln|z+1|=x+C.\\]\n代回 \\(z=x+y+1\\)，整理常数得\n\\[\\boxed{x+y+2=Ce^y}.\\]\n分离时除掉了 \\(z+1\\)，需补 \\(z\\equiv-1\\)，即 \\(y=-x-2\\)；它已经包含在上式的 \\(C=0\\) 中。\n\n隐式关系应在 \\(x+y+1\\ne0\\) 的局部区间上理解，那里可唯一解出可微的 \\(y(x)\\)；原方程在 \\(x+y+1=0\\) 处不可能成立。",
+      "verification": "按笔记所用方法重推，结果与独立代入/积分核对一致。"
+    },
+    {
+      "topicId": "t140",
+      "questionId": "q-165-139-188",
+      "method": "一阶非齐次线性微分方程",
+      "notesPages": [
+        268
+      ],
+      "evidence": "笔记按一阶线性方程公式（积分因子e^{-x²/2}）求解并用y(0)=1。",
+      "changed": false,
+      "solution": "方程为 \\(y'-xy=xe^{x^2}\\)。积分因子是 \\(e^{-x^2/2}\\)，故\\[\\bigl(ye^{-x^2/2}\\bigr)'=xe^{x^2/2}.\\]积分得到\\[ye^{-x^2/2}=e^{x^2/2}+C,\\qquad y=e^{x^2}+Ce^{x^2/2}.\\]由 \\(y(0)=1\\) 得 \\(C=0\\)，故\\[\\boxed{y=e^{x^2}}.\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t141",
+      "questionId": "q-166-49-91",
+      "method": "伯努利方程",
+      "notesPages": [
+        269,
+        270,
+        271
+      ],
+      "evidence": "PDF269说明伯努利换元，PDF270本题先令z=cos y，再令w=z^{-1}化线性；PDF271补写积分因子。",
+      "changed": true,
+      "solution": "原方程为\\[x\\ln x\\sin y\\,y'+\\cos y(1-x\\cos y)=0.\\]令 \\(z=\\cos y\\)，则 \\(z'=-\\sin y\\,y'\\)，方程化为\\[z'-\\frac{1}{x\\ln x}z=-\\frac{1}{\\ln x}z^2.\\]对 \\(z\\ne0\\)，再令 \\(w=z^{-1}=\\sec y\\)，得到线性方程\\[w'+\\frac{1}{x\\ln x}w=\\frac{1}{\\ln x}.\\]在不跨过 \\(x=1\\) 的区间上取积分因子 \\(\\ln x\\)，即\\[(w\\ln x)'=1.\\]故\\[w\\ln x=x+C,\\]故非恒定解可写为\\[\\boxed{\\sec y=\\frac{x+C}{\\ln x}}\\quad\\text{或}\\quad\\boxed{\\cos y=\\frac{\\ln x}{x+C}},\\]以上除法推导在 \\(x>0,x\\ne1\\) 的适用区间上进行，还须选取使 \\(y(x)\\) 可微的实分支。也可写成隐式关系 \\((x+C)\\cos y=\\ln x\\)；若解跨过 \\(x=1\\)，应以原方程核验可微延拓，不能因推导除过 \\(\\ln x\\) 就排除所有这种延拓。换元 \\(w=1/z\\) 遗漏了 \\(z\\equiv0\\)，故还要补上恒定解\\[\\boxed{y\\equiv\\frac\\pi2+k\\pi},\\qquad k\\in\\mathbb Z.\\]",
+      "verification": "伯努利两次换元与补零解均核对；补充ln x除法的区间限制不等于原方程必须排除x=1。"
+    },
+    {
+      "topicId": "t142",
+      "questionId": "q-166-645-691",
+      "method": "一阶线性方程解的极限与周期性",
+      "notesPages": [
+        272
+      ],
+      "evidence": "PDF272用一阶线性方程通解再用洛必达求无穷远极限；PDF274把y(x+T)/y(x)写成一周期积分的指数以判定周期性。",
+      "changed": true,
+      "solution": "由一阶线性方程的积分因子 \\(e^x\\)，任意解都可写成\n\\[y(x)=\\frac{y(0)+\\int_0^xe^tf(t)\\,dt}{e^x}.\\]\n按笔记接着使用洛必达法则的分母趋于无穷型：分母 \\(e^x\\to+\\infty\\)，分子导数与分母导数之比为\n\\[\\frac{e^xf(x)}{e^x}=f(x)\\longrightarrow0.\\]\n因此\n\\[\\boxed{\\lim_{x\\to+\\infty}y(x)=0}.\\]\n这里不必假定分子也趋于无穷；所用的是分母趋于无穷、导数之比有极限的形式。\n\n也可直接核验这一结论：任给 \\(\\varepsilon>0\\)，取 \\(A\\) 使 \\(t\\ge A\\) 时 \\(|f(t)|<\\varepsilon\\)。把积分拆为 \\([0,A]\\) 与 \\([A,x]\\)，除以 \\(e^x\\) 后，前段趋于零，后段绝对值至多 \\(\\varepsilon(1-e^{A-x})\\le\\varepsilon\\)。",
+      "verification": "按笔记所用方法重推，结果与独立代入/积分核对一致。"
+    },
+    {
+      "topicId": "t142",
+      "questionId": "q-167-225-280",
+      "method": "一阶线性方程解的极限与周期性",
+      "notesPages": [
+        274
+      ],
+      "evidence": "PDF272用一阶线性方程通解再用洛必达求无穷远极限；PDF274把y(x+T)/y(x)写成一周期积分的指数以判定周期性。",
+      "changed": false,
+      "solution": "非零解可写为\\[y(x)=C\\exp\\left(-\\int_0^xp(t)dt\\right),\\qquad C\\ne0.\\]由于 \\(p\\) 以 \\(T\\) 为周期，\\[\\frac{y(x+T)}{y(x)}=\\exp\\left(-\\int_x^{x+T}p(t)dt\\right)=\\exp\\left(-\\int_0^Tp(t)dt\\right).\\]实指数函数等于 \\(1\\) 当且仅当指数为 \\(0\\)，故所有非零解满足 \\(y(x+T)=y(x)\\) 的充分必要条件为\\[\\boxed{\\int_0^Tp(x)dx=0}.\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "extra5",
+      "questionId": "q-167-34-88",
+      "method": "一阶线性方程解的有界性",
+      "notesPages": [
+        273
+      ],
+      "evidence": "笔记把一阶线性方程通解取绝对值，使用|f|≤M并估计指数核积分。",
+      "changed": false,
+      "solution": "由积分因子法，任意解均可写成\\[y(x)=y(0)e^{-x}+\\int_0^xe^{-(x-t)}f(t)\\,dt.\\]利用 \\(|f(t)|\\le M\\)，有\\[|y(x)|\\le |y(0)|e^{-x}+M\\int_0^xe^{-(x-t)}dt=|y(0)|e^{-x}+M(1-e^{-x})\\le |y(0)|+M.\\]故每一个解在 \\([0,+\\infty)\\) 上都有界。",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t143",
+      "questionId": "q-168-540-590",
+      "method": "因变量自变量颠倒（反客为主）",
+      "notesPages": [
+        276,
+        277
+      ],
+      "evidence": "笔记将x看作y的函数，得到关于x的伯努利方程，再令x⁴为新因变量；此题手写在列出线性方程处停止，后续积分为按该方法补全。",
+      "changed": false,
+      "solution": "变量颠倒后\\[\\frac{dx}{dy}=\\frac{x^4+y^2}{2x^3y}=\\frac{x}{2y}+\\frac{y}{2x^3}.\\]令 \\(z=x^4\\)，则\\[z'-\\frac{2}{y}z=2y.\\]积分因子为 \\(y^{-2}\\)，故\\[\\left(\\frac{z}{y^2}\\right)'=\\frac2y,\\qquad \\frac{x^4}{y^2}=2\\ln|y|+C.\\]由 \\(y(1)=1\\) 得 \\(C=1\\)，故所求特解由\\[\\boxed{x^4=y^2(1+2\\ln|y|)}\\]隐式给出。经过点 \\((1,1)\\) 的实解支上 \\(y>0\\)，且局部可由该式唯一确定 \\(y(x)\\)。",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t144",
+      "questionId": "q-170-419-454",
+      "method": "常数变异法",
+      "notesPages": [
+        280,
+        281
+      ],
+      "evidence": "PDF280给出已知一个齐次解y1时令y=u y1的常数变异法；PDF281本题留白，下文按该方法补写，不能改用欧拉试幂与待定系数法。",
+      "changed": true,
+      "solution": "题目已给齐次方程的一个解 \\(y_1=x\\)。按本节的常数变异法，把常数换成函数，令\n\\[y=xu(x).\\]\n于是 \\(y'=u+xu'\\)、\\(y''=2u'+xu''\\)。代入原方程，得到\n\\[x^2(2u'+xu'')-2x(u+xu')+2xu=2x^3,\\]\n其中含 \\(u\\)、\\(u'\\) 的项全部抵消，故在 \\(x\\ne0\\) 的区间上\n\\[u''=2.\\]\n连续积分两次：\\(u'=2x+C_1\\)、\\(u=x^2+C_1x+C_2\\)。最后\n\\[\\boxed{y=x^3+C_1x^2+C_2x}.\\]\n这体现的是从已知齐次解出发作 \\(y=u y_1\\) 的常数变异，而不需要另猜欧拉方程的幂函数解。代回原式可直接核对。",
+      "verification": "按笔记所用方法重推，结果与独立代入/积分核对一致。"
+    },
+    {
+      "topicId": "t145",
+      "questionId": "q-171-228-288",
+      "method": "线性微分方程解的结构",
+      "notesPages": [
+        282
+      ],
+      "evidence": "笔记直接假设k1 y1+k2 y2恒为零，再在0处代入函数值与导数值证明线性无关；不需要Abel公式。",
+      "changed": true,
+      "solution": "按笔记从线性无关的定义证明。若存在常数 \\(k_1,k_2\\) 使\n\\[k_1y_1(x)+k_2y_2(x)\\equiv0,\\]\n在 \\(x=0\\) 处代入 \\(y_1(0)=1,y_2(0)=0\\)，得 \\(k_1=0\\)。再对恒等式求导并令 \\(x=0\\)，利用 \\(y_1'(0)=0,y_2'(0)=1\\)，得 \\(k_2=0\\)。因此两解线性无关。\n\n二阶齐次线性方程的系数在 \\(\\mathbb R\\) 上连续，两个线性无关解构成基本解组，故通解是\n\\[\\boxed{y=C_1y_1(x)+C_2y_2(x)}.\\]\n也可由初值唯一性理解：任意解 \\(y\\) 与 \\(y(0)y_1+y'(0)y_2\\) 具有同样的初始值与初始导数，必为同一个解。",
+      "verification": "按笔记所用方法重推，结果与独立代入/积分核对一致。"
+    },
+    {
+      "topicId": "t146",
+      "questionId": "q-171-680-725",
+      "method": "线性微分方程解的叠加原理",
+      "notesPages": [
+        282,
+        283
+      ],
+      "evidence": "PDF283本题同时使用a+b=1和a-b=0，得到a=b=1/2；旧解漏读ay1+by2也是非齐次解。",
+      "changed": true,
+      "solution": "记一阶线性算子 \\(L[y]=y'+p(x)y\\)。题目给出 \\(y_1,y_2\\) 以及 \\(ay_1+by_2\\) 都是 \\(L[y]=q(x)\\) 的解，且 \\(q(x)\\not\\equiv0\\)。由叠加原理\n\\[L[ay_1+by_2]=(a+b)q(x)=q(x),\\]\n所以 \\(a+b=1\\)。另一方面，\\(ay_1-by_2\\) 是齐次方程的解，因此\n\\[L[ay_1-by_2]=(a-b)q(x)=0,\\]\n所以 \\(a-b=0\\)。联立得到\n\\[\\boxed{a=b=\\frac12}.\\]\n两个条件必须同时使用；只考察齐次组合会漏掉 \\(a+b=1\\)，从而不能确定 \\(a,b\\)。",
+      "verification": "原题图逐字复核：算子是一阶，且ay1+by2为第三个非齐次解。两个线性方程给唯一a=b=1/2，与笔记PDF283一致。"
+    },
+    {
+      "topicId": "t147",
+      "questionId": "q-173-347-386",
+      "method": "常系数线性微分方程",
+      "notesPages": [
+        285,
+        286
+      ],
+      "evidence": "笔记用常系数特征方程及重根/复根写齐次解；非齐次例用一次多项式乘sin2x/cos2x待定系数。",
+      "changed": false,
+      "solution": "特征方程为\\[r^4-2r^3+5r^2=r^2(r^2-2r+5)=r^2[(r-1)^2+4]=0.\\]根为二重根 \\(0\\) 及共轭根 \\(1\\pm2i\\)，故通解为\\[\\boxed{y=C_1+C_2x+e^x(C_3\\cos2x+C_4\\sin2x)}.\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t147",
+      "questionId": "q-173-425-458",
+      "method": "常系数线性微分方程",
+      "notesPages": [
+        285,
+        286
+      ],
+      "evidence": "笔记用常系数特征方程及重根/复根写齐次解；非齐次例用一次多项式乘sin2x/cos2x待定系数。",
+      "changed": false,
+      "solution": "齐次方程 \\(y''+y=0\\) 的通解为 \\(C_1\\cos x+C_2\\sin x\\)。对右端 \\(x\\cos2x\\)，设\\[y_p=(ax+b)\\cos2x+(cx+d)\\sin2x.\\]代入并比较 \\(x\\cos2x,\\cos2x,x\\sin2x,\\sin2x\\) 的系数，得\\[a=-\\frac13,\\quad b=0,\\quad c=0,\\quad d=\\frac49.\\]故\\[\\boxed{y=C_1\\cos x+C_2\\sin x-\\frac{x}{3}\\cos2x+\\frac49\\sin2x}.\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t148",
+      "questionId": "q-174-610-650",
+      "method": "欧拉方程",
+      "notesPages": [
+        288
+      ],
+      "evidence": "笔记令t=ln x，利用欧拉算子化常系数，再求齐次与多项式特解。",
+      "changed": false,
+      "solution": "在 \\(x>0\\) 上令 \\(t=\\ln x\\)，记 \\(D=d/dt\\)。由欧拉方程变换公式，\\[x^3y'''=(D-2)(D-1)Dy,\\qquad x^2y''=(D-1)Dy.\\]故方程化为\\[(D^3-2D^2+D)y=1+t.\\]令 \\(z=Dy\\)，则 \\(z''-2z'+z=1+t\\)。其通解为\\[z=(A+Bt)e^t+t+3.\\]积分得到\\[y=C_1+C_2e^t+C_3te^t+\\frac{t^2}{2}+3t.\\]换回 \\(t=\\ln x\\)：\\[\\boxed{y=C_1+C_2x+C_3x\\ln x+\\frac12(\\ln x)^2+3\\ln x},\\qquad x>0.\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t149",
+      "questionId": "q-175-141-182",
+      "method": "齐次方程",
+      "notesPages": [
+        289
+      ],
+      "evidence": "笔记令u=y/x，将方程化成cos u du=dx/x；实函数解分支还需cos u不为零。",
+      "changed": true,
+      "solution": "原式为 \\([1+(y/x)\\cos(y/x)]\\,dx-\\cos(y/x)\\,dy=0\\)。按齐次方程方法，令 \\(u=y/x\\)，则 \\(y'=u+xu'\\)。代入后\n\\[1+u\\cos u-\\cos u\\,(u+xu')=0,\\]\n所以\n\\[\\cos u\\,du=\\frac{dx}{x}.\\]\n积分并换回原变量，得到\n\\[\\boxed{\\sin\\frac yx=\\ln|x|+C},\\qquad x\\ne0.\\]\n作为可微函数 \\(y(x)\\) 的解，应在 \\(\\cos(y/x)\\ne0\\) 的局部分支上取值；否则原方程会变成 \\(1=0\\)。因此对应区间需有 \\(|\\ln|x|+C|<1\\)，再选定反三角函数的连续分支。等号端点只能作为解区间的边界，不能直接作为有限导数的普通解点。",
+      "verification": "对隐式解求导代回原式，纠正旧解把|ln|x|+C|≤1作为可微解区间的宽松边界。"
+    },
+    {
+      "topicId": "t150",
+      "questionId": "q-175-514-555",
+      "method": "变量代换化为齐次方程",
+      "notesPages": [
+        289,
+        290
+      ],
+      "evidence": "笔记先平移x=u+3,y=v-2消常数，再令v/u=z化齐次为分离变量方程。",
+      "changed": false,
+      "solution": "取平移 \\(x=u+3,y=v-2\\)，原方程变为\\[(2u+v)du+(u+v)dv=0.\\]令 \\(v=zu\\)，则\\[u(1+z)\\frac{dz}{du}=-(z^2+2z+2).\\]置 \\(w=z+1\\)，分离变量得\\[\\frac{w}{w^2+1}dw=-\\frac{du}{u}.\\]积分后 \\(\\tfrac12\\ln(w^2+1)=-\\ln|u|+C\\)，即\\[u^2(1+w^2)=C.\\]注意 \\(uw=u+v\\)，故\\[u^2+(u+v)^2=C.\\]换回原变量得到\\[\\boxed{(x-3)^2+(x+y-1)^2=C}.\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t151",
+      "questionId": "q-176-416-456",
+      "method": "可降阶的二阶微分方程",
+      "notesPages": [
+        293
+      ],
+      "evidence": "笔记利用缺y，令p=y′降为一阶分离变量方程，再积分。",
+      "changed": false,
+      "solution": "令 \\(p=y'\\)，原方程化为\\[(1+x^2)p'=2xp.\\]当 \\(p\\ne0\\) 时分离变量：\\[\\frac{dp}{p}=\\frac{2x}{1+x^2}dx,\\]故 \\(p=C_1(1+x^2)\\)；其中 \\(C_1=0\\) 也包括 \\(p\\equiv0\\)。再积分一次，得到\\[\\boxed{y=C_1\\left(x+\\frac{x^3}{3}\\right)+C_2}.\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t152",
+      "questionId": "q-177-618-657",
+      "method": "全微分方程",
+      "notesPages": [
+        298,
+        299
+      ],
+      "evidence": "笔记给同题的路径积分法、待定函数法与凑全微分法；原解使用待定函数法，属于本节允许方法。",
+      "changed": false,
+      "solution": "记 \\(M=4-x+y,N=x+y-2\\)。有\\[\\frac{\\partial M}{\\partial y}=1=\\frac{\\partial N}{\\partial x},\\]故为全微分方程。由 \\(U_x=M\\)，\\[U=\\int(4-x+y)dx=4x-\\frac{x^2}{2}+xy+g(y).\\]再比较 \\(U_y=x+g'(y)=N=x+y-2\\)，得 \\(g'(y)=y-2\\)，故 \\(g=y^2/2-2y\\)。通解为\\[\\boxed{4x-\\frac{x^2}{2}+xy+\\frac{y^2}{2}-2y=C}.\\]",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t153",
+      "questionId": "q-179-161-200",
+      "method": "积分因子",
+      "notesPages": [
+        302
+      ],
+      "evidence": "笔记把一阶线性方程写为Mdx+Ndy，算(M_y-N_x)/N=p(x)求积分因子，再凑成全微分。",
+      "changed": true,
+      "solution": "本节从一般微分形式求积分因子。把方程写为\n\\[[p(x)y-q(x)]\\,dx+dy=0.\\]\n令 \\(M=p(x)y-q(x)\\)、\\(N=1\\)，则\n\\[\\frac{M_y-N_x}{N}=p(x),\\]\n只依赖 \\(x\\)，所以可取积分因子\n\\[\\mu(x)=\\exp\\!\\left(\\int p(x)\\,dx\\right).\\]\n相乘后利用 \\(d\\mu=p(x)\\mu\\,dx\\)，得到\n\\[\\mu\\,dy+p(x)\\mu y\\,dx-\\mu q(x)\\,dx=d(\\mu y)-\\mu q(x)\\,dx=0.\\]\n这是全微分方程，积分得 \\(\\mu y-\\int\\mu q(x)\\,dx=C\\)，因此\n\\[\\boxed{y=e^{-\\int p(x)dx}\\left[\\int q(x)e^{\\int p(x)dx}\\,dx+C\\right]}.\\]",
+      "verification": "按笔记所用方法重推，结果与独立代入/积分核对一致。"
+    },
+    {
+      "topicId": "t154",
+      "questionId": "q-180-70-109",
+      "method": "积分方程",
+      "notesPages": [
+        304
+      ],
+      "evidence": "笔记先对积分方程求导去积分，化一阶线性方程，再利用x=0的原式求常数。",
+      "changed": false,
+      "solution": "对原式求导，利用微积分基本定理：\\[f'\\cos x-f\\sin x+2f\\sin x=1,\\]即\\[f'+f\\tan x=\\sec x.\\]在 \\(\\cos x\\ne0\\) 的区间上乘积分因子 \\(\\sec x\\)，得\\[(f\\sec x)'=\\sec^2x.\\]故 \\(f\\sec x=\\tan x+C\\)，即 \\(f=\\sin x+C\\cos x\\)。由原积分方程在 \\(x=0\\) 处给出 \\(f(0)=1\\)，故 \\(C=1\\)。\\[\\boxed{f(x)=\\sin x+\\cos x}.\\]直接代回可知它在全体实数上满足原式。",
+      "verification": "已目视核对对应笔记与原解的关键计算及方法；题号和题面保持不变。"
+    },
+    {
+      "topicId": "t157",
+      "questionId": "q-183-169-254",
+      "method": "从定义入手",
+      "notesPages": [
+        307
+      ],
+      "evidence": "以两级数的部分和相加；第二问对收敛假设反证。",
+      "changed": false,
+      "solution": "设两级数的部分和分别为 \\(A_N=\\sum_{n=1}^Na_n\\)、\\(B_N=\\sum_{n=1}^Nb_n\\)。若二者收敛，则\\[\\sum_{n=1}^N(a_n+b_n)=A_N+B_N\\to A+B,\\]故 \\(\\sum(a_n+b_n)\\) 收敛。若 \\(\\sum a_n\\) 收敛而 \\(\\sum b_n\\) 发散，反设 \\(\\sum(a_n+b_n)\\) 收敛，则\\[B_N=(A_N+B_N)-A_N\\]应为两个收敛数列之差，也必收敛，矛盾，故第二种情形下 \\(\\sum(a_n+b_n)\\) 必发散。",
+      "verification": "已目视原题和对应笔记；原解的关键步骤与本节方法一致，复核公式及适用条件。"
+    },
+    {
+      "topicId": "t158",
+      "questionId": "q-184-606-655",
+      "method": "从有无上界入手",
+      "notesPages": [
+        310
+      ],
+      "evidence": "笔记用1/x的单调性把部分和放大于积分ln(N+1)，得到无上界。",
+      "changed": true,
+      "solution": "令 \\(S_N=\\sum_{n=1}^N1/n\\)。按本节“检查部分和有无上界”的思路，因 \\(1/x\\) 递减，对每个 \\(k\\ge1\\) 有\n\\[\\frac1k\\ge\\int_k^{k+1}\\frac{dx}{x}.\\]\n相加得到\n\\[S_N\\ge\\int_1^{N+1}\\frac{dx}{x}=\\ln(N+1)\\longrightarrow+\\infty.\\]\n所以部分和数列没有上界。由正项级数的部分和判别，\\(\\boxed{\\sum_{n=1}^{\\infty}1/n\\text{ 发散}}\\)。",
+      "verification": "与PDF310手写积分比较一致；以无上界为判断依据，避免和余项小节共用分组证明。"
+    },
+    {
+      "topicId": "t159",
+      "questionId": "q-186-35-89",
+      "method": "极限形式的比较审敛法",
+      "notesPages": [
+        312,
+        313
+      ],
+      "evidence": "笔记把sqrt(n³+1)+n与n^(3/2)、分母与n³分别等价，作p级数的极限比较。",
+      "changed": true,
+      "solution": "原题分子是 \\(\\sqrt{n^3+1}+n\\)，其中 \\(+n\\) 在根号外。令\n\\[u_n=\\frac{\\sqrt{n^3+1}+n}{n^3+n^2+1}>0.\\]\n按本节极限比较法，与 \\(v_n=n^{-3/2}\\) 比较：\n\\[\\frac{u_n}{v_n}=\\frac{\\sqrt{1+n^{-3}}+n^{-1/2}}{1+n^{-1}+n^{-3}}\\longrightarrow1.\\]\n而 \\(\\sum n^{-3/2}\\) 是收敛的 \\(p\\) 级数。因此 \\(\\boxed{\\sum u_n\\text{ 收敛}}\\)。",
+      "verification": "修正原解抄题错误：sqrt(n³+n+1)应为sqrt(n³+1)+n；结论仍收敛。直接除以n³和n^(3/2)复核极限为1。 独立数值核验：[1.0891083276153937, 1.0098990100984802, 1.0000999899990002]。"
+    },
+    {
+      "topicId": "t160",
+      "questionId": "q-187-184-229",
+      "method": "不等式形式的比较审敛法",
+      "notesPages": [
+        315
+      ],
+      "evidence": "先把倒数差化成相邻差乘1/|a_n a_(n+1)|，再用该因子的正极限建立两侧常数界。",
+      "changed": false,
+      "solution": "因 \\(a_n\\to a\\ne0\\)，存在 \\(N\\) 使得对 \\(n\\ge N\\)，有 \\(|a|/2\\le|a_n|\\le3|a|/2\\)。于是\n\\[\\left|\\frac1{a_{n+1}}-\\frac1{a_n}\\right|=\\frac{|a_{n+1}-a_n|}{|a_na_{n+1}|},\\]\n并且\n\\[\\frac4{9a^2}|a_{n+1}-a_n|\\le\\left|\\frac1{a_{n+1}}-\\frac1{a_n}\\right|\\le\\frac4{a^2}|a_{n+1}-a_n|.\\]\n由正项级数比较判别法，两级数同敛散。此证明也包含相邻两项相等、两边对应项都为零的情况。",
+      "verification": "已目视原题和对应笔记；原解的关键步骤与本节方法一致，复核公式及适用条件。"
+    },
+    {
+      "topicId": "t161",
+      "questionId": "q-190-164-210",
+      "method": "比值审敛法",
+      "notesPages": [
+        329
+      ],
+      "evidence": "笔记直接计算u_(n+1)/u_n=(n+1)/(2n+2)=1/2，应用比值审敛法。",
+      "changed": true,
+      "solution": "设 \\(u_n=n!/(2n)!!>0\\)。本节直接用比值审敛法：\n\\[\\frac{u_{n+1}}{u_n}=\\frac{(n+1)!}{(2n+2)!!}\\frac{(2n)!!}{n!}=\\frac{n+1}{2n+2}=\\frac12<1.\\]\n故 \\(\\boxed{\\sum_{n=1}^{\\infty}u_n\\text{ 收敛}}\\)。\n这里用到了 \\((2n+2)!!=(2n+2)(2n)!!\\)；判断敛散性不必先求级数和。",
+      "verification": "比值与笔记329页一致，原解虽结论正确却只识别等比级数，已换为本节主方法。"
+    },
+    {
+      "topicId": "t162",
+      "questionId": "q-190-541-580",
+      "method": "根值审敛法：先核对指数，区分判别失效与笔记版本",
+      "notesPages": [
+        329
+      ],
+      "evidence": "题图是n²次幂，笔记对应例为n³次幂。保留题目，区分两版本；原题根值极限为1不能据此判定，笔记版本根值极限e^(-1/6)<1。",
+      "changed": true,
+      "solution": "题目版本需先辨清：当前题图的指数是 \\(n^2\\)，笔记 PDF 第329页的例题指数是 \\(n^3\\)，两题的敛散性不同。\n\n按当前题图，令 \\(u_n=(n\\sin(1/n))^{n^2}\\)。先使用根值审敛法：\n\\[\\sqrt[n]{u_n}=(n\\sin(1/n))^n.\\]\n令 \\(t=1/n\\)。由 \\(\\sin t/t-1\\sim-t^2/6\\) 和 \\(\\ln(1+v)\\sim v\\)，\n\\[n\\ln(n\\sin(1/n))\\sim-\\frac1{6n}\\to0,\\qquad\\sqrt[n]{u_n}\\to1.\\]\n根值极限等于1，不能用根值法直接断定敛散。继续计算一般项：\n\\[\\ln u_n=n^2\\ln(n\\sin(1/n))\\to-\\frac16,\\qquad u_n\\to e^{-1/6}\\ne0.\\]\n因此当前题图所示级数 \\(\\boxed{\\text{发散}}\\)。\n\n笔记的 \\(n^3\\) 版本：若 \\(v_n=(n\\sin(1/n))^{n^3}\\)，则\n\\[\\sqrt[n]{v_n}=(n\\sin(1/n))^{n^2}\\to e^{-1/6}<1.\\]\n此时才可由根值审敛法得到 \\(\\boxed{\\sum v_n\\text{ 收敛}}\\)。",
+      "verification": "原题图明确n²而PDF329为n³。修正旧解将n²擅改n³后的错误结论；分别验证根值极限与一般项极限。 独立数值核验：[0.8464346695553838, 0.8464812546200078, 0.8464817201625797]。"
+    },
+    {
+      "topicId": "t163",
+      "questionId": "q-191-563-617",
+      "method": "级数收敛必要条件：一般项趋于 0",
+      "notesPages": [
+        330
+      ],
+      "evidence": "笔记求一般项极限为e，利用收敛级数的一般项必须趋于0。",
+      "changed": false,
+      "solution": "括号内的部分和趋于 \\(e\\)：\\[1+\\frac1{1!}+\\cdots+\\frac1{n!}\\to e\\ne0.\\]故级数的一般项不趋于零，违反收敛必要条件，故\\[\\boxed{\\text{发散}}.\\]",
+      "verification": "已目视原题和对应笔记；原解的关键步骤与本节方法一致，复核公式及适用条件。"
+    },
+    {
+      "topicId": "t164",
+      "questionId": "q-184-606-655",
+      "method": "级数收敛必要条件：余项趋于 0",
+      "notesPages": [
+        331
+      ],
+      "evidence": "反设调和级数收敛，则余项趋于0，但余项包含n+1至2n共n项，其和不小于1/2。",
+      "changed": true,
+      "solution": "按本节“余项趋于0”反证。假设调和级数收敛，则它的余项\n\\[r_n=\\sum_{k=n+1}^{\\infty}\\frac1k\\longrightarrow0.\\]\n但是余项中只取从 \\(n+1\\) 到 \\(2n\\) 的 \\(n\\) 项，便有\n\\[r_n\\ge\\sum_{k=n+1}^{2n}\\frac1k\\ge n\\cdot\\frac1{2n}=\\frac12.\\]\n这与 \\(r_n\\to0\\) 矛盾，所以 \\(\\boxed{\\sum_{n=1}^{\\infty}1/n\\text{ 发散}}\\)。\n只有在反设收敛以后才定义无穷余项；不能预先把发散级数的无穷尾和当作有限实数。",
+      "verification": "对应PDF331的余项反证；与t158同一道题使用独立本节解法，逻辑上先反设收敛再定义余项。"
+    },
+    {
+      "topicId": "t165",
+      "questionId": "q-196-548-587",
+      "method": "凑差分判断级数敛散性或求级数和",
+      "notesPages": [
+        334,
+        340
+      ],
+      "evidence": "笔记用1/[n(n+1)]=1/n-1/(n+1)凑相邻差，有限和抵消后取极限。",
+      "changed": false,
+      "solution": "利用\\[\\frac1{n(n+1)}=\\frac1n-\\frac1{n+1},\\]部分和为\\[\\sum_{n=1}^N\\frac1{n(n+1)}=1-\\frac1{N+1}.\\]令 \\(N\\to\\infty\\)，得到\\[\\boxed{\\sum_{n=1}^\\infty\\frac1{n(n+1)}=1}.\\]",
+      "verification": "已目视原题和对应笔记；原解的关键步骤与本节方法一致，复核公式及适用条件。"
+    },
+    {
+      "topicId": "t166",
+      "questionId": "q-199-141-223",
+      "method": "利用不动点凑差分",
+      "notesPages": [
+        343
+      ],
+      "evidence": "笔记先解递推的不动点0、1，再考察x_n/(x_n-1)的差分；同时由单调有界证明x_n趋于0。",
+      "changed": true,
+      "solution": "递推函数 \\(\\phi(x)=x^2/(1-x+x^2)\\) 的不动点满足\n\\[x=\\phi(x)\\iff x(1-x)^2=0,\\]\n故为 \\(0,1\\)。按笔记由这两个不动点构造\n\\[y_n=\\frac{x_n-0}{x_n-1}.\\]\n先确认极限：由 \\(x_0=1/3\\) 和递推式，归纳得 \\(0<x_{n+1}<x_n\\le1/3\\)，因为\n\\[x_{n+1}-x_n=-\\frac{x_n(1-x_n)^2}{1-x_n+x_n^2}<0.\\]\n所以 \\(x_n\\to\\ell\\in[0,1/3]\\)，代入递推式得不动点，只能有 \\(\\ell=0\\)，从而 \\(y_n\\to0\\)。\n再凑差分：\n\\[y_{n+1}=\\frac{x_n^2}{x_n-1},\\qquad y_{n+1}-y_n=\\frac{x_n^2-x_n}{x_n-1}=x_n.\\]\n故\n\\[\\sum_{n=0}^{N}x_n=y_{N+1}-y_0\\longrightarrow0-\\frac{1/3}{1/3-1}=\\boxed{\\frac12}.\\]\n因此原级数收敛，和为 \\(1/2\\)。",
+      "verification": "与PDF343不动点0、1和x/(x-1)差分完全对应；逐步验证递推差、极限范围和求和下标。独立数值核验前8步差分恒等式，8项部分和为0.49999999999999994。"
+    },
+    {
+      "topicId": "t167",
+      "questionId": "q-200-469-576",
+      "method": "积分判别法",
+      "notesPages": [
+        346,
+        347
+      ],
+      "evidence": "笔记用a_n=S_n-S_(n-1)化为小区间积分；发散部分先证明a_n/S_(n-1)发散，再反证比较a_n/S_n。",
+      "changed": true,
+      "solution": "令 \\(S_n=\\sum_{k=1}^{n}a_k\\)，于是 \\(a_n=S_n-S_{n-1}\\)，且 \\(S_1>0\\)。\n\n（1）\\(\\alpha>1\\)。因 \\(x^{-\\alpha}\\) 递减，对 \\(n\\ge2\\)，\n\\[\\frac{a_n}{S_n^\\alpha}=\\int_{S_{n-1}}^{S_n}\\frac{dx}{S_n^\\alpha}\\le\\int_{S_{n-1}}^{S_n}\\frac{dx}{x^\\alpha}.\\]\n所以\n\\[\\sum_{n=2}^{N}\\frac{a_n}{S_n^\\alpha}\\le\\int_{S_1}^{S_N}x^{-\\alpha}dx\\le\\int_{S_1}^{\\infty}x^{-\\alpha}dx=\\frac{S_1^{1-\\alpha}}{\\alpha-1}.\\]\n部分和有上界，正项级数收敛。特意从第2项开始，避免在0处积分。\n\n（2）\\(\\alpha\\le1\\) 且 \\(S_n\\to\\infty\\)。先由积分放缩得\n\\[\\sum_{n=2}^{N}\\frac{a_n}{S_{n-1}}\\ge\\sum_{n=2}^{N}\\int_{S_{n-1}}^{S_n}\\frac{dx}{x}=\\ln\\frac{S_N}{S_1}\\to\\infty.\\]\n若 \\(\\sum a_n/S_n\\) 收敛，则 \\(a_n/S_n\\to0\\)，于是\n\\[\\frac{S_{n-1}}{S_n}=1-\\frac{a_n}{S_n}\\to1,\\qquad\\frac{a_n/S_n}{a_n/S_{n-1}}\\to1.\\]\n由极限比较，\\(\\sum a_n/S_{n-1}\\) 也应收敛，矛盾。因此 \\(\\sum a_n/S_n\\) 发散。充分大时 \\(S_n\\ge1\\)，且\n\\[\\frac{a_n}{S_n^\\alpha}\\ge\\frac{a_n}{S_n},\\]\n故原级数发散。",
+      "verification": "PDF346-347用积分放缩和反证比较，不再用无限乘积跳步；确认n=2起积分避免S₀=0的奇点。"
+    },
+    {
+      "topicId": "t168",
+      "questionId": "q-202-197-250",
+      "method": "交错级数：作差法；加括号法",
+      "notesPages": [
+        348,
+        353
+      ],
+      "evidence": "笔记列作差法与加括号法；Q147在353页两解，Q148在355页按相邻两项分组并与p级数比较。",
+      "changed": true,
+      "solution": "采用笔记的作差法。与已知收敛的交错级数\n\\[\\sum_{n=2}^{\\infty}\\frac{(-1)^{n-1}}{\\sqrt n}\\]\n比较，两个一般项的差为\n\\[\\frac{(-1)^{n-1}}{\\sqrt n-(-1)^n}-\\frac{(-1)^{n-1}}{\\sqrt n}=-\\frac1{\\sqrt n[\\sqrt n-(-1)^n]}\\sim-\\frac1n.\\]\n差级数是负项调和型级数，部分和趋于 \\(-\\infty\\)。所以原级数 \\(\\boxed{\\text{发散，部分和趋于 }-\\infty}\\)。\n\n笔记还给出加括号法：将第 \\(2k\\)、\\(2k+1\\) 项配成一组，组和\n\\[\\frac1{\\sqrt{2k+1}+1}-\\frac1{\\sqrt{2k}-1}=\\frac{\\sqrt{2k}-\\sqrt{2k+1}-2}{(\\sqrt{2k+1}+1)(\\sqrt{2k}-1)}\\sim-\\frac1k.\\]\n故分组后的级数也发散到 \\(-\\infty\\)；未配对的单项趋于0，原级数有相同结论。",
+      "verification": "原题和PDF353一致；差项符号为负，组和渐近-1/k，核对n从2开始没有奇异分母。"
+    },
+    {
+      "topicId": "t168",
+      "questionId": "q-203-34-103",
+      "method": "交错级数：加括号后作正项比较",
+      "notesPages": [
+        348,
+        355
+      ],
+      "evidence": "笔记列作差法与加括号法；Q147在353页两解，Q148在355页按相邻两项分组并与p级数比较。",
+      "changed": true,
+      "solution": "按照笔记把相邻两项加括号。令\n\\[c_n=\\frac1{2n-1}-\\frac1{(2n)^p}>0,\\qquad p\\ge1.\\]\n因为原级数的一般项趋于0，原级数与按相邻两项分组后的级数同敛散。\n\n当 \\(p=1\\) 时，\n\\[c_n=\\frac1{(2n-1)(2n)}\\sim\\frac1{4n^2},\\]\n故分组级数收敛，原级数收敛。取绝对值以后得到调和级数，故为条件收敛。\n\n当 \\(p>1\\) 时，\n\\[c_n\\sim\\frac1{2n},\\]\n故分组级数发散到 \\(+\\infty\\)，原级数也发散。取绝对值后总有发散的奇数项子级数 \\(\\sum1/(2n-1)\\)，所以不存在绝对收敛情形。\n\\[\\boxed{p=1\\text{ 时条件收敛； }p>1\\text{ 时发散。}}\\]",
+      "verification": "与PDF355的加括号+极限比较一致；补充一般项趋于0以保证分组推论，不把不同号两级数任意重排。"
+    },
+    {
+      "topicId": "t170",
+      "questionId": "q-209-35-86",
+      "method": "幂级数的性质：逐项求导与积分",
+      "notesPages": [
+        370,
+        385
+      ],
+      "evidence": "笔记第370页选题分子含n，用逐项求导制造n；第385页列逐项求导与积分性质。",
+      "changed": true,
+      "solution": "原题分子含有 \\(n\\)，不能直接把原级数认成 \\(\\sin x-x\\)。本节用逐项求导把这个 \\(n\\) 产生出来。\n由正弦的幂级数，令\n\\[A(x)=\\frac{\\sin x}{x}=\\sum_{n=0}^{\\infty}\\frac{(-1)^n x^{2n}}{(2n+1)!},\\]\n其中 \\(x=0\\) 处连续补定义为 \\(A(0)=1\\)。该幂级数半径为无穷大，可逐项求导：\n\\[A'(x)=\\sum_{n=1}^{\\infty}\\frac{(-1)^n(2n)x^{2n-1}}{(2n+1)!}.\\]\n为使系数和幂次都与原题一致，乘以 \\(x^2/2\\)：\n\\[S(x)=\\frac{x^2}{2}A'(x)=\\boxed{\\frac{x\\cos x-\\sin x}{2}}.\\]\n结果在 \\(x=0\\) 也成立，且收敛域为 \\(\\mathbb R\\)。",
+      "verification": "修正旧解漏掉分子n造成的错误和函数；PDF370同题的求导步骤需要乘x²/2而非x²，已独立复核系数。 独立有限部分和与闭式在x=-0.6,-0.2,0,0.2,0.6比较，最大误差1.4e-17。"
+    },
+    {
+      "topicId": "t171",
+      "questionId": "q-206-241-293",
+      "method": "计算幂级数的收敛半径和收敛域",
+      "notesPages": [
+        360,
+        361
+      ],
+      "evidence": "笔记对缺项幂级数用x²换元或直接比值法，分别检查端点；指数形式例用比值极限e^(-x)。",
+      "changed": true,
+      "solution": "本题是缺项幂级数，先令 \\(t=x^2\\)，则\n\\[\\sum_{n=1}^{\\infty}\\frac{2^n x^{2n+1}}n=x\\sum_{n=1}^{\\infty}\\frac{2^n}{n}t^n.\\]\n对 \\(t\\) 的幂级数，系数满足\n\\[\\lim_{n\\to\\infty}\\frac{2^{n+1}/(n+1)}{2^n/n}=2,\\]\n所以收敛半径 \\(R_t=1/2\\)。换回 \\(x\\)，得到 \\(x^2<1/2\\)，即 \\(|x|<1/\\sqrt2\\)。\n在 \\(x=\\pm1/\\sqrt2\\) 处，原级数分别是 \\(\\pm(1/\\sqrt2)\\sum1/n\\)，均发散。区间外一般项不趋于0。\n\\[\\boxed{R_x=\\frac1{\\sqrt2},\\quad\\text{收敛域为 }(-1/\\sqrt2,1/\\sqrt2).}\\]\n也可按笔记直接作绝对值比值：对固定 \\(x\\ne0\\)，一般项比值趋于 \\(2x^2\\)，再检查临界点；\\(x=0\\) 时各项均为0。",
+      "verification": "对应PDF360换元及361直接比值两种方法；无需预先引用对数和函数才能求收敛域。 独立有限部分和与闭式在x=-0.6,-0.2,0,0.2,0.6比较，最大误差1.1e-16。"
+    },
+    {
+      "topicId": "t171",
+      "questionId": "q-206-383-434",
+      "method": "计算幂级数的收敛半径和收敛域",
+      "notesPages": [
+        362
+      ],
+      "evidence": "笔记对缺项幂级数用x²换元或直接比值法，分别检查端点；指数形式例用比值极限e^(-x)。",
+      "changed": true,
+      "solution": "固定 \\(x\\)，记 \\(u_n=e^{-nx}/(n^2+1)>0\\)。按本节比值法，\n\\[\\frac{u_{n+1}}{u_n}=e^{-x}\\frac{n^2+1}{(n+1)^2+1}\\longrightarrow e^{-x}.\\]\n若 \\(x>0\\)，极限小于1，级数收敛；若 \\(x<0\\)，极限大于1，级数发散。\n在临界点 \\(x=0\\)，\n\\[\\sum_{n=1}^{\\infty}\\frac1{n^2+1}\\]\n与 \\(\\sum1/n^2\\) 作比较可知收敛。因此 \\(\\boxed{\\text{收敛域为 }[0,+\\infty)}\\)。\n这里原式不是关于 \\(x\\) 的普通幂级数，不能直接把 \\(x\\) 当作幂级数变量套半径公式。",
+      "verification": "与PDF362比值极限e^(-x)及端点单独检查一致。"
+    },
+    {
+      "topicId": "t172",
+      "questionId": "q-207-171-219",
+      "method": "拆分成两个幂级数",
+      "notesPages": [
+        364,
+        365
+      ],
+      "evidence": "笔记将[2+(-1)^n]^n的奇数项与偶数项拆开，分别得到半径1和1/3。",
+      "changed": true,
+      "solution": "原题系数是 \\([2+(-1)^n]^n/n\\)，外层的 \\(n\\) 次方不能漏掉。按本节拆成奇、偶两列幂级数：\n\\[S(x)=\\sum_{k=1}^{\\infty}\\frac{x^{2k-1}}{2k-1}+\\sum_{k=1}^{\\infty}\\frac{3^{2k}x^{2k}}{2k}.\\]\n第一个级数的绝对值相邻项比值趋于 \\(x^2\\)，半径为 \\(1\\)；第二个趋于 \\(9x^2\\)，半径为 \\(1/3\\)。两个半径不同，合并后的收敛半径是较小者 \\(R=1/3\\)。\n在 \\(x=\\pm1/3\\) 时，奇数项子级数绝对收敛，偶数项子级数却为\n\\[\\sum_{k=1}^{\\infty}\\frac1{2k},\\]\n故两个端点均发散。\\(|x|>1/3\\) 时偶数编号的一般项不趋于0。\n\\[\\boxed{\\text{收敛域为 }(-1/3,1/3).}\\]",
+      "verification": "修正旧解漏掉[2+(-1)^n]外层n次方的抄题错误及错误收敛域(-1,1)；PDF365明确奇偶拆分，半径1、1/3。 独立数值核验：odd/even coefficient equality at ±0.1,±0.3; radius 1/3 by even subsequence。"
+    },
+    {
+      "topicId": "t174",
+      "questionId": "q-208-373-424",
+      "method": "幂级数和函数：求导法",
+      "notesPages": [
+        369
+      ],
+      "evidence": "先把目标和函数除以x，逐项求导消去分母2n-1，得到1/(1+x²)，再积分还原。",
+      "changed": true,
+      "solution": "设\n\\[S(x)=\\sum_{n=1}^{\\infty}\\frac{(-1)^{n-1}x^{2n}}{2n-1}.\\]\n比值判别得收敛半径为1。按笔记先除以 \\(x\\)，令\n\\[T(x)=\\sum_{n=1}^{\\infty}\\frac{(-1)^{n-1}x^{2n-1}}{2n-1},\\qquad S(x)=xT(x).\\]\n在 \\(|x|<1\\) 内逐项求导消去分母：\n\\[T'(x)=\\sum_{n=1}^{\\infty}(-1)^{n-1}x^{2n-2}=\\frac1{1+x^2}.\\]\n又 \\(T(0)=0\\)，所以\n\\[T(x)=\\int_0^x\\frac{dt}{1+t^2}=\\arctan x,\\qquad\\boxed{S(x)=x\\arctan x}.\\]\n在 \\(x=\\pm1\\) 时原级数均为交错奇调和级数，收敛；由阿贝尔定理，端点和等于 \\(\\pi/4\\)，也与上述公式一致。因此收敛域为 \\(\\boxed{[-1,1]}\\)。",
+      "verification": "原解只引用arctan展开，未展示求导法；现按PDF369除x、求导、积分、乘x，并独立核对端点。 独立有限部分和与闭式在x=-0.6,-0.2,0,0.2,0.6比较，最大误差1.7e-16。"
+    },
+    {
+      "topicId": "t175",
+      "questionId": "q-210-316-369",
+      "method": "幂级数和函数：拆分法",
+      "notesPages": [
+        372
+      ],
+      "evidence": "笔记先拆成含1/(2n+1)的级数与几何级数；前者乘x后求导、积分。",
+      "changed": true,
+      "solution": "先拆开系数，设\n\\[A(x)=\\sum_{n=1}^{\\infty}\\frac{x^{2n}}{2n+1},\\qquad B(x)=\\sum_{n=1}^{\\infty}x^{2n}=\\frac{x^2}{1-x^2}.\\]\n原和为 \\(S=A-B\\)。为求 \\(A\\)，先乘 \\(x\\) 再在 \\(|x|<1\\) 内逐项求导：\n\\[(xA(x))'=\\sum_{n=1}^{\\infty}x^{2n}=\\frac{x^2}{1-x^2}=-1+\\frac1{1-x^2}.\\]\n由 \\(xA(x)\\) 在0处为0，从0积分得\n\\[xA(x)=-x+\\frac12\\ln\\frac{1+x}{1-x}.\\]\n因此\n\\[\\boxed{S(x)=\\frac1{2x}\\ln\\frac{1+x}{1-x}-\\frac1{1-x^2}},\\qquad0<|x|<1.\\]\n在 \\(x=0\\) 处原级数各项均为0，故补上 \\(S(0)=0\\)。",
+      "verification": "与PDF372拆分后处理分母的步骤一致；避免直接引用artanh而跳过所学操作；0点单列。 独立有限部分和与闭式在x=-0.6,-0.2,0,0.2,0.6比较，最大误差6.1e-16。"
+    },
+    {
+      "topicId": "t176",
+      "questionId": "q-212-378-429",
+      "method": "幂级数和函数：柯西乘积",
+      "notesPages": [
+        375
+      ],
+      "evidence": "笔记识别系数卷积，作Σkx^k与Σx^j/j的柯西乘积。",
+      "changed": true,
+      "solution": "把系数看成卷积：\n\\[\\sum_{k=1}^{n-1}\\frac{k}{n-k}=\\sum_{k=1}^{n-1}a_kb_{n-k},\\qquad a_k=k,\\ b_j=\\frac1j.\\]\n在 \\(|x|<1\\) 内两个级数绝对收敛，可用柯西乘积公式：\n\\[S(x)=\\left(\\sum_{k=1}^{\\infty}kx^k\\right)\\left(\\sum_{j=1}^{\\infty}\\frac{x^j}{j}\\right).\\]\n由几何级数逐项求导，以及逐项积分，分别有\n\\[\\sum_{k=1}^{\\infty}kx^k=\\frac{x}{(1-x)^2},\\qquad\\sum_{j=1}^{\\infty}\\frac{x^j}{j}=-\\ln(1-x).\\]\n故\n\\[\\boxed{S(x)=-\\frac{x\\ln(1-x)}{(1-x)^2}},\\qquad |x|<1.\\]\n若记原系数为 \\(c_n\\)，则 \\(c_n\\ge n-1\\)（取 \\(k=n-1\\) 项），所以在 \\(x=\\pm1\\) 及 \\(|x|>1\\) 处一般项都不趋于0。收敛域为 \\((-1,1)\\)。",
+      "verification": "原式卷积与PDF375一致；补明确c_n≥n-1，替换旧解关于端点“速度”的含混说法。 独立有限部分和与闭式在x=-0.6,-0.2,0,0.2,0.6比较，最大误差2.2e-15。"
+    },
+    {
+      "topicId": "t177",
+      "questionId": "q-213-118-168",
+      "method": "幂级数和函数：微分方程法",
+      "notesPages": [
+        377
+      ],
+      "evidence": "笔记设和为S，逐项求两次导数并移指标得到S二阶导数=1+S，建立微分方程。",
+      "changed": true,
+      "solution": "设\n\\[S(x)=\\sum_{n=1}^{\\infty}\\frac{x^{2n}}{(2n)!}.\\]\n比值判别说明收敛半径为无穷大。按笔记逐项求两次导数，再移动求和指标：\n\\[S''(x)=\\sum_{n=1}^{\\infty}\\frac{x^{2n-2}}{(2n-2)!}=1+\\sum_{n=1}^{\\infty}\\frac{x^{2n}}{(2n)!}=1+S(x).\\]\n于是和函数满足初值问题\n\\[S''-S=1,\\qquad S(0)=0,\\quad S'(0)=0.\\]\n微分方程通解为 \\(S=C_1e^x+C_2e^{-x}-1\\)。初值给出\n\\[C_1+C_2=1,\\qquad C_1-C_2=0,\\]\n所以\n\\[\\boxed{S(x)=\\frac{e^x+e^{-x}}2-1=\\cosh x-1},\\qquad x\\in\\mathbb R.\\]",
+      "verification": "已按PDF377实际建立并解微分方程；旧解直接引用cosh展开，与本节方法不符。 独立有限部分和与闭式在x=-0.6,-0.2,0,0.2,0.6比较，最大误差1.1e-16。"
+    },
+    {
+      "topicId": "t179",
+      "questionId": "q-216-326-368",
+      "method": "幂级数展开：利用常见展开式",
+      "notesPages": [
+        381
+      ],
+      "evidence": "将2x/(x³+2)改写为x/[1-(-x³/2)]，代入几何级数。",
+      "changed": false,
+      "solution": "写成几何级数：\\[\\frac{2x}{x^3+2}=\\frac{x}{1+x^3/2}=x\\sum_{n=0}^\\infty(-1)^n\\left(\\frac{x^3}{2}\\right)^n.\\]故\\[\\boxed{f(x)=\\sum_{n=0}^\\infty\\frac{(-1)^n}{2^n}x^{3n+1}},\\qquad |x|<\\sqrt[3]2.\\]在 \\(x=\\pm\\sqrt[3]2\\) 时一般项不趋于零，故收敛区间为开区间。",
+      "verification": "已目视原题和对应笔记；原解的关键步骤与本节方法一致，复核公式及适用条件。 独立有限部分和与闭式在x=-0.6,-0.2,0,0.2,0.6比较，最大误差2.8e-17。"
+    },
+    {
+      "topicId": "t180",
+      "questionId": "q-217-600-645",
+      "method": "幂级数展开：先展开导函数",
+      "notesPages": [
+        384,
+        385
+      ],
+      "evidence": "笔记先展开arctan的导函数1/(1+x²)，从0积分；ln(1+x²)用常见展开。这里两部分统一由导函数展开积分。",
+      "changed": false,
+      "solution": "函数在 \\(0\\) 处为零，且\\[f'(x)=\\frac{2x}{1+x^2}+\\frac1{1+x^2}=(1+2x)\\sum_{n=0}^\\infty(-1)^nx^{2n},\\qquad |x|<1.\\]从 \\(0\\) 到 \\(x\\) 逐项积分：\\[\\boxed{f(x)=\\sum_{n=0}^\\infty(-1)^n\\frac{x^{2n+1}}{2n+1}+\\sum_{n=0}^\\infty(-1)^n\\frac{x^{2n+2}}{n+1}}.\\]在 \\(x=\\pm1\\) 两个级数仍收敛，故实收敛区间为 \\(\\boxed{[-1,1]}\\)。",
+      "verification": "已目视原题和对应笔记；原解的关键步骤与本节方法一致，复核公式及适用条件。 独立有限部分和与闭式在x=-0.6,-0.2,0,0.2,0.6比较，最大误差3.3e-16。"
+    },
+    {
+      "topicId": "t181",
+      "questionId": "q-219-111-156",
+      "method": "幂级数展开：先展开原函数",
+      "notesPages": [
+        386
+      ],
+      "evidence": "先找到原函数1/(1-x²)，展开成几何级数，再逐项求导。",
+      "changed": false,
+      "solution": "因为\\[\\frac{d}{dx}\\frac1{1-x^2}=\\frac{2x}{(1-x^2)^2},\\]而 \\(1/(1-x^2)=\\sum_{n=0}^\\infty x^{2n}\\)，逐项求导得\\[\\boxed{\\frac{2x}{(1-x^2)^2}=\\sum_{n=1}^\\infty2n x^{2n-1}},\\qquad |x|<1.\\]",
+      "verification": "已目视原题和对应笔记；原解的关键步骤与本节方法一致，复核公式及适用条件。 独立有限部分和与闭式在x=-0.6,-0.2,0,0.2,0.6比较，最大误差4.4e-16。"
+    },
+    {
+      "topicId": "t182",
+      "questionId": "q-220-32-80",
+      "method": "幂级数展开：计算高阶导数",
+      "notesPages": [
+        387
+      ],
+      "evidence": "部分分式分解后计算各项的n阶导数在0处的值，再写Taylor系数。",
+      "changed": true,
+      "solution": "按本节通过高阶导数计算Taylor系数。先部分分式分解：\n\\[f(x)=\\frac{x+3}{(x-2)(x+1)}=\\frac5{3(x-2)}-\\frac2{3(x+1)}.\\]\n由\n\\[\\frac{d^n}{dx^n}\\frac1{x-a}=\\frac{(-1)^n n!}{(x-a)^{n+1}},\\]\n得到\n\\[f^{(n)}(0)=-\\frac{5n!}{3\\cdot2^{n+1}}-\\frac{2(-1)^n n!}{3}.\\]\n因此\n\\[\\boxed{f(x)=\\sum_{n=0}^{\\infty}\\left[-\\frac5{6\\cdot2^n}-\\frac23(-1)^n\\right]x^n},\\qquad |x|<1.\\]\n这里系数是 \\(f^{(n)}(0)/n!\\)。两个分式的Taylor级数分别在 \\(|x|<2\\)、\\(|x|<1\\) 收敛于原函数，所以共同收敛区间为 \\((-1,1)\\)；端点通项不趋于0。",
+      "verification": "系数结果与旧解相同，但已替换为PDF387要求的n阶导数法；复核n=0给f(0)=-3/2。 独立有限部分和与闭式在x=-0.6,-0.2,0,0.2,0.6比较，最大误差6.7e-16。"
+    },
+    {
+      "topicId": "t183",
+      "questionId": "q-220-450-487",
+      "method": "幂级数展开：欧拉公式（了解）",
+      "notesPages": [
+        388
+      ],
+      "evidence": "笔记用Euler公式化成两个复指数再展开；其排印漏写n!，需保留正确阶乘。",
+      "changed": true,
+      "solution": "由欧拉公式 \\(\\cos x=(e^{ix}+e^{-ix})/2\\)，\n\\[e^x\\cos x=\\frac12\\left(e^{(1+i)x}+e^{(1-i)x}\\right).\\]\n将指数函数展开并保留阶乘：\n\\[e^x\\cos x=\\frac12\\sum_{n=0}^{\\infty}\\frac{(1+i)^n+(1-i)^n}{n!}x^n.\\]\n因 \\(1\\pm i=\\sqrt2e^{\\pm i\\pi/4}\\)，\n\\[(1+i)^n+(1-i)^n=2(\\sqrt2)^n\\cos\\frac{n\\pi}{4}.\\]\n所以\n\\[\\boxed{e^x\\cos x=\\sum_{n=0}^{\\infty}\\frac{(\\sqrt2)^n\\cos(n\\pi/4)}{n!}x^n},\\qquad x\\in\\mathbb R.\\]\n笔记 PDF 第388页的指数展开及最终排印式漏写了 \\(1/n!\\)，这里已校正。",
+      "verification": "保留Euler方法并纠正笔记排印，明确错在笔记展开式而非当前题图（题图只有题干）。 独立有限部分和与闭式在x=-0.6,-0.2,0,0.2,0.6比较，最大误差4.4e-16。"
+    },
+    {
+      "topicId": "t184",
+      "questionId": "q-222-43-105",
+      "method": "傅里叶级数",
+      "notesPages": [
+        391,
+        392
+      ],
+      "evidence": "Q162由奇偶延拓计算正弦/余弦系数；Q163比较平移sqrt(3)前后的傅里叶系数，用非零行列式推出所有非常数系数为0。",
+      "changed": false,
+      "solution": "作奇延拓得到正弦级数。其系数为\\[b_n=\\frac2\\pi\\int_0^\\pi f(x)\\sin nx\\,dx=\\frac2\\pi\\int_0^{\\pi/2}\\cos x\\sin nx\\,dx.\\]其中 \\(b_1=1/\\pi\\)；对 \\(n\\ge2\\)，积化和差得\\[\\boxed{b_n=\\frac1\\pi\\left[\\frac{1-\\cos((n+1)\\pi/2)}{n+1}+\\frac{1-\\cos((n-1)\\pi/2)}{n-1}\\right]}.\\]故正弦展开为 \\(f(x)\\sim\\sum_{n=1}^\\infty b_n\\sin nx\\)。作偶延拓得到余弦级数。\\[a_0=\\frac2\\pi\\int_0^{\\pi/2}\\cos x\\,dx=\\frac2\\pi,\\qquad a_n=\\frac2\\pi\\int_0^{\\pi/2}\\cos x\\cos nx\\,dx.\\]计算得 \\(a_1=1/2\\)，\\(a_{2m+1}=0\\ (m\\ge1)\\)，以及\\[a_{2m}=\\frac{2(-1)^{m-1}}{\\pi(4m^2-1)}.\\]故余弦展开为\\[\\boxed{f(x)\\sim\\frac1\\pi+\\frac12\\cos x+\\sum_{m=1}^\\infty\\frac{2(-1)^{m-1}}{\\pi(4m^2-1)}\\cos2mx}.\\]在延拓函数的连续点级数等于函数值，在跳跃点等于左右极限的平均值。",
+      "verification": "已目视原题和对应笔记；原解的关键步骤与本节方法一致，复核公式及适用条件。 独立数值核验：n=1..9 sine/cosine coefficients independently integrated with Simpson rule。"
+    },
+    {
+      "topicId": "t184",
+      "questionId": "q-223-34-103",
+      "method": "傅里叶级数：平移后的系数比较",
+      "notesPages": [
+        394
+      ],
+      "evidence": "Q162由奇偶延拓计算正弦/余弦系数；Q163比较平移sqrt(3)前后的傅里叶系数，用非零行列式推出所有非常数系数为0。",
+      "changed": true,
+      "solution": "本题要求用傅里叶级数理论。因 \\(f(x+2)=f(x)\\)，取周期2，记其傅里叶系数为\n\\[a_n=\\int_{-1}^{1}f(x)\\cos(n\\pi x)\\,dx,\\quad b_n=\\int_{-1}^{1}f(x)\\sin(n\\pi x)\\,dx.\\]\n对每个 \\(n\\ge1\\)，令 \\(\\theta=n\\pi\\sqrt3\\)。把 \\(f(x+\\sqrt3)\\) 的系数通过变量代换与三角加法公式写出；由于被积函数周期为2，平移后的长度2积分区间可移回 \\([-1,1]\\)。又 \\(f(x+\\sqrt3)=f(x)\\)，故\n\\[\\begin{cases}a_n=a_n\\cos\\theta+b_n\\sin\\theta,\\\\ b_n=-a_n\\sin\\theta+b_n\\cos\\theta.\\end{cases}\\]\n这个齐次线性方程组的行列式是\n\\[(\\cos\\theta-1)^2+\\sin^2\\theta=2(1-\\cos\\theta)>0.\\]\n严格大于0是因为 \\(\\cos(n\\pi\\sqrt3)=1\\) 会推出 \\(n\\sqrt3=2k\\)，与 \\(\\sqrt3\\) 无理矛盾。所以全部 \\(n\\ge1\\) 的 \\(a_n=b_n=0\\)。\n由连续周期函数的傅里叶系数唯一性，\\(f-a_0/2\\) 的所有傅里叶系数均为0，必恒为0。因此 \\(\\boxed{f(x)\\equiv a_0/2\\text{，为常数函数}}\\)。\n这里直接比较的是积分定义的系数，不需要未经证明地交换无穷级数的极限或逐项平移。",
+      "verification": "旧解使用无理周期稠密性，违背题干明确要求的傅里叶理论；现按PDF394比较平移前后系数与行列式，使用连续函数傅里叶唯一性保证严谨。"
+    },
+    {
+      "topicId": "t186",
+      "questionId": "q-225-91-136",
+      "method": "构造函数利用函数单调性",
+      "notesPages": [
+        396
+      ],
+      "evidence": "构造原式两边之差，求导为ln(x+sqrt(1+x²))，用零点两侧单调性判断最小值。",
+      "changed": false,
+      "solution": "令 \\(F(x)=1+x\\ln(x+\\sqrt{1+x^2})-\\sqrt{1+x^2}\\)。由 \\(\\ln(x+\\sqrt{1+x^2})=\\operatorname{arsinh}x\\)，故 \\(F'(x)=\\operatorname{arsinh}x\\)。于是 \\(F\\) 在 \\(( -\\infty,0]\\) 上递减、在 \\([0,\\infty)\\) 上递增，而 \\(F(0)=0\\)。所以 \\(F(x)\\ge0\\)，即原不等式成立，等号仅在 \\(x=0\\) 时成立。",
+      "verification": "已目视原题和对应笔记；原解的关键步骤与本节方法一致，复核公式及适用条件。"
+    },
+    {
+      "topicId": "t187",
+      "questionId": "q-225-367-410",
+      "method": "单调性证明：先变形再构造",
+      "notesPages": [
+        396
+      ],
+      "evidence": "先乘正分母arcsin x再移项，构造差函数，求导后两项抵消。",
+      "changed": false,
+      "solution": "移项令\n\\[F(x)=\\ln(1+x)-\\arcsin x\\sqrt{\\frac{1-x}{1+x}},\\qquad0<x<1.\\]\n设 \\(g(x)=\\sqrt{(1-x)/(1+x)}\\)，则 \\(g'=-g/(1-x^2)\\)，且 \\(g/\\sqrt{1-x^2}=1/(1+x)\\)。因此\n\\[F'(x)=\\frac1{1+x}-\\frac{g}{\\sqrt{1-x^2}}-\\arcsin x\\,g'=\\frac{\\arcsin x}{1-x^2}g>0.\\]\n又 \\(F(0)=0\\)，故 \\(F(x)>0\\)。两边除以正数 \\(\\arcsin x\\)，即得题设不等式。",
+      "verification": "已目视原题和对应笔记；原解的关键步骤与本节方法一致，复核公式及适用条件。"
+    },
+    {
+      "topicId": "t188",
+      "questionId": "q-226-542-578",
+      "method": "单调性证明：常数变量化",
+      "notesPages": [
+        399
+      ],
+      "evidence": "固定x₂，把x₁变量化构造f(x+x₂)-f(x)-f(x₂)，由f′递减得构造函数递减。",
+      "changed": false,
+      "solution": "固定 \\(x_2>0\\)，令 \\(G(x)=f(x+x_2)-f(x)\\)。由于 \\(f''<0\\)，导数 \\(f'\\) 严格递减，所以\n\\[G'(x)=f'(x+x_2)-f'(x)<0.\\]\n因此 \\(G(x_1)<G(0)=f(x_2)-f(0)=f(x_2)\\)，即 \\[\\boxed{f(x_1+x_2)<f(x_1)+f(x_2)}.\\]",
+      "verification": "已目视原题和对应笔记；原解的关键步骤与本节方法一致，复核公式及适用条件。"
+    },
+    {
+      "topicId": "t189",
+      "questionId": "q-228-33-82",
+      "method": "单调性证明：常数分离",
+      "notesPages": [
+        402
+      ],
+      "evidence": "取对数后把sin x、cos x分离为同一函数ln t/t的两个自变量，比较其单调性。",
+      "changed": false,
+      "solution": "取对数并除以正数 \\(\\sin x\\cos x\\)，原式等价于\n\\[\\frac{\\ln(\\sin x)}{\\sin x}<\\frac{\\ln(\\cos x)}{\\cos x}.\\]\n函数 \\(q(t)=\\ln t/t\\) 在 \\(0<t<1\\) 上满足 \\(q'(t)=(1-\\ln t)/t^2>0\\)。又 \\(0<\\sin x<\\cos x<1\\)，故上式成立。",
+      "verification": "已目视原题和对应笔记；原解的关键步骤与本节方法一致，复核公式及适用条件。"
+    },
+    {
+      "topicId": "t190",
+      "questionId": "q-230-52-91",
+      "method": "单调性证明：转化为最值",
+      "notesPages": [
+        406
+      ],
+      "evidence": "把问题转成H=1/x²-cot²x的端点最值，另造x-sin x/(cos x)^(1/3)证明H递减。",
+      "changed": true,
+      "solution": "按本节把不等式化为函数端点最值问题。令\n\\[H(x)=\\frac1{x^2}-\\cot^2x,\\qquad0<x<\\frac\\pi2.\\]\n求导得\n\\[H'(x)=\\frac{2(x^3\\cos x-\\sin^3x)}{x^3\\sin^3x}.\\]\n为判定符号，照笔记构造 \\(g(x)=x-\\sin x/(\\cos x)^{1/3}\\)。令 \\(u=(\\cos x)^{2/3}\\in(0,1)\\)，则\n\\[g'(x)=1-\\frac{1+2\\cos^2x}{3(\\cos x)^{4/3}}=-\\frac{(u-1)^2(2u+1)}{3u^2}<0.\\]\n又 \\(g(0)=0\\)，因此 \\(x<\\sin x/(\\cos x)^{1/3}\\)，即 \\(x^3\\cos x<\\sin^3x\\)，故 \\(H'<0\\)。\n最后由 \\(\\tan x=x+x^3/3+o(x^3)\\) 得\n\\[\\lim_{x\\to0^+}H(x)=\\frac23,\\qquad H(\\pi/2)=\\frac4{\\pi^2}.\\]\n严格递减性给出\n\\[\\boxed{\\frac4{\\pi^2}<\\frac1{x^2}-\\frac1{\\tan^2x}<\\frac23}.\\]",
+      "verification": "与PDF406的辅助函数相同；将复杂手写因式分解规范为(u-1)²(2u+1)，独立求导复核符号和两个端点极限。 独立数值核验：auxiliary derivative factorization at 0.1,0.5,1.0,1.5。"
+    },
+    {
+      "topicId": "t191",
+      "questionId": "q-231-54-97",
+      "method": "巧用拉格朗日中值定理解不等式",
+      "notesPages": [
+        407
+      ],
+      "evidence": "对ln x用拉格朗日中值定理，将差商写为1/ξ，再用a<ξ<b放缩。",
+      "changed": false,
+      "solution": "由拉格朗日中值定理，存在 \\(\\xi\\in(a,b)\\) 使\n\\[\\frac{\\ln b-\\ln a}{b-a}=\\frac1\\xi.\\]\n又 \\(\\xi<b<(a^2+b^2)/(2a)\\)，后一严格不等式等价于 \\((b-a)^2>0\\)。取倒数即得 \\(1/\\xi>2a/(a^2+b^2)\\)。",
+      "verification": "已目视原题和对应笔记；原解的关键步骤与本节方法一致，复核公式及适用条件。"
+    },
+    {
+      "topicId": "t192",
+      "questionId": "q-233-35-86",
+      "method": "利用泰勒展开解具体不等式",
+      "notesPages": [
+        410
+      ],
+      "evidence": "构造两边之差F，F(0)=F′(0)=0，证明F″非负，使用含拉格朗日余项的二阶Taylor公式。",
+      "changed": true,
+      "solution": "按笔记构造两边之差\n\\[F(x)=x\\ln\\frac{1+x}{1-x}+\\cos x-1-\\frac{x^2}{2},\\qquad-1<x<1.\\]\n有 \\(F(0)=F'(0)=0\\)。计算二阶导数：\n\\[F''(x)=\\frac2{1-x^2}+\\frac{2(1+x^2)}{(1-x^2)^2}-\\cos x-1=\\frac4{(1-x^2)^2}-\\cos x-1\\ge2>0.\\]\n对任意 \\(x\\ne0\\)，在0处使用带拉格朗日余项的二阶Taylor公式，存在介于0与 \\(x\\) 之间的 \\(\\xi\\) 使\n\\[F(x)=F(0)+xF'(0)+\\frac{x^2}{2}F''(\\xi)=\\frac{x^2}{2}F''(\\xi)>0.\\]\n\\(x=0\\) 时取等号，所以\n\\[\\boxed{x\\ln\\frac{1+x}{1-x}+\\cos x\\ge1+\\frac{x^2}{2}},\\]\n且仅在 \\(x=0\\) 时等号成立。",
+      "verification": "按PDF410真正使用Taylor中值余项，不再用其他现成不等式替代；独立求导得到F″=4/(1-x²)²-cos x-1。"
+    },
+    {
+      "topicId": "t193",
+      "questionId": "q-234-537-568",
+      "method": "中值问题的构造方法在不等式中的应用",
+      "notesPages": [
+        412
+      ],
+      "evidence": "看到f′-f，乘积分因子e^(-x)，在[x,+∞)上积分并使用有界性消去边界。",
+      "changed": true,
+      "solution": "看到条件中的 \\(f'-f\\)，按笔记乘以积分因子 \\(e^{-x}\\)，令\n\\[h(x)=e^{-x}f(x),\\qquad h'(x)=e^{-x}[f'(x)-f(x)].\\]\n于是 \\(|h'(x)|\\le e^{-x}\\)。题设 \\(f\\) 有界，故 \\(h(t)=e^{-t}f(t)\\to0\\) 当 \\(t\\to+\\infty\\)。对固定 \\(x\\) 积分，得到\n\\[h(x)=-\\int_x^{\\infty}h'(t)\\,dt,\\qquad |h(x)|\\le\\int_x^{\\infty}e^{-t}\\,dt=e^{-x}.\\]\n乘以正数 \\(e^x\\)，即得 \\(\\boxed{|f(x)|\\le1}\\)。",
+      "verification": "PDF412手写将有界性标在f上；采用f有界直接消去无穷边界，避免旧解未经说明称f′有界。"
+    },
+    {
+      "topicId": "t196",
+      "questionId": "q-237-147-207",
+      "method": "先消去积分符号后展开",
+      "notesPages": [
+        416
+      ],
+      "evidence": "令F(x)=∫_a^x f消去积分，利用F(a)=0与F′(a)=F′(b)=0，在两端Taylor展开并按F(b)符号分类。",
+      "changed": true,
+      "solution": "按本节先令\n\\[F(x)=\\int_a^x f(t)\\,dt,\\qquad A=F(b),\\qquad L=b-a>0.\\]\n则 \\(F(a)=0\\)、\\(F'(a)=F'(b)=0\\)，且 \\(F''=f'\\) 连续，待证存在 \\(\\xi\\) 使 \\(F''(\\xi)>A/L^2\\)。\n\n若 \\(A>0\\)，在 \\(a\\) 处作二阶Taylor展开：\n\\[F(b)=F(a)+LF'(a)+\\frac{L^2}{2}F''(\\xi)=\\frac{L^2}{2}F''(\\xi),\\]\n故 \\(f'(\\xi)=2A/L^2>A/L^2\\)。\n\n若 \\(A<0\\)，改在 \\(b\\) 处展开至 \\(a\\)：\n\\[F(a)=F(b)-LF'(b)+\\frac{L^2}{2}F''(\\xi),\\]\n故 \\(f'(\\xi)=-2A/L^2>0>A/L^2\\)。\n\n若 \\(A=0\\)，利用 \\(f\\not\\equiv0\\) 取 \\(c\\in(a,b)\\) 使 \\(f(c)\\ne0\\)。若 \\(f(c)>0\\)，对 \\([a,c]\\) 用中值定理得某点 \\(f'>0\\)；若 \\(f(c)<0\\)，对 \\([c,b]\\) 用中值定理仍得某点 \\(f'>0\\)。两种情形均有 \\(f'(\\xi)>0=A/L^2\\)。结论成立。",
+      "verification": "按PDF416消积分后Taylor展开，并完整处理积分A正、负、零三种情形；旧解最大值法不符合本节。"
+    },
+    {
+      "topicId": "t197",
+      "questionId": "q-238-353-408",
+      "method": "先展开后积分",
+      "notesPages": [
+        417
+      ],
+      "evidence": "在任意x处把f(c)作Taylor展开，用f″≤0放去余项，再对x积分，分部积分处理(c-x)f′。",
+      "changed": true,
+      "solution": "设 \\(M=f(c)=\\max_{x\\in[a,b]}f(x)\\)，其中 \\(c\\in[a,b]\\)。本节的关键是：先在任意点 \\(x\\) 展开 \\(f(c)\\)，再对 \\(x\\) 积分。\n由Taylor中值公式及 \\(f''\\le0\\)，\n\\[f(c)=f(x)+(c-x)f'(x)+\\frac{(c-x)^2}{2}f''(\\xi_x)\\le f(x)+(c-x)f'(x).\\]\n将这个不等式在 \\([a,b]\\) 上积分，并对第二项分部积分：\n\\[\\begin{aligned}(b-a)M&\\le\\int_a^bf(x)\\,dx+\\int_a^b(c-x)f'(x)\\,dx\\\\&=2\\int_a^bf(x)\\,dx+(c-b)f(b)-(c-a)f(a)\\\\&\\le2\\int_a^bf(x)\\,dx.\\end{aligned}\\]\n最后一步用到了 \\(a\\le c\\le b\\) 和 \\(f(a),f(b)\\ge0\\)。所以\n\\[\\boxed{\\max_{[a,b]}f\\le\\frac2{b-a}\\int_a^bf(x)\\,dx}.\\]\n\\(c\\) 是端点时证明同样有效，不必预设 \\(f'(c)=0\\)。",
+      "verification": "与PDF417先展开f(c)再积分完全一致；补足端点最大值情形，避开旧解纯凹性几何论证。"
+    },
+    {
+      "topicId": "t198",
+      "questionId": "q-240-63-122",
+      "method": "利用函数单调性",
+      "notesPages": [
+        420
+      ],
+      "evidence": "常数a变量化，先证明2∫f-f²递增，再证明(∫f)²-∫f³递增。",
+      "changed": true,
+      "solution": "按笔记把上限 \\(a\\) 变量化。因 \\(f(0)=0\\)、\\(f'>0\\)，在 \\(0<t<1\\) 上 \\(f(t)>0\\)。先构造\n\\[H(t)=2\\int_0^t f(x)\\,dx-f(t)^2.\\]\n则 \\(H(0)=0\\)，且\n\\[H'(t)=2f(t)[1-f'(t)]>0,\\]\n所以 \\(H(t)>0\\)。再构造\n\\[G(t)=\\left(\\int_0^t f(x)\\,dx\\right)^2-\\int_0^t f(x)^3\\,dx.\\]\n有 \\(G(0)=0\\)，且\n\\[G'(t)=f(t)\\left[2\\int_0^t f(x)\\,dx-f(t)^2\\right]=f(t)H(t)>0.\\]\n因此对 \\(a\\in(0,1)\\)，\\(G(a)>0\\)，即\n\\[\\boxed{\\left(\\int_0^a f(x)\\,dx\\right)^2>\\int_0^a f(x)^3\\,dx}.\\]",
+      "verification": "修正旧解末尾把上限a写成a²；按PDF420连续两次构造单调函数，不额外假定f′连续或Riemann可积。"
+    },
+    {
+      "topicId": "t199",
+      "questionId": "q-241-411-462",
+      "method": "区间拆分与合并",
+      "notesPages": [
+        422
+      ],
+      "evidence": "在π/4拆区间，右半区以x=π/2-t换元合并为同一区间上两个非负因子的积分。",
+      "changed": false,
+      "solution": "两边相减并在 \\(\\pi/4\\) 处分段。第二段令 \\(x=\\pi/2-t\\)，得到差值\n\\[\\int_0^{\\pi/4}(\\cos t-\\sin t)\\left[\\frac1{1+t^2}-\\frac1{1+(\\pi/2-t)^2}\\right]dt.\\]\n在 \\(0\\le t\\le\\pi/4\\) 上两个方括号内因子均非负，故差值非负，原不等式成立。",
+      "verification": "已目视原题和对应笔记；原解的关键步骤与本节方法一致，复核公式及适用条件。"
+    },
+    {
+      "topicId": "t200",
+      "questionId": "q-242-283-327",
+      "method": "分段放缩提高精度",
+      "notesPages": [
+        424
+      ],
+      "evidence": "分别由左、右端点得到Mx与M(1-x)，在1/2处分段取较紧的界。",
+      "changed": true,
+      "solution": "由左端点 \\(f(0)=0\\)，中值定理给出 \\(|f(x)|\\le Mx\\)；由右端点 \\(f(1)=0\\)，同理 \\(|f(x)|\\le M(1-x)\\)。\n在左半区间选前一个界，在右半区间选后一个界，才能得到更紧的常数：\n\\[\\begin{aligned}\\int_0^1|f(x)|\\,dx&=\\int_0^{1/2}|f(x)|\\,dx+\\int_{1/2}^1|f(x)|\\,dx\\\\&\\le M\\int_0^{1/2}x\\,dx+M\\int_{1/2}^1(1-x)\\,dx\\\\&=\\frac M8+\\frac M8=\\boxed{\\frac M4}.\\end{aligned}\\]",
+      "verification": "与PDF424分段放缩一致，补出1/2处分段与两项各M/8，不以min记号省略本节步骤。"
+    },
+    {
+      "topicId": "t201",
+      "questionId": "q-244-86-132",
+      "method": "利用牛顿莱布尼茨公式",
+      "notesPages": [
+        427
+      ],
+      "evidence": "从零点c积分f′，取绝对值后先用整个区间积分作统一上界，再对x积分。",
+      "changed": true,
+      "solution": "设 \\(c\\in[0,1]\\) 为题设保证的零点。由牛顿-莱布尼茨公式，\n\\[f(x)=f(x)-f(c)=\\int_c^x f'(t)\\,dt.\\]\n取绝对值并将积分区间扩大至 \\([0,1]\\)：\n\\[|f(x)|\\le\\int_{\\min(c,x)}^{\\max(c,x)}|f'(t)|\\,dt\\le\\int_0^1|f'(t)|\\,dt.\\]\n右端与 \\(x\\) 无关，再在 \\([0,1]\\) 上对 \\(x\\) 积分，得到\n\\[\\boxed{\\int_0^1|f(x)|\\,dx\\le\\int_0^1|f'(x)|\\,dx}.\\]",
+      "verification": "按PDF427直接整区间估计后积分，不需要旧解交换积分次序的额外步骤。"
+    },
+    {
+      "topicId": "t202",
+      "questionId": "q-245-186-234",
+      "method": "利用分部积分公式",
+      "notesPages": [
+        428
+      ],
+      "evidence": "笔记分部积分引入权函数x+A，取A=-1/2使绝对值积分最小，得到1/4。",
+      "changed": true,
+      "solution": "令 \\(M=\\max_{x\\in[0,1]}|f'(x)|\\)。按本节分部积分，选择权函数 \\(p(x)=x-1/2\\)，利用两端 \\(f=0\\)：\n\\[\\int_0^1f(x)\\,dx=\\left[(x-\\tfrac12)f(x)\\right]_0^1-\\int_0^1(x-\\tfrac12)f'(x)\\,dx=-\\int_0^1(x-\\tfrac12)f'(x)\\,dx.\\]\n故\n\\[\\left|\\int_0^1f(x)\\,dx\\right|\\le M\\int_0^1|x-\\tfrac12|\\,dx=M\\left(\\frac18+\\frac18\\right)=\\boxed{\\frac M4}.\\]\n权函数中的常数选 \\(-1/2\\)，正是把左右两段的绝对值积分压到 \\(1/4\\)。",
+      "verification": "与PDF428权函数x+A、A=-1/2对应，保持题设[0,1]而不先改写为一般区间。"
+    },
+    {
+      "topicId": "t203",
+      "questionId": "q-247-121-176",
+      "method": "转化成二重积分",
+      "notesPages": [
+        430
+      ],
+      "evidence": "乘积转二重积分，再用三角恒等式得到1-cos(x-y)，以(x-y)²/2放缩。",
+      "changed": false,
+      "solution": "把三个平方写成二重积分：\n\\[E=\\left(\\int_0^1f\\right)^2-\\left(\\int_0^1f\\cos x\\right)^2-\\left(\\int_0^1f\\sin x\\right)^2=\\iint_{[0,1]^2}f(x)f(y)[1-\\cos(x-y)]dxdy.\\]\n因 \\(f\\ge0\\)，故 \\(E\\ge0\\)。又 \\(1-\\cos u\\le u^2/2\\) 且 \\(f(x)f(y)\\le M^2\\)，所以\n\\[E\\le\\frac{M^2}{2}\\iint_{[0,1]^2}(x-y)^2dxdy=\\boxed{\\frac{M^2}{12}}.\\]",
+      "verification": "已目视原题和对应笔记；原解的关键步骤与本节方法一致，复核公式及适用条件。"
+    },
+    {
+      "topicId": "t204",
+      "questionId": "q-248-300-344",
+      "method": "换元法的应用",
+      "notesPages": [
+        433
+      ],
+      "evidence": "用反函数x=φ(u)换元，0<φ′≤1/m，再按sin u符号分段，利用异号两项和的绝对值不大于较大者。",
+      "changed": false,
+      "solution": "因 \\(f'\\ge m>0\\)，\\(f\\) 严格递增，可令 \\(u=f(x)\\)。虽然 \\(1/f'\\) 未必单调，但它非负且不超过 \\(1/m\\)。将 \\([f(a),f(b)]\\subset[-\\pi,\\pi]\\) 按 \\(\\sin u\\) 的正负分段：正部分积分至多 \\(m^{-1}\\int_0^\\pi\\sin udu=2/m\\)，负部分绝对值也至多 \\(2/m\\)。两部分符号相反，故总和的绝对值不超过较大者，即\n\\[\\boxed{\\left|\\int_a^b\\sin f(x)dx\\right|\\le\\frac2m}.\\]",
+      "verification": "已目视原题和对应笔记；原解的关键步骤与本节方法一致，复核公式及适用条件。"
+    }
+  ]
+}

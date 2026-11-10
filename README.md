@@ -169,6 +169,10 @@ updatedAt: "2026-09-02T08:00:00.000Z"
 同步更新离线包。练习记录继续使用 `yeyu-knowledge-practice-v1` 键和版本 1 的 JSON 格式，
 用户可以从原文件导出，再导入博客版。讲义 PDF 本体未包含在发布内容中，出处页码予以保留。
 
+CMC 解析按“小节 ID + 题目 ID”保存于 `question.answers[topicId]`，同题可以在不同小节使用不同方法，学习记录仍按原题 ID 共用。194 个解析入口已与用户提供的《第二代竞赛笔记合集 有封面版.pdf》核对，每份显示方法及从封面起算的 PDF 页码；原题与笔记条件有差异时单独说明。
+
+解析可编辑源码：`scripts/tutorials/yeyu/aligned-solutions.json`，保留具体笔记依据与核验说明。修改后用装有 PyMuPDF/Pillow 的 Python 运行 `scripts/tutorials/yeyu/align-answers.py`，需要 Tectonic 与 PingFang SC 字体。它复用未变的解答图片，只排版改动项，并从同一网页生成内嵌图片的离线 ZIP。普通 `npm run build` 使用已提交的 HTML/图片，无需安装上述排版依赖。`test/yeyu-alignment.test.mjs` 检查完整覆盖、共用题的不同方法映射及原题/记录兼容。
+
 
 4bit 教程为内嵌 CSS/JS 的独立 HTML，页面可直接下载离线使用。数值核心同样内嵌在页面中，`test/quantization-tutorial.test.mjs` 读取该实际实现，核对原视频算例、裁剪与舍入、误差传播、分组、补偿和元数据开销。正文的来源章节区分片中算例与补充实验；不包含视频媒体、字幕全文或真实模型评测。
 
