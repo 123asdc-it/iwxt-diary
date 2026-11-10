@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#f3f6fa" />
+    <meta
+      name="description"
+      content="舟行见微 · 岸堤巡检工作台，浅色方案 A 预览。"
+    />
+    <title>舟行见微 · 岸堤巡检工作台</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23eaf2ff'/%3E%3Cpath d='M8 25L20 10l12 15-12 6z' fill='%232466df'/%3E%3C/svg%3E"
+    />
+
+    <link rel="stylesheet" href="light.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳至主要内容</a>
+    <header class="site-header">
+      <a class="brand" href="#tasks" aria-label="舟行见微首页"
+        ><svg viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M7 22h26l-6 8H14zM18 7v14m0-12 12 11H18" />
+          <path d="M4 33q5-4 10 0t10 0t12 0" /></svg
+        ><span>舟行见微<small>岸堤巡检工作台</small></span></a
+      >
+      <nav aria-label="主导航" id="navigation"></nav>
+      <div class="header-actions">
+        <span class="edition">浅色预览版</span
+        ><a href="https://iwxt.cn/" class="blog-return">↗ 返回博客</a>
+      </div>
+    </header>
+    <div class="app">
+      <span id="breadcrumb" hidden>巡检监控</span>
+      <main id="main" tabindex="-1"></main>
+      <footer>
+        <span>舟行见微 · 近岸设施巡检平台</span
+        ><span>答辩演示 · 视频与点云为复用素材</span>
+      </footer>
+    </div>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <dialog id="previewDialog">
+      <div class="dialog-head">
+        <strong id="dialogTitle">文件预览</strong
+        ><button class="icon-button" id="closeDialog" aria-label="关闭预览">
+          ✕
+        </button>
+      </div>
+      <div id="dialogBody"></div>
+    </dialog>
+    <script src="tasks.js"></script>
+    <script src="cloud.js"></script>
+    <script src="app.js"></script>
+    <script src="archive-ui.js"></script>
+    <script>
+      render();
+    </script>
+  </body>
+</html>
