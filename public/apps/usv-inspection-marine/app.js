@@ -319,7 +319,7 @@ function selectDefect(i) {
     mode = "replay";
     demo = true;
     offline = false;
-    location.hash = "monitor";
+    navigate("monitor");
   };
 }
 function bindModel() {
@@ -374,7 +374,7 @@ function bind() {
       const f = new FormData(e.target);
       if (f.get("account") === "demo" && f.get("password") === "123456") {
         sessionStorage.setItem("shore-login", "yes");
-        location.hash = "tasks";
+        navigate("tasks");
       } else
         $("#loginError").textContent = "账号或密码不正确，请使用下方演示账号。";
     };
@@ -386,14 +386,14 @@ function bind() {
           sessionStorage.setItem("shore-task", task.id);
           offline = false;
           demo = true;
-          location.hash = b.dataset.target;
+          navigate(b.dataset.target);
         }),
     );
     $("#logout").onclick = () => {
       sessionStorage.removeItem("shore-login");
       sessionStorage.removeItem("shore-task");
       task = null;
-      location.hash = "login";
+      navigate("login");
     };
   }
   if (current === "monitor") bindMonitor();
@@ -423,6 +423,10 @@ function bind() {
     );
   }
 }
+function navigate(page) {
+  if (location.hash !== `#${page}`) history.pushState(null, "", `#${page}`);
+  render();
+}
 function render() {
   cleanup();
   cleanup = () => {};
@@ -435,7 +439,13 @@ function render() {
         ? requested
         : "tasks"
       : "login";
-  if (!task && !["login", "tasks"].includes(current)) current = "tasks";
+  if (!task && !["login", "tasks"].includes(current)) {
+    task = tasks[0];
+    sessionStorage.setItem("shore-task", task.id);
+  }
+  // Keep the URL and visible page aligned, including login and invalid routes.
+  if (location.hash !== `#${current}`)
+    history.replaceState(null, "", `#${current}`);
   document.body.dataset.page = current;
   $("#main").innerHTML = {
     login,
@@ -454,6 +464,13 @@ function render() {
     )
     .join("");
   $("#railNav").innerHTML = $("#navigation").innerHTML;
+  $$("#navigation a, #railNav a").forEach((link) => {
+    link.onclick = (event) => {
+      if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      navigate(link.hash.slice(1));
+    };
+  });
   document.title = $("#breadcrumb").textContent + " · 舟行见微";
   bind();
   window.scrollTo({ top: 0, behavior: "instant" });

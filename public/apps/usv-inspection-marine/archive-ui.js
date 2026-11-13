@@ -101,7 +101,7 @@ function previewFile(i) {
   const f = files[i];
   if (f.type === "cloud") {
     pendingCloudMode = "raw";
-    location.hash = "model";
+    navigate("model");
     return;
   }
   dialog(
