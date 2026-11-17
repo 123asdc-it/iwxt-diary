@@ -3,6 +3,9 @@
 window.INSPECTION_ASSET_ORIGIN = location.hostname === "iwxt.cn"
   ? "https://raw.githubusercontent.com/123asdc-it/iwxt-diary/3e3b623f805ae287dfc782c8eea74dec84fd2253/public/apps/usv-inspection-marine/"
   : "";
+window.INSPECTION_REPORT_ORIGIN = location.hostname === "iwxt.cn"
+  ? "https://raw.githubusercontent.com/123asdc-it/iwxt-diary/e01dd5c14974ff84523a7cda09606df686a19a42/public/apps/usv-inspection-marine/"
+  : "";
 /* Demonstration manifests. Replace assets per task when paired recordings arrive.
    mapUrl embeds the original host-controller page when supplied.
    Otherwise the map shows the explicitly labelled Qingdao demonstration route. */
@@ -46,7 +49,7 @@ window.INSPECTION_TASKS = [
   poster: "assets/trial-frame.jpg",
   cloud: "assets/shoreline-sfm-full.ply",
   mapUrl: "",
-  report: `assets/reports/${t.id}.pdf?v=20261117-clean`,
+  report: `assets/reports/r03/${t.id}.pdf`,
   duration: 24,
   // All quantities below are authored demonstration fixtures, not recovered telemetry.
   telemetry: [0, 6, 12, 18, 23.95].map((time, i) => ({

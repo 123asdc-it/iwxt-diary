@@ -124,8 +124,8 @@ function model() {
 }
 function report() {
   const number =
-    "ZJ-QD-" + String(tasks.indexOf(task) + 1).padStart(2, "0") + "-R02";
-  const pageNames = ["任务概况", "巡检记录", "影像索引", "复核与归档"];
+    "ZJ-QD-" + String(tasks.indexOf(task) + 1).padStart(2, "0") + "-R03";
+  const pageNames = ["监测数据与影像", "航线与异常复核", "历史对比与总结"];
   return (
     heading(
       "",
@@ -133,7 +133,7 @@ function report() {
       "",
       `<a href="${task.report}" download="${number}-巡检报告.pdf" class="button primary">${icon("download")}下载报告</a>`,
     ) +
-    `<div class="report-layout"><section class="report-document"><div class="report-document-toolbar"><strong>${number}</strong><span id="reportPageCount">第 1 页 / 共 4 页</span></div><div class="report-page-stage"><div id="reportLoading" class="report-loading" role="status">正在载入报告…</div><img class="report-sheet" id="reportSheet" alt="巡检报告第1页" decoding="async" hidden/></div></section><aside class="stack"><section class="panel report-side"><h3>报告信息</h3><dl><div><dt>任务</dt><dd>${task.name}</dd></div><div><dt>报告版本</dt><dd>资料复核版 / V2.0</dd></div><div><dt>编制日期</dt><dd>2026-11-17</dd></div></dl><div class="report-actions"><button class="button" id="previewReport">打开 PDF</button><a class="button" href="#monitor">返回监控</a></div></section><section class="panel report-side"><h3>报告目录</h3><div class="report-page-list">${pageNames.map((name, i) => `<button data-report-page="${i + 1}" class="${i === 0 ? "active" : ""}" aria-pressed="${i === 0}"><span>0${i + 1}</span>${name}</button>`).join("")}</div></section></aside></div>`
+    `<div class="report-layout"><section class="report-document"><div class="report-document-toolbar"><strong>${number}</strong><span id="reportPageCount">第 1 页 / 共 3 页</span></div><div class="report-page-stage"><div id="reportLoading" class="report-loading" role="status">正在载入报告…</div><img class="report-sheet" id="reportSheet" alt="巡检报告第1页" decoding="async" hidden/></div></section><aside class="stack"><section class="panel report-side"><h3>报告信息</h3><dl><div><dt>任务</dt><dd>${task.name}</dd></div><div><dt>报告版本</dt><dd>V3.0</dd></div><div><dt>编制日期</dt><dd>2026-11-18</dd></div></dl><div class="report-actions"><button class="button" id="previewReport">打开 PDF</button><a class="button" href="#monitor">返回监控</a></div></section><section class="panel report-side"><h3>报告目录</h3><div class="report-page-list">${pageNames.map((name, i) => `<button data-report-page="${i + 1}" class="${i === 0 ? "active" : ""}" aria-pressed="${i === 0}"><span>0${i + 1}</span>${name}</button>`).join("")}</div></section></aside></div>`
   );
 }
 function sampleAt(t) {
@@ -526,12 +526,12 @@ function bind() {
       status.textContent = "正在载入报告…";
       sheet.hidden = true;
       const image = new Image();
-      const local = `assets/reports/${task.id}-page-${page}.webp?v=20261117-fast`;
+      const local = `assets/reports/r03/${task.id}-page-${page}.webp`;
       try {
-        if (window.INSPECTION_ASSET_ORIGIN) {
+        if (window.INSPECTION_REPORT_ORIGIN) {
           let timer;
           try {
-            image.src = window.INSPECTION_ASSET_ORIGIN + local;
+            image.src = window.INSPECTION_REPORT_ORIGIN + local;
             await Promise.race([image.decode(), new Promise((_, reject) => {
               timer = setTimeout(() => reject(Error("Image timeout")), 5000);
             })]);
@@ -548,7 +548,7 @@ function bind() {
         sheet.alt = `巡检报告第${page}页`;
         sheet.hidden = false;
         status.hidden = true;
-        $("#reportPageCount").textContent = `第 ${page} 页 / 共 4 页`;
+        $("#reportPageCount").textContent = `第 ${page} 页 / 共 3 页`;
         $$("[data-report-page]").forEach((b) => {
           const selected = b.dataset.reportPage === String(page);
           b.classList.toggle("active", selected);
