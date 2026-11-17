@@ -34,6 +34,24 @@ let current = "login",
   pendingCloudMode = null;
 let reconstructionMode = "gaussian";
 let reconstructionQuality = "quick";
+let reconstructionModule;
+function loadReconstructionModule() {
+  if (reconstructionModule) return reconstructionModule;
+  const local = "./reconstruction.bundle.js?v=20261117-fast4";
+  if (!window.INSPECTION_ASSET_ORIGIN) return reconstructionModule = import(local);
+  // Keep this revision aligned with the published bundle when rebuilding it.
+  const cdn = "https://cdn.jsdelivr.net/gh/123asdc-it/iwxt-diary@e45a718e2946cdf714db378267dbd1594a6ee941/public/apps/usv-inspection-marine/reconstruction.bundle.js";
+  let timer;
+  reconstructionModule = Promise.race([
+    import(cdn),
+    new Promise((_, reject) => { timer = setTimeout(() => reject(Error("Module timeout")), 5000); }),
+  ]).catch(() => import(local)).finally(() => clearTimeout(timer)).catch(error => {
+    reconstructionModule = null;
+    throw error;
+  });
+  return reconstructionModule;
+}
+
 let demo = true,
   mode = "replay",
   offline = false,
@@ -403,7 +421,7 @@ function bindModel() {
         });
       }),
   );
-  import("./reconstruction.bundle.js?v=20261117-fast4")
+  loadReconstructionModule()
     .then(({ ReconstructionView }) => {
       if (!active) return;
       instance = new ReconstructionView(
@@ -500,7 +518,7 @@ function bind() {
         $("#loginError").textContent = "账号或密码不正确，请使用下方演示账号。";
     };
   if (current === "tasks") {
-    import("./reconstruction.bundle.js?v=20261117-fast4").catch(() => {});
+    loadReconstructionModule().catch(() => {});
     $$("[data-enter]").forEach(
       (b) =>
         (b.onclick = () => {
