@@ -14,7 +14,8 @@
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23152530'/%3E%3Cpath d='M8 25L20 10l12 15-12 6z' fill='%2364ddbf'/%3E%3C/svg%3E"
     />
 
-    <link rel="stylesheet" href="marine.css?v=20261117-model" />
+    <link rel="stylesheet" href="vendor/leaflet.css" />
+    <link rel="stylesheet" href="marine.css?v=20261117-clean" />
   </head>
   <body>
     <a class="skip-link" href="#main">跳至主要内容</a>
@@ -23,25 +24,20 @@
         ><svg viewBox="0 0 40 40" aria-hidden="true">
           <path d="M13 18l7-11 6 7M6 24q7-5 14-1t14-1" />
           <path d="M4 33q5-4 10 0t10 0t12 0" /></svg
-        ><span>舟行见微<small>海事巡检 · MARITIME</small></span></a
+        ><span>舟行见微</span></a
       >
-      <nav aria-label="主导航" id="navigation"></nav>
+
       <div class="header-actions">
-        <span class="edition">海事监控台</span
+        <button class="demo-info-button" id="demoInfo">演示说明</button
         ><a href="https://iwxt.cn/" class="blog-return">↗ 返回博客</a>
       </div>
     </header>
     <aside class="marine-rail">
       <nav id="railNav" aria-label="侧栏导航"></nav>
-      <span class="rail-caption">USV / 01</span>
     </aside>
     <div class="app">
       <span id="breadcrumb" hidden>巡检监控</span>
       <main id="main" tabindex="-1"></main>
-      <footer>
-        <span>舟行见微 · 近岸设施巡检平台</span
-        ><span>答辩演示 · 视频与点云为复用素材</span>
-      </footer>
     </div>
     <div id="toast" role="status" aria-live="polite"></div>
     <dialog id="previewDialog">
@@ -53,10 +49,12 @@
       </div>
       <div id="dialogBody"></div>
     </dialog>
-    <script src="tasks.js"></script>
+    <script src="vendor/leaflet.js"></script>
+    <script src="route-map.js?v=20261117-clean"></script>
+    <script src="tasks.js?v=20261117-clean"></script>
     <script src="cloud.js"></script>
-    <script src="app.js?v=20261117-model"></script>
-    <script src="archive-ui.js?v=20261117-model"></script>
+    <script src="app.js?v=20261117-clean"></script>
+    <script src="archive-ui.js?v=20261117-clean"></script>
     <script>
       render();
     </script>

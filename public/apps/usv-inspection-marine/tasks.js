@@ -1,5 +1,6 @@
 /* Demonstration manifests. Replace assets per task when paired recordings arrive.
-   mapUrl is exclusively the original host-controller page; no replacement map is built here. */
+   mapUrl embeds the original host-controller page when supplied.
+   Otherwise the map shows the explicitly labelled Qingdao demonstration route. */
 window.INSPECTION_TASKS = [
   {
     id: "qd-speed",
@@ -40,7 +41,7 @@ window.INSPECTION_TASKS = [
   poster: "assets/trial-frame.jpg",
   cloud: "assets/shoreline-sfm-full.ply",
   mapUrl: "",
-  report: `assets/reports/${t.id}.pdf`,
+  report: `assets/reports/${t.id}.pdf?v=20261117-clean`,
   duration: 24,
   // All quantities below are authored demonstration fixtures, not recovered telemetry.
   telemetry: [0, 6, 12, 18, 23.95].map((time, i) => ({

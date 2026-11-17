@@ -54,9 +54,9 @@ function data() {
       "DATA ARCHIVE / 04",
       "原始数据",
       "回到原始材料，查看每一个结果的来处。",
-      `<span class="pill muted">${icon("data")}本地素材库</span>`,
+      "",
     ) +
-    `<div class="stats-row">${stat("data", "已归档素材", "05", "项", "本地独立副本")}${stat("play", "视频素材", "01", "段", "船载试验历史录像")}${stat("camera", "图片素材", "02", "张", "截帧 / 设备照片")}${stat("layers", "点云与文档", "02", "项", "PLY 素材 / 原有 PDF")}</div><div class="file-filters"><div class="tabs" aria-label="文件类型筛选">${[
+    `<div class="file-filters"><div class="tabs" aria-label="文件类型筛选">${[
       ["all", "全部素材"],
       ["video", "视频"],
       ["image", "图片"],
@@ -69,7 +69,7 @@ function data() {
       )
       .join(
         "",
-      )}</div><label class="search">${icon("search")}<input id="fileSearch" type="search" placeholder="搜索素材名称…" aria-label="搜索素材名称" value=""></label></div><div class="file-grid" id="fileGrid"></div><div class="archive-note">${icon("shield")}素材来自不同来源或批次，分别保留来源说明。缺陷标注和任务遥测为前端演示数据，尚未与这些文件建立实测关联。</div>`
+      )}</div><label class="search">${icon("search")}<input id="fileSearch" type="search" placeholder="搜索素材名称…" aria-label="搜索素材名称" value=""></label></div><div class="file-grid" id="fileGrid"></div>`
   );
 }
 function renderFiles() {

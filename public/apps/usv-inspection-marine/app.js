@@ -59,13 +59,13 @@ function toast(text) {
   toastTimer = setTimeout(() => $("#toast").classList.remove("show"), 3000);
 }
 function heading(eyebrow, title, sub, actions = "") {
-  return `<div class="page-heading"><div><div class="eyebrow">${eyebrow}</div><h1>${title}</h1><p>${sub}</p></div><div class="heading-actions">${actions}</div></div>`;
+  return `<div class="page-heading"><div><h1>${title}</h1></div><div class="heading-actions">${actions}</div></div>`;
 }
 function stat(ic, label, value, unit, note) {
   return `<div class="stat-card"><div class="stat-icon">${icon(ic)}</div><div class="stat-content"><div class="stat-label">${label}</div><div class="stat-value">${value}<small>${unit}</small></div><div class="stat-note">${note}</div></div></div>`;
 }
 function login() {
-  return `<section class="login-layout"><div class="login-intro"><div class="eyebrow">MARITIME OPERATIONS / B</div><h1>每一次巡检，<br>都有迹可循。</h1><p>从水面航行到岸堤重建，<br>在同一工作台查看任务、影像与巡检记录。</p><img src="assets/usv.png" alt="巡检无人船"/><span class="pill warning">答辩演示 · 无真实设备控制</span></div><form id="loginForm" class="login-card"><div class="eyebrow">WELCOME ABOARD</div><h2>登录巡检工作台</h2><p>选择试验任务，开始完整演示。</p><label>账号<input name="account" autocomplete="username" value="demo" required></label><label>密码<input name="password" type="password" autocomplete="current-password" placeholder="请输入演示密码" required></label><p id="loginError" class="error-text" role="alert"></p><button class="button primary" type="submit">登录并选择任务 ${icon("arrow")}</button><small>演示账号 demo / 密码 123456</small><small>登录后选择任务，进入巡检演示。</small></form></section>`;
+  return `<section class="login-layout"><div class="login-intro"><h1>每一次巡检，<br>都有迹可循。</h1><p>岸堤巡检与三维重建工作台</p><img src="assets/usv.png" alt="巡检无人船"/></div><form id="loginForm" class="login-card"><h2>登录工作台</h2><label>账号<input name="account" autocomplete="username" value="demo" required></label><label>密码<input name="password" type="password" autocomplete="current-password" placeholder="请输入密码" required></label><p id="loginError" class="error-text" role="alert"></p><button class="button primary" type="submit">登录 ${icon("arrow")}</button><small>演示账号 demo / 密码 123456</small></form></section>`;
 }
 function taskList() {
   return (
@@ -75,14 +75,14 @@ function taskList() {
       "从一次试验开始，查看影像、设备状态与三维成果。",
       `<button class="button" id="logout">退出登录</button>`,
     ) +
-    `<div class="task-overview"><span class="pill warning">演示任务库</span><span>3 个任务场景</span><span>同一批视频与点云素材复用 · 后续可独立替换</span></div><div class="task-grid">${tasks.map((t, i) => `<article class="panel task-card"><div class="task-cover"><img src="${t.poster}" alt="船载试验影像素材"/><span class="task-index">0${i + 1}</span><span class="pill warning">演示场景</span></div><div class="task-card-body"><div class="eyebrow">${t.code} / ${t.kind}</div><h2>${t.name}</h2><h3>${t.subtitle}</h3><p>${t.description}</p><div class="task-assets"><span>试验录像</span><span>PLY 点云</span><span>固定 PDF</span></div><div class="task-card-actions"><button class="button primary" data-enter="${t.id}" data-target="monitor">进入监控 ${icon("arrow")}</button><button class="button" data-enter="${t.id}" data-target="model">三维重建</button></div></div></article>`).join("")}</div><div class="archive-note">${icon("shield")}任务名称用于场景演示；航速、状态、时间和异常为模拟数据，复用素材不代表三次独立实测试验。</div>`
+    `<div class="task-grid">${tasks.map((t, i) => `<article class="panel task-card"><div class="task-cover"><img src="${t.poster}" alt="船载试验影像素材"/><span class="task-index">0${i + 1}</span></div><div class="task-card-body"><div class="task-kind">${t.kind}</div><h2>${t.name}</h2><h3>${t.subtitle}</h3><div class="task-card-actions"><button class="button primary" data-enter="${t.id}" data-target="monitor">进入监控 ${icon("arrow")}</button><button class="button" data-enter="${t.id}" data-target="model">三维重建</button></div></div></article>`).join("")}</div>`
   );
 }
 function monitor() {
   return `<div class="marine-toolbar"><label class="task-picker"><span>当前任务</span><select id="taskSelect" aria-label="选择巡检任务">${tasks.map((t) => `<option value="${t.id}" ${t.id === task.id ? "selected" : ""}>${t.name} · ${t.subtitle}</option>`).join("")}</select></label><label class="demo-switch"><input id="demoToggle" type="checkbox" ${demo ? "checked" : ""}>演示数据</label><div class="mode-switch" aria-label="数据模式"><button data-mode="live" aria-pressed="${mode === "live"}">实时模式</button><button data-mode="replay" aria-pressed="${mode === "replay"}">历史回放</button></div><span class="pill muted" id="connectionState">演示在线</span><div class="control-spacer"></div><button class="button small" id="connectionToggle" ${!demo ? "disabled" : ""}>${offline ? "恢复演示设备" : "模拟离线"}</button><button class="button primary small" id="startMission">${demo ? "开始任务" : "下发真实任务"}</button></div>
-  <div class="marine-workspace"><section class="panel route-panel"><div class="panel-head"><h2>航迹地图</h2><span class="pill muted">上位机原版页面</span></div><div class="route-host" id="routeHost">${task.mapUrl ? `<iframe id="hostMap" title="上位机原版航迹页面" src="${esc(task.mapUrl)}"></iframe>` : `<div class="integration-empty"><span class="empty-symbol">⌖</span><h3>上位机航迹页面待接入</h3><p>原版页面将在此处显示</p><span class="pill muted">等待页面资料</span></div>`}<div class="map-north" aria-hidden="true">N<br>▲</div></div><div class="route-readout"><span>演示船位 <b id="positionValue">—</b></span><span id="mapSync">航迹页面未接入</span></div></section>
+  <div class="marine-workspace"><section class="panel route-panel"><div class="panel-head"><h2>航迹地图</h2><span class="map-heading">${task.mapUrl ? "上位机航迹" : "青岛 · 演示航迹"}</span><button class="button small" id="fitRoute">定位</button></div><div class="route-host" id="routeHost">${task.mapUrl ? `<iframe id="hostMap" title="上位机原版航迹页面" src="${esc(task.mapUrl)}"></iframe>` : `<div id="qingdaoMap" aria-label="青岛地图与演示航迹"></div><div id="mapLoading" class="map-loading">正在加载青岛地图…</div>`}<div class="map-north" aria-hidden="true">N<br>▲</div></div><div class="route-readout"><span>演示船位 <b id="positionValue">—</b></span><span id="mapSync">演示航迹</span></div></section>
   <section class="panel camera-panel"><div class="panel-head"><h2>${icon("camera")}云台监控</h2><div class="camera-actions"><button class="button small" id="toggleReplay">播放</button><button class="button small" id="restartReplay">重播</button><b id="replayTime">00:00</b><button class="button small" id="fullscreenReplay">全屏</button></div></div><div class="camera-view"><video id="trialVideo" muted playsinline preload="metadata" poster="${task.poster}" aria-label="演示云台视频"></video><div class="feed-tag" id="feedLabel"></div><div class="camera-offline" id="cameraOffline" hidden><strong>设备离线</strong><span>画面与设备数据已停止刷新</span></div></div></section>
-  <section class="panel events-panel"><div class="panel-head"><h2>疑似异常</h2><span class="meta">${task.events.length} 条 · 演示标注</span></div><div class="event-list">${task.events.map((e, i) => `<button class="event-item ${e.cls === "danger" ? "priority-event" : ""}" data-event="${i}"><span class="event-symbol">${e.cls === "danger" ? "△" : "·"}</span><span class="event-name"><strong>${e.title}</strong><small>${e.id} · ${e.level}</small></span><time>${clock(e.time)}</time><span class="event-arrow">›</span></button>`).join("")}</div></section></div>
+  <section class="panel events-panel"><div class="panel-head"><h2>疑似异常</h2><span class="meta">${task.events.length} 条</span></div><div class="event-list">${task.events.map((e, i) => `<button class="event-item ${e.cls === "danger" ? "priority-event" : ""}" data-event="${i}"><span class="event-symbol">${e.cls === "danger" ? "△" : "·"}</span><span class="event-name"><strong>${e.title}</strong><small>${e.id}</small></span><time>${clock(e.time)}</time><span class="event-arrow">›</span></button>`).join("")}</div></section></div>
   <section class="marine-telemetry"><div id="deviceMetrics" class="metric-grid"></div><div class="marine-task-status"><span>任务状态</span><strong id="missionStatus" aria-live="polite">待演示</strong></div><a class="button report-entry" href="#report">${icon("report")}巡检报告</a></section>
   <div class="monitor-status"><span id="syncStatus">同一回放时钟 · 演示数据</span><span id="sourceBadge">${demo ? "模拟数据 · 试验素材复用" : "真实模式 · 未接入设备"}</span><span id="deviceStamp">等待回放</span><span id="absoluteTime"></span></div>`;
 }
@@ -112,18 +112,21 @@ function model() {
       )
       .join(
         "",
-      )}<span>${source[2]}</span></div><div class="model-toolbar"><div class="interaction-tabs"><button class="button small active" data-interaction="pan" aria-pressed="true">平移</button><button class="button small" data-interaction="rotate" aria-pressed="false">旋转</button></div><span class="pill warning">模型素材 · 演示标注</span><div class="viewer-actions"><button class="icon-button" id="zoomOut" aria-label="缩小">−</button><button class="icon-button" id="zoomIn" aria-label="放大">＋</button><button class="button small" id="resetView">复位</button></div></div><div class="cloud-stage" id="cloudStage"><canvas id="cloudCanvas" tabindex="0" aria-label="三维点云，拖动平移，右键或Shift拖动旋转，滚轮缩放"></canvas><div class="stage-label">${source[0]}<strong>${source[1]}</strong></div>${task.events.map((d, i) => `<button class="model-marker" data-defect="${i}" aria-label="演示标注 ${d.id}" style="display:none">${i + 1}</button>`).join("")}<div class="cloud-status" id="cloudStatus">正在读取点云…</div><div class="model-help">拖动平移 · 右键 / Shift 旋转 · 滚轮缩放</div></div><div class="model-footer"><span id="pointCount">PLY 读取中</span><span>${reconstructionMode === "gaussian" ? "3DGS 实景渲染" : "保留点云原色"}</span></div></section><div class="stack"><section class="panel"><div class="panel-head"><h2>缺陷详情</h2><span class="pill warning">示意标注</span></div><div id="defectDetail"></div></section><section class="panel"><div class="panel-head"><h2>标注列表</h2><span class="meta">绑定模型坐标</span></div><div class="defect-list">${task.events.map((d, i) => `<button class="defect-select" data-defect="${i}"><span class="number">${i + 1}</span><span><strong>${d.title}</strong><small>${d.id} · 演示位置</small></span></button>`).join("")}</div></section><div class="model-notice"><strong>本次新增两份重建素材</strong><p>默认正面视角展示岸边实景，大幅侧转可能出现重建伪影，可点击复位。两份素材与任务、视频的对应关系待确认；标注仅为交互示意。</p></div></div></div>`
+      )}<span>${source[2]}</span></div><div class="model-toolbar"><div class="interaction-tabs"><button class="button small active" data-interaction="pan" aria-pressed="true">平移</button><button class="button small" data-interaction="rotate" aria-pressed="false">旋转</button></div><div class="viewer-actions"><button class="icon-button" id="zoomOut" aria-label="缩小">−</button><button class="icon-button" id="zoomIn" aria-label="放大">＋</button><button class="button small" id="resetView">复位</button></div></div><div class="cloud-stage" id="cloudStage"><canvas id="cloudCanvas" tabindex="0" aria-label="三维点云，拖动平移，右键或Shift拖动旋转，滚轮缩放"></canvas><div class="stage-label"><strong>${source[1]}</strong></div>${task.events.map((d, i) => `<button class="model-marker" data-defect="${i}" aria-label="演示标注 ${d.id}" style="display:none">${i + 1}</button>`).join("")}<div class="cloud-status" id="cloudStatus">正在读取点云…</div><div class="model-help">拖动平移 · 右键 / Shift 旋转 · 滚轮缩放</div></div><div class="model-footer"><span id="pointCount">PLY 读取中</span><span>${reconstructionMode === "gaussian" ? "3DGS 实景渲染" : "保留点云原色"}</span></div></section><div class="stack"><section class="panel"><div class="panel-head"><h2>缺陷详情</h2></div><div id="defectDetail"></div></section><section class="panel"><div class="panel-head"><h2>标注列表</h2></div><div class="defect-list">${task.events.map((d, i) => `<button class="defect-select" data-defect="${i}"><span class="number">${i + 1}</span><span><strong>${d.title}</strong><small>${d.id}</small></span></button>`).join("")}</div></section></div></div>`
   );
 }
 function report() {
+  const number =
+    "ZJ-QD-" + String(tasks.indexOf(task) + 1).padStart(2, "0") + "-R02";
+  const pageNames = ["任务概况", "巡检记录", "影像索引", "复核与归档"];
   return (
     heading(
-      "INSPECTION REPORT / " + task.code,
-      "巡检检测报告",
-      "固定 PDF · 按工程巡查记录结构编排",
-      `<a href="${task.report}" download="${task.code}-巡检检测报告.pdf" class="button primary">${icon("download")}下载 PDF 报告</a>`,
+      "",
+      "巡检报告",
+      "",
+      `<a href="${task.report}" download="${number}-巡检报告.pdf" class="button primary">${icon("download")}下载报告</a>`,
     ) +
-    `<div class="fixed-report-layout"><article class="report-paper"><div class="paper-top"><span>舟行见微 / 巡检记录</span><span>固定文档 · V1.0</span></div><div class="paper-eyebrow">SHORELINE INSPECTION RECORD</div><h2>岸堤巡检检测报告</h2><p class="report-demo-label">答辩演示样件 · 非工程检测结论</p><dl class="report-fields"><div><dt>报告编号</dt><dd>${task.code}</dd></div><div><dt>任务名称</dt><dd>${task.name}</dd></div><div><dt>任务类型</dt><dd>${task.subtitle}</dd></div><div><dt>文档格式</dt><dd>PDF · 3 页 · 固定版本</dd></div></dl><h3>报告内容</h3><ol class="report-contents"><li>任务概况、委托与设备信息</li><li>外观检查项目与异常记录</li><li>复核意见、附件索引与签署栏</li></ol><div class="paper-summary">按正式巡检记录的表格形式组织，保留待补实测信息与人工签署栏。页面直接下载已经排版的 PDF。</div><div class="paper-foot"><span>记录可追溯 · 结论待人工复核</span><span>${task.code}</span></div></article><aside class="stack"><section class="panel report-side"><h3>已归档文件</h3><p>${task.code}-巡检检测报告.pdf</p><a class="button primary" href="${task.report}" download="${task.code}-巡检检测报告.pdf">${icon("download")}下载固定 PDF</a><button class="button" id="previewReport">${icon("eye")}预览 PDF</button><p class="tip">三个任务各自关联一份固定报告，下载内容与归档版本一致。</p></section><section class="panel report-side"><h3>材料说明</h3><p class="tip">现有视频与点云用于演示。正式任务日期、工程桩号、缺陷尺寸和检测结论均待资料补充。</p><a class="button" href="#monitor">返回巡检监控</a></section></aside></div>`
+    `<div class="report-layout"><section class="report-document"><div class="report-document-toolbar"><strong>${number}</strong><span id="reportPageCount">第 1 页 / 共 4 页</span></div><img class="report-sheet" id="reportSheet" src="assets/reports/${task.id}-page-1.png?v=20261117-clean" alt="巡检报告第1页"/></section><aside class="stack"><section class="panel report-side"><h3>报告信息</h3><dl><div><dt>任务</dt><dd>${task.name}</dd></div><div><dt>报告版本</dt><dd>资料复核版 / V2.0</dd></div><div><dt>编制日期</dt><dd>2026-11-17</dd></div></dl><div class="report-actions"><button class="button" id="previewReport">打开 PDF</button><a class="button" href="#monitor">返回监控</a></div></section><section class="panel report-side"><h3>报告目录</h3><div class="report-page-list">${pageNames.map((name, i) => `<button data-report-page="${i + 1}" class="${i === 0 ? "active" : ""}" aria-pressed="${i === 0}"><span>0${i + 1}</span>${name}</button>`).join("")}</div></section></aside></div>`
   );
 }
 function sampleAt(t) {
@@ -162,18 +165,21 @@ function bindMonitor() {
     render();
   };
   const mission = task;
+  const routeView = createQingdaoMap($("#qingdaoMap"), mission, demo);
+  if ($("#fitRoute")) $("#fitRoute").onclick = () => routeView?.fit();
   const v = $("#trialVideo");
   let ended = completedTasks.has(mission.id);
   const disconnected = !demo || offline;
   let saved = playback.get(task.id) || 0;
+  routeView?.setTime(saved / mission.duration);
   $("#cameraOffline").hidden = !disconnected;
   $("#connectionState").textContent = disconnected ? "离线" : "演示在线";
   $("#connectionState").className =
     "pill " + (disconnected ? "danger" : "warning");
   $("#feedLabel").textContent = demo
     ? mode === "live"
-      ? "演示实时 · 录像模拟"
-      : "历史素材 · 同步演示回放"
+      ? "录像模拟"
+      : "历史回放"
     : "真实流未接入";
   $("#startMission").disabled = disconnected;
   $("#toggleReplay").disabled = disconnected;
@@ -184,10 +190,11 @@ function bindMonitor() {
     const t = v.currentTime;
     playback.set(task.id, t);
     const s = sampleAt(t);
+    const position = routeView?.setTime(t / mission.duration) || [s.lat, s.lon];
     renderMetrics(s);
     $("#replayTime").textContent = clock(t);
     $("#positionValue").textContent =
-      `${s.lat.toFixed(4)}° N / ${s.lon.toFixed(4)}° E`;
+      `${position[0].toFixed(4)}° N / ${position[1].toFixed(4)}° E`;
     const absolute = new Date(
       new Date(task.start).getTime() + t * 1000,
     ).toLocaleString("zh-CN", { timeZone: "Asia/Shanghai", hour12: false });
@@ -204,7 +211,7 @@ function bindMonitor() {
     $("#toggleReplay").textContent = v.paused ? "播放" : "暂停";
     $("#syncStatus").textContent = ended
       ? "任务已完成 · 可查看巡检报告"
-      : "视频 / 设备状态共用回放时钟 · 航迹待接入";
+      : "回放同步";
     $$("[data-event]").forEach((b) =>
       b.classList.toggle(
         "active",
@@ -317,6 +324,7 @@ function bindMonitor() {
     $("#missionStatus").textContent = "素材加载失败";
   });
   cleanup = () => {
+    routeView?.dispose();
     v.pause();
     if (!disconnected) playback.set(mission.id, v.currentTime);
     v.removeAttribute("src");
@@ -327,7 +335,7 @@ function selectDefect(i) {
   selected = i;
   const d = task.events[i];
   $("#defectDetail").innerHTML =
-    `<div class="defect-info"><span class="pill ${d.cls}">${d.level} · 演示</span><h3>${d.title}</h3><p>${d.note}</p><div class="data-pair"><span>标注编号</span><b>${d.id}</b></div><div class="data-pair"><span>视频位置</span><b>${clock(d.time)}</b></div><div class="data-pair"><span>模型位置</span><b>PLY 坐标锚点</b></div><div class="defect-actions"><button class="button" id="locateVideo">定位视频</button><a class="button primary" href="#report">查看报告</a></div></div>`;
+    `<div class="defect-info"><span class="pill ${d.cls}">${d.level}</span><h3>${d.title}</h3><div class="data-pair"><span>标注编号</span><b>${d.id}</b></div><div class="data-pair"><span>视频位置</span><b>${clock(d.time)}</b></div><div class="defect-actions"><button class="button" id="locateVideo">定位视频</button><a class="button primary" href="#report">查看报告</a></div></div>`;
   $$("[data-defect]").forEach((b) => {
     b.classList.toggle("active", +b.dataset.defect === i);
     b.setAttribute("aria-pressed", String(+b.dataset.defect === i));
@@ -404,9 +412,7 @@ function bindModel() {
           if (active)
             $("#pointCount").textContent =
               count.toLocaleString() +
-              (reconstructionMode === "gaussian"
-                ? " 个高斯点 · 新增素材"
-                : " 个点 · 新增素材");
+              (reconstructionMode === "gaussian" ? " 个高斯点" : " 个点");
         },
       );
       instance.panMode = pan;
@@ -447,8 +453,7 @@ function bindLegacyModel() {
   pendingCloudMode = null;
   cloud.setMode("raw").then(() => {
     if ($("#pointCount") && cloud?.points)
-      $("#pointCount").textContent =
-        cloud.points.pos.length / 3 + " 个点 · 现有素材";
+      $("#pointCount").textContent = cloud.points.pos.length / 3 + " 个点";
   });
   $("#resetView").onclick = () => cloud.reset();
   $("#zoomOut").onclick = () => (cloud.dist = Math.min(18, cloud.dist * 1.15));
@@ -495,12 +500,27 @@ function bind() {
   }
   if (current === "monitor") bindMonitor();
   if (current === "model") bindModel();
-  if (current === "report")
+  if (current === "report") {
     $("#previewReport").onclick = () =>
       dialog(
-        "固定巡检报告",
-        `<iframe title="${task.code} PDF 报告" src="${task.report}"></iframe>`,
+        "巡检报告",
+        `<iframe title="${task.code} 巡检报告" src="${task.report}"></iframe>`,
       );
+    $$("[data-report-page]").forEach(
+      (button) =>
+        (button.onclick = () => {
+          const page = button.dataset.reportPage;
+          $("#reportSheet").src =
+            `assets/reports/${task.id}-page-${page}.png?v=20261117-clean`;
+          $("#reportSheet").alt = `巡检报告第${page}页`;
+          $("#reportPageCount").textContent = `第 ${page} 页 / 共 4 页`;
+          $$("[data-report-page]").forEach((b) => {
+            b.classList.toggle("active", b === button);
+            b.setAttribute("aria-pressed", String(b === button));
+          });
+        }),
+    );
+  }
   if (current === "data") {
     renderFiles();
     $("#fileSearch").value = query;
@@ -554,14 +574,13 @@ function render() {
   }[current]();
   $("#breadcrumb").textContent =
     current === "login" ? "演示登录" : pages.find((p) => p[0] === current)[1];
-  $("#navigation").innerHTML = pages
+  $("#railNav").innerHTML = pages
     .map(
       ([id, label, n]) =>
         `<a class="nav-item ${id === current ? "active" : ""}" href="#${id}" ${id === current ? 'aria-current="page"' : ""}>${icon(id)}<span>${label}</span><span class="nav-num">${n}</span></a>`,
     )
     .join("");
-  $("#railNav").innerHTML = $("#navigation").innerHTML;
-  $$("#navigation a, #railNav a").forEach((link) => {
+  $$("#railNav a").forEach((link) => {
     link.onclick = (event) => {
       if (
         event.button ||
@@ -584,3 +603,9 @@ $(".skip-link").onclick = (e) => {
   $("#main").focus();
 };
 window.addEventListener("hashchange", render);
+
+$("#demoInfo").onclick = () =>
+  dialog(
+    "演示说明",
+    `<div class="demo-info-content"><p>当前为展示环境，三个任务复用现有视频和三维素材。设备状态、青岛航迹及异常标注为演示数据，不代表三次独立实测试验。</p><p>地图恢复青岛底图与示例航线；上位机原版页面和真实设备链路尚未接入。关闭演示开关后不下发真实指令。</p><p>实景重建默认采用正面视角，大幅侧转可能出现伪影，点击复位即可返回。报告按现有材料编排，待人工复核与签署。</p></div>`,
+  );
