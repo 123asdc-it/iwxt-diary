@@ -169,6 +169,7 @@ function drawer({ config, entries, months, tags }) {
     <a href="${home}">${icon('home')}<span>主页</span></a>
     <a href="${checkin}">${icon('check')}<span>每日打卡</span></a>
     <a href="${tutorial}">${icon('book')}<span>交互教程</span></a>
+    <a href="${pathUrl(config.basePath, 'apps/cs-atlas/')}">${icon('book')}<span>计算机知识图谱</span></a>
     <a href="${pathUrl(config.basePath, 'apps/usv-inspection/')}">${icon('circle')}<span>巡检演示</span></a>
     <div class="drawer-section">
       <div class="drawer-section-title">${icon('archive')}<span>文章归档</span></div>
@@ -189,6 +190,7 @@ function appbar(config, { homePage = false, checkinPage = false, tutorialsPage =
   <button class="appbar-icon" type="button" data-open-drawer aria-label="打开导航菜单">${icon('menu')}</button>
   <a class="site-title" href="${pathUrl(config.basePath)}">${escapeHtml(config.title)}</a>
   <div class="appbar-spacer"></div>
+  <a class="appbar-write-button appbar-tutorial-button" href="${pathUrl(config.basePath, 'apps/cs-atlas/')}" aria-label="计算机知识图谱">${icon('book')}<span>知识图谱</span></a>
   <a class="appbar-write-button appbar-tutorial-button${tutorialsPage ? ' is-active' : ''}" href="${pathUrl(config.basePath, 'tutorials/')}" aria-label="交互教程目录">${icon('book')}<span>交互教程</span></a>
   <a class="appbar-write-button${checkinPage ? ' is-active' : ''}" href="${pathUrl(config.basePath, 'checkin/')}">${icon('check')}<span>每日打卡</span></a>
   <span class="owner-badge">${icon('circle')}${checkinPage ? '本机记录' : '公开日记'}</span>
@@ -442,6 +444,7 @@ async function build() {
   const sitemap = [
     `${config.siteUrl}${pathUrl(config.basePath)}`,
     `${config.siteUrl}${pathUrl(config.basePath, 'checkin/')}`,
+    `${config.siteUrl}${pathUrl(config.basePath, 'apps/cs-atlas/')}`,
     `${config.siteUrl}${pathUrl(config.basePath, 'tutorials/')}`,
     ...tutorials.map((tutorial) => `${config.siteUrl}${pathUrl(config.basePath, `tutorials/${tutorial.slug}/`)}`),
     ...entries.map((entry) => `${config.siteUrl}${pathUrl(config.basePath, `posts/${entry.slug}/`)}`),

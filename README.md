@@ -296,3 +296,11 @@ npm run build
 文件在 `public/apps/usv-inspection/`，来自独立四页原型的发布副本，保留素材、
 报告下载、三维示意和青岛街道地图；页面提供返回博客链接。它是静态演示，
 没有接入真实设备控制或实时检测数据。部署沿用现有 GitHub Pages 工作流。
+
+## 计算机知识图谱
+
+独立图谱：<https://iwxt.cn/apps/cs-atlas/>；顶部“知识图谱”与手机导航菜单可进入。
+文件在 `public/apps/cs-atlas/`，沿用本站 GitHub Pages 发布，运行不依赖原 Sites 网站。
+包含 27 个方向、7,613 个知识节点，支持紧凑双侧树图、分栏阅读、搜索、SVG 导出与全屏；工具栏提供返回博客。
+全屏分栏入口：`/apps/cs-atlas/?fullscreen=1&layout=columns&depth=all&topic=overview`。
+保留原图谱的 `cs-atlas-v1` 浏览偏好键，与每日打卡数据独立。CSS、JS、数据使用内容哈希文件名。

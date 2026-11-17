@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#173e35"><meta name="description" content="从基础到专业方向的中文计算机学习知识树。可搜索、缩放、拖动和逐层展开，只列知识点，不堆砌讲解。"><title>计算机知识图谱 · iwxt 日记本</title><link rel="canonical" href="https://iwxt.cn/apps/cs-atlas/"><link rel="stylesheet" href="styles-24c728765761.css"></head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+ <a class="brand" href="#" aria-label="返回计算机总览"><span class="brand-mark">枝</span><span>枝序<small>COMPUTER SCIENCE ATLAS</small></span></a>
+ <button class="search-launch" id="search-launch"><span>⌕ 搜索知识点</span><kbd>/</kbd></button>
+ <nav id="directions" aria-label="知识方向"></nav>
+ <footer><span id="total-count"></span><button id="sources-button">参考来源与图谱说明 ↗</button><small>知识点版 · 2026.11</small></footer>
+</aside>
+<main>
+ <header class="topbar"><button class="icon-button mobile-menu" id="menu" aria-label="展开方向导航">☰</button><div class="crumb" id="breadcrumb"></div><span class="edition">中文 · 递进知识树</span></header>
+ <section class="heading"><div><div class="eyebrow" id="topic-category">COMPUTER SCIENCE</div><h1 id="topic-title">计算机学习图谱</h1><p id="topic-meta"></p></div><button class="outline-button" id="export">导出当前图谱 ↗</button></section>
+ <div class="toolbar"><div class="toolbar-group"><a class="blog-return" href="/">← 返回博客</a><label for="layout-mode">排版</label><select id="layout-mode" aria-label="排版方式"><option value="tree">紧凑图谱</option><option value="columns">分栏阅读</option></select><label for="depth">展开层级</label><select id="depth"><option value="1" selected>展开 1 层</option><option value="2">展开 2 层</option><option value="3">展开 3 层</option><option value="4">展开 4 层</option><option value="5">展开 5 层</option><option value="6">展开 6 层</option><option value="all">全部展开</option></select><button id="canvas-search">搜索</button><button id="focus" disabled>聚焦所选</button><button id="parent" hidden>上一级</button><button id="back" hidden>返回本方向</button></div><span id="visible-count" class="visible-count"></span></div>
+ <div class="canvas" id="canvas" aria-label="知识树画布，可拖动和缩放">
+  <svg id="map" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="可展开的计算机知识树"><g id="viewport"><g id="edges"></g><g id="nodes"></g></g></svg>
+  <div id="reading" class="reading" hidden aria-label="分栏知识树"></div><div class="empty" id="loading">正在整理知识树…</div>
+  <div class="canvas-key">点击节点展开 · 拖动画布平移 · 滚轮缩放</div>
+  <div class="zoom"><button id="zoom-out" aria-label="缩小">−</button><output id="zoom-label">100%</output><button id="zoom-in" aria-label="放大">＋</button><button id="fit">适应画布</button><button id="native-fullscreen" hidden>浏览器全屏</button><button id="fullscreen" aria-pressed="false">全屏看图 ⛶</button></div>
+ </div>
+ <div class="statusbar"><span id="selection" aria-live="polite">选择方向，沿树枝探索</span><span>连线：知识归属 · 编号：建议阶段</span></div>
+</main>
+</div>
+<dialog id="search-dialog"><div class="dialog-header"><label for="search-input">搜索整棵知识树</label><button class="icon-button" id="close-search" aria-label="关闭搜索">×</button></div><input type="search" id="search-input" placeholder="图论、最大流、虚拟内存、SSTI…" autocomplete="off"><div id="search-results" aria-live="polite"></div></dialog>
+<dialog id="sources-dialog"><div class="dialog-header"><h2>参考来源与图谱说明</h2><button class="icon-button" id="close-sources" aria-label="关闭说明">×</button></div><div id="sources-content"></div></dialog>
+<script src="data-461bd0ba8ccc.js"></script><script src="app-0df8e98d5646.js"></script>
+</body></html>
