@@ -1,5 +1,6 @@
 /* PLY-only WebGL viewer; markers are explicitly illustrative anchors on loaded points. */
 window.ShoreCloud = class ShoreCloud {
+  static cache = new Map();
   constructor(canvas, onProject, onStatus) {
     this.canvas = canvas;
     this.onProject = onProject;
@@ -204,16 +205,60 @@ window.ShoreCloud = class ShoreCloud {
       g.vertexAttribPointer(l, 3, g.FLOAT, false, 0, 0);
     }
   }
+  async download(url) {
+    const remote = window.INSPECTION_ASSET_ORIGIN;
+    const sources = remote ? [remote + url, url] : [url];
+    let lastError;
+    for (const source of sources) {
+      if (!this.alive) throw new DOMException("Aborted", "AbortError");
+      const attempt = new AbortController();
+      const cancel = () => attempt.abort();
+      this.abort.signal.addEventListener("abort", cancel, { once: true });
+      let timer;
+      const arm = (ms) => { clearTimeout(timer); timer = setTimeout(cancel, ms); };
+      try {
+        this.onStatus(source === url && remote ? "正在连接备用点云地址…" : "正在连接点云文件…");
+        arm(source === url ? 15000 : 6000);
+        const response = await fetch(source, { signal: attempt.signal });
+        if (!response.ok) throw Error(`HTTP ${response.status}`);
+        const chunks = [];
+        const reader = response.body.getReader();
+        let loaded = 0;
+        while (true) {
+          arm(source === url ? 30000 : 8000);
+          const { done, value } = await reader.read();
+          if (done) break;
+          chunks.push(value);
+          loaded += value.byteLength;
+          if (this.alive) this.onStatus(`正在下载点云… ${(loaded / 1048576).toFixed(1)} MB`);
+        }
+        return await new Blob(chunks).arrayBuffer();
+      } catch (error) {
+        if (!this.alive) throw error;
+        lastError = error;
+      } finally {
+        clearTimeout(timer);
+        this.abort.signal.removeEventListener("abort", cancel);
+      }
+    }
+    throw lastError;
+  }
   async setMode(mode) {
     if (!this.gl) return;
     this.mode = "raw";
     this.onStatus("正在读取 PLY 点云…");
     try {
-      const response = await fetch(
-        this.sourceUrl || "assets/shoreline-sfm-web.ply",
-      );
-      if (!response.ok) throw Error("点云文件读取失败");
-      const points = this.parse(await response.arrayBuffer());
+      const url = this.sourceUrl || "assets/shoreline-sfm-web.ply";
+      let points = ShoreCloud.cache.get(url);
+      if (!points) {
+        const buffer = await this.download(url);
+        if (!this.alive) return;
+        this.onStatus("正在解析点云…");
+        await new Promise(requestAnimationFrame);
+        if (!this.alive) return;
+        points = this.parse(buffer);
+        ShoreCloud.cache.set(url, points);
+      }
       if (!this.alive) return;
       this.points = points;
       // Attach illustrative markers to actual retained vertices, never screen pixels.
@@ -236,7 +281,7 @@ window.ShoreCloud = class ShoreCloud {
       this.reset();
       this.onStatus("");
     } catch (error) {
-      if (this.alive) this.onStatus(error.message);
+      if (this.alive) this.onStatus("点云加载失败，请点击“原有点云”重试。");
     }
   }
   parse(buffer) {

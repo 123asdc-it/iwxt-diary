@@ -488,9 +488,10 @@ function bindLegacyModel() {
   cloud.sourceUrl =
     pendingCloudMode === "raw" ? "assets/shoreline-sfm-web.ply" : task.cloud;
   pendingCloudMode = null;
-  cloud.setMode("raw").then(() => {
-    if ($("#pointCount") && cloud?.points)
-      $("#pointCount").textContent = cloud.points.pos.length / 3 + " 个点";
+  const legacyView = cloud;
+  legacyView.setMode("raw").then(() => {
+    if (cloud === legacyView && legacyView.alive && legacyView.points.pos.length && $("#pointCount"))
+      $("#pointCount").textContent = legacyView.points.pos.length / 3 + " 个点";
   });
   $("#resetView").onclick = () => cloud.reset();
   $("#zoomOut").onclick = () => (cloud.dist = Math.min(18, cloud.dist * 1.15));
