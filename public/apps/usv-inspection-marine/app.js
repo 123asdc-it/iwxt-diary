@@ -645,12 +645,6 @@ $(".skip-link").onclick = (e) => {
 };
 window.addEventListener("hashchange", render);
 
-$("#demoInfo").onclick = () =>
-  dialog(
-    "演示说明",
-    `<div class="demo-info-content"><p>当前为展示环境，三个任务复用现有视频和三维素材。设备状态、青岛航迹及异常标注为演示数据，不代表三次独立实测试验。</p><p>地图恢复青岛底图与示例航线；上位机原版页面和真实设备链路尚未接入。关闭演示开关后不下发真实指令。</p><p>实景重建默认采用正面视角，大幅侧转可能出现伪影，点击复位即可返回。报告按现有材料编排，待人工复核与签署。</p></div>`,
-  );
-
 $("#logout").onclick = () => {
   sessionStorage.removeItem("shore-login");
   sessionStorage.removeItem("shore-task");
