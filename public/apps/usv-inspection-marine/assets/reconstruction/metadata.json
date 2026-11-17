@@ -89,5 +89,49 @@
       "sha256": "a582d0c5fd98853303fa1d2d88fe49d954ac0d68665c92c2f2994c2fabde2a5a"
     }
   },
-  "webPreview": "DC color; all splats retained; scale, opacity and rotation included; higher-order SH omitted"
+  "webPreview": "DC color; all splats retained; scale, opacity and rotation included; higher-order SH omitted",
+  "quick": {
+    "count": 160000,
+    "center": [
+      -0.7858777642250061,
+      3.2456948310136795,
+      -0.5379047393798828
+    ],
+    "size": 6.0001464784145355,
+    "anchors": [
+      [
+        -1.2587788105010986,
+        5.1054534912109375,
+        -0.5868441462516785
+      ],
+      [
+        0.17936347424983978,
+        5.005142688751221,
+        -0.5011738538742065
+      ],
+      [
+        1.2370413541793823,
+        4.90839958190918,
+        -0.5297509431838989
+      ]
+    ],
+    "bounds": [
+      [
+        -3.568228006362915,
+        1.9964724779129028
+      ],
+      [
+        0.24562159180641174,
+        6.245768070220947
+      ],
+      [
+        -2.042945146560669,
+        0.9671356678009033
+      ]
+    ],
+    "bytes": 2465928,
+    "sourceCount": 317107,
+    "selection": "opacity-weighted projected footprint",
+    "positionFractionalBits": 12
+  }
 }

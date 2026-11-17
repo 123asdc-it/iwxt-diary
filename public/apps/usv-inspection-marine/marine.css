@@ -1590,3 +1590,9 @@ body[data-page="login"] .marine-rail {
     font-size: 12px;
   }
 }
+
+/* Show a decoded report page at once instead of partially painted PNG rows. */
+.report-page-stage { position:relative; min-height:480px; }
+.report-loading { min-height:480px; display:grid; place-items:center; color:var(--muted); font-size:16px; }
+.report-loading[hidden], .report-sheet[hidden] { display:none; }
+@media(max-width:600px) { .viewer-actions { flex-wrap:wrap; justify-content:flex-end; } #modelQuality { font-size:12px; padding:6px 8px; } }

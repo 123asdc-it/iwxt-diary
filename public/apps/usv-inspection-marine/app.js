@@ -33,6 +33,7 @@ let current = "login",
   query = "",
   pendingCloudMode = null;
 let reconstructionMode = "gaussian";
+let reconstructionQuality = "quick";
 let demo = true,
   mode = "replay",
   offline = false,
@@ -112,7 +113,7 @@ function model() {
       )
       .join(
         "",
-      )}<span>${source[2]}</span></div><div class="model-toolbar"><div class="interaction-tabs"><button class="button small active" data-interaction="pan" aria-pressed="true">平移</button><button class="button small" data-interaction="rotate" aria-pressed="false">旋转</button></div><div class="viewer-actions"><button class="icon-button" id="zoomOut" aria-label="缩小">−</button><button class="icon-button" id="zoomIn" aria-label="放大">＋</button><button class="button small" id="resetView">复位</button></div></div><div class="cloud-stage" id="cloudStage"><canvas id="cloudCanvas" tabindex="0" aria-label="三维点云，拖动平移，右键或Shift拖动旋转，滚轮缩放"></canvas><div class="stage-label"><strong>${source[1]}</strong></div>${task.events.map((d, i) => `<button class="model-marker" data-defect="${i}" aria-label="演示标注 ${d.id}" style="display:none">${i + 1}</button>`).join("")}<div class="cloud-status" id="cloudStatus">正在读取点云…</div><div class="model-help">拖动平移 · 右键 / Shift 旋转 · 滚轮缩放</div></div><div class="model-footer"><span id="pointCount">PLY 读取中</span><span>${reconstructionMode === "gaussian" ? "3DGS 实景渲染" : "保留点云原色"}</span></div></section><div class="stack"><section class="panel"><div class="panel-head"><h2>缺陷详情</h2></div><div id="defectDetail"></div></section><section class="panel"><div class="panel-head"><h2>标注列表</h2></div><div class="defect-list">${task.events.map((d, i) => `<button class="defect-select" data-defect="${i}"><span class="number">${i + 1}</span><span><strong>${d.title}</strong><small>${d.id}</small></span></button>`).join("")}</div></section></div></div>`
+      )}<span>${source[2]}</span></div><div class="model-toolbar"><div class="interaction-tabs"><button class="button small active" data-interaction="pan" aria-pressed="true">平移</button><button class="button small" data-interaction="rotate" aria-pressed="false">旋转</button></div><div class="viewer-actions">${reconstructionMode === "gaussian" ? `<button class="button small" id="modelQuality" title="轻量模型优先显示；完整模型保留全部高斯点">${reconstructionQuality === "quick" ? "载入完整模型" : "切回轻量模型"}</button>` : ""}<button class="icon-button" id="zoomOut" aria-label="缩小">−</button><button class="icon-button" id="zoomIn" aria-label="放大">＋</button><button class="button small" id="resetView">复位</button></div></div><div class="cloud-stage" id="cloudStage"><canvas id="cloudCanvas" tabindex="0" aria-label="三维点云，拖动平移，右键或Shift拖动旋转，滚轮缩放"></canvas><div class="stage-label"><strong>${source[1]}</strong></div>${task.events.map((d, i) => `<button class="model-marker" data-defect="${i}" aria-label="演示标注 ${d.id}" style="display:none">${i + 1}</button>`).join("")}<div class="cloud-status" id="cloudStatus">正在读取点云…</div><div class="model-help">拖动平移 · 右键 / Shift 旋转 · 滚轮缩放</div></div><div class="model-footer"><span id="pointCount">PLY 读取中</span><span>${reconstructionMode === "gaussian" ? "3DGS 实景渲染" : "保留点云原色"}</span></div></section><div class="stack"><section class="panel"><div class="panel-head"><h2>缺陷详情</h2></div><div id="defectDetail"></div></section><section class="panel"><div class="panel-head"><h2>标注列表</h2></div><div class="defect-list">${task.events.map((d, i) => `<button class="defect-select" data-defect="${i}"><span class="number">${i + 1}</span><span><strong>${d.title}</strong><small>${d.id}</small></span></button>`).join("")}</div></section></div></div>`
   );
 }
 function report() {
@@ -126,7 +127,7 @@ function report() {
       "",
       `<a href="${task.report}" download="${number}-巡检报告.pdf" class="button primary">${icon("download")}下载报告</a>`,
     ) +
-    `<div class="report-layout"><section class="report-document"><div class="report-document-toolbar"><strong>${number}</strong><span id="reportPageCount">第 1 页 / 共 4 页</span></div><img class="report-sheet" id="reportSheet" src="assets/reports/${task.id}-page-1.png?v=20261117-clean" alt="巡检报告第1页"/></section><aside class="stack"><section class="panel report-side"><h3>报告信息</h3><dl><div><dt>任务</dt><dd>${task.name}</dd></div><div><dt>报告版本</dt><dd>资料复核版 / V2.0</dd></div><div><dt>编制日期</dt><dd>2026-11-17</dd></div></dl><div class="report-actions"><button class="button" id="previewReport">打开 PDF</button><a class="button" href="#monitor">返回监控</a></div></section><section class="panel report-side"><h3>报告目录</h3><div class="report-page-list">${pageNames.map((name, i) => `<button data-report-page="${i + 1}" class="${i === 0 ? "active" : ""}" aria-pressed="${i === 0}"><span>0${i + 1}</span>${name}</button>`).join("")}</div></section></aside></div>`
+    `<div class="report-layout"><section class="report-document"><div class="report-document-toolbar"><strong>${number}</strong><span id="reportPageCount">第 1 页 / 共 4 页</span></div><div class="report-page-stage"><div id="reportLoading" class="report-loading" role="status">正在载入报告…</div><img class="report-sheet" id="reportSheet" alt="巡检报告第1页" decoding="async" hidden/></div></section><aside class="stack"><section class="panel report-side"><h3>报告信息</h3><dl><div><dt>任务</dt><dd>${task.name}</dd></div><div><dt>报告版本</dt><dd>资料复核版 / V2.0</dd></div><div><dt>编制日期</dt><dd>2026-11-17</dd></div></dl><div class="report-actions"><button class="button" id="previewReport">打开 PDF</button><a class="button" href="#monitor">返回监控</a></div></section><section class="panel report-side"><h3>报告目录</h3><div class="report-page-list">${pageNames.map((name, i) => `<button data-report-page="${i + 1}" class="${i === 0 ? "active" : ""}" aria-pressed="${i === 0}"><span>0${i + 1}</span>${name}</button>`).join("")}</div></section></aside></div>`
   );
 }
 function sampleAt(t) {
@@ -356,6 +357,10 @@ function bindModel() {
       render();
     };
   });
+  if ($("#modelQuality")) $("#modelQuality").onclick = () => {
+    reconstructionQuality = reconstructionQuality === "quick" ? "full" : "quick";
+    render();
+  };
   if (reconstructionMode === "legacy") {
     bindLegacyModel();
     return;
@@ -389,7 +394,7 @@ function bindModel() {
         });
       }),
   );
-  import("./reconstruction.js?v=20261117-model")
+  import("./reconstruction.bundle.js?v=20261117-fast")
     .then(({ ReconstructionView }) => {
       if (!active) return;
       instance = new ReconstructionView(
@@ -412,8 +417,9 @@ function bindModel() {
           if (active)
             $("#pointCount").textContent =
               count.toLocaleString() +
-              (reconstructionMode === "gaussian" ? " 个高斯点" : " 个点");
+              (reconstructionMode === "gaussian" ? (reconstructionQuality === "quick" ? " 个高斯点 · 轻量预览" : " 个高斯点 · 完整模型") : " 个点");
         },
+        reconstructionQuality,
       );
       instance.panMode = pan;
       cloud = instance;
@@ -506,20 +512,37 @@ function bind() {
         "巡检报告",
         `<iframe title="${task.code} 巡检报告" src="${task.report}"></iframe>`,
       );
-    $$("[data-report-page]").forEach(
-      (button) =>
-        (button.onclick = () => {
-          const page = button.dataset.reportPage;
-          $("#reportSheet").src =
-            `assets/reports/${task.id}-page-${page}.png?v=20261117-clean`;
-          $("#reportSheet").alt = `巡检报告第${page}页`;
-          $("#reportPageCount").textContent = `第 ${page} 页 / 共 4 页`;
-          $$("[data-report-page]").forEach((b) => {
-            b.classList.toggle("active", b === button);
-            b.setAttribute("aria-pressed", String(b === button));
-          });
-        }),
-    );
+    let request = 0, active = true;
+    cleanup = () => { active = false; request++; };
+    const showPage = async (page) => {
+      const token = ++request;
+      const status = $("#reportLoading"), sheet = $("#reportSheet");
+      status.hidden = false;
+      status.textContent = "正在载入报告…";
+      sheet.hidden = true;
+      const image = new Image();
+      image.src = `assets/reports/${task.id}-page-${page}.webp?v=20261117-fast`;
+      try {
+        await image.decode();
+        if (!active || token !== request) return;
+        sheet.src = image.src;
+        sheet.alt = `巡检报告第${page}页`;
+        sheet.hidden = false;
+        status.hidden = true;
+        $("#reportPageCount").textContent = `第 ${page} 页 / 共 4 页`;
+        $$("[data-report-page]").forEach((b) => {
+          const selected = b.dataset.reportPage === String(page);
+          b.classList.toggle("active", selected);
+          b.setAttribute("aria-pressed", String(selected));
+        });
+      } catch {
+        if (active && token === request) status.textContent = "暂时无法载入，请点击目录重试。";
+      }
+    };
+    $$("[data-report-page]").forEach(button => {
+      button.onclick = () => showPage(button.dataset.reportPage);
+    });
+    showPage(1);
   }
   if (current === "data") {
     renderFiles();

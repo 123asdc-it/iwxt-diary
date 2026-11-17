@@ -8,7 +8,8 @@ import {
 const ASSETS = "assets/reconstruction/";
 
 export class ReconstructionView {
-  constructor(canvas, mode, onProject, onStatus, onReady) {
+  constructor(canvas, mode, onProject, onStatus, onReady, quality = "quick") {
+    this.quality = quality;
     this.alive = true;
     this.mode = mode;
     this.onProject = onProject;
@@ -66,11 +67,12 @@ export class ReconstructionView {
       this.onStatus(
         this.mode === "gaussian" ? "正在加载实景重建…" : "正在读取稀疏点云…",
       );
-      const response = await fetch(ASSETS + "metadata.json", {
+      const response = await fetch(ASSETS + "metadata.json?v=20261117-fast", {
         signal: this.abort.signal,
       });
       if (!response.ok) throw Error("模型信息读取失败");
-      this.metadata = (await response.json())[this.mode];
+      const metadata = await response.json();
+      this.metadata = metadata[this.mode === "gaussian" && this.quality === "quick" ? "quick" : this.mode];
       if (!this.alive) return;
       this.reset();
       if (this.mode === "gaussian") {
@@ -87,12 +89,15 @@ export class ReconstructionView {
           sphericalHarmonicsDegree: 0,
           sceneRevealMode: SceneRevealMode.Instant,
         });
-        const loading = this.viewer.addSplatScene(ASSETS + "scene.splat", {
+        const loading = this.viewer.addSplatScene(ASSETS + (this.quality === "quick" ? "scene-quick.spz" : "scene.splat"), {
           showLoadingUI: false,
           splatAlphaRemovalThreshold: 0,
-          onProgress: (percent) => {
-            if (this.alive)
-              this.onStatus(`正在加载实景重建… ${Math.round(percent)}%`);
+          onProgress: (percent, label, phase) => {
+            if (!this.alive) return;
+            const kind = this.quality === "quick" ? "轻量模型" : "完整模型";
+            this.onStatus(phase === 0
+              ? (percent > 0 ? `正在下载${kind}… ${Math.round(percent)}%` : `正在连接${kind}…`)
+              : `正在渲染${kind}…`);
           },
         });
         // The library's AbortablePromise.then only accepts a success callback.
