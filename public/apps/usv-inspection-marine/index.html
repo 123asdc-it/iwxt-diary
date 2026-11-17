@@ -9,23 +9,19 @@
       content="舟行见微 · 岸堤巡检工作台，海事监控台方案 B 预览。"
     />
     <title>舟行见微 · 岸堤巡检工作台</title>
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23152530'/%3E%3Cpath d='M8 25L20 10l12 15-12 6z' fill='%2364ddbf'/%3E%3C/svg%3E"
-    />
+    <link rel="icon" type="image/png" href="assets/brand-logo.png" />
 
     <link rel="stylesheet" href="vendor/leaflet.css" />
-    <link rel="stylesheet" href="marine.css?v=20261117-fast5" />
+    <link rel="stylesheet" href="marine.css?v=20261118-brand" />
   </head>
   <body>
     <a class="skip-link" href="#main">跳至主要内容</a>
     <header class="site-header">
-      <a class="brand" href="#tasks" aria-label="舟行见微首页"
-        ><svg viewBox="0 0 40 40" aria-hidden="true">
-          <path d="M13 18l7-11 6 7M6 24q7-5 14-1t14-1" />
-          <path d="M4 33q5-4 10 0t10 0t12 0" /></svg
-        ><span>舟行见微</span></a
-      >
+      <a class="brand" href="#monitor" aria-label="舟行见微 · 巡检监控">
+        <svg class="brand-logo" viewBox="5 96 381 172" role="img" aria-label="舟行见微">
+          <image href="assets/brand-logo.png" width="404" height="274" />
+        </svg>
+      </a>
 
       <div class="header-actions">
         <button class="demo-info-button" id="demoInfo">演示说明</button
@@ -34,6 +30,7 @@
     </header>
     <aside class="marine-rail">
       <nav id="railNav" aria-label="侧栏导航"></nav>
+      <button class="rail-logout" id="logout">退出登录</button>
     </aside>
     <div class="app">
       <span id="breadcrumb" hidden>巡检监控</span>
@@ -53,7 +50,7 @@
     <script src="route-map.js?v=20261117-fast5"></script>
     <script src="tasks.js?v=20261117-fast5"></script>
     <script src="cloud.js?v=20261117-legacy"></script>
-    <script src="app.js?v=20261117-legacy"></script>
+    <script src="app.js?v=20261118-brand"></script>
     <script src="archive-ui.js?v=20261117-fast5"></script>
     <script>
       render();

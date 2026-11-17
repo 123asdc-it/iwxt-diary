@@ -19,7 +19,6 @@ const paths = {
 const icon = (n) =>
   `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${paths[n] || paths.data}</svg>`;
 const pages = [
-  ["tasks", "任务选择", "00"],
   ["monitor", "巡检监控", "01"],
   ["model", "三维重建", "02"],
   ["report", "巡检报告", "03"],
@@ -86,17 +85,6 @@ function stat(ic, label, value, unit, note) {
 function login() {
   return `<section class="login-layout"><div class="login-intro"><h1>每一次巡检，<br>都有迹可循。</h1><p>岸堤巡检与三维重建工作台</p><img src="assets/usv.png" alt="巡检无人船"/></div><form id="loginForm" class="login-card"><h2>登录工作台</h2><label>账号<input name="account" autocomplete="username" value="demo" required></label><label>密码<input name="password" type="password" autocomplete="current-password" placeholder="请输入密码" required></label><p id="loginError" class="error-text" role="alert"></p><button class="button primary" type="submit">登录 ${icon("arrow")}</button><small>演示账号 demo / 密码 123456</small></form></section>`;
 }
-function taskList() {
-  return (
-    heading(
-      "MISSION LIBRARY / 00",
-      "选择巡检任务",
-      "从一次试验开始，查看影像、设备状态与三维成果。",
-      `<button class="button" id="logout">退出登录</button>`,
-    ) +
-    `<div class="task-grid">${tasks.map((t, i) => `<article class="panel task-card"><div class="task-cover"><img src="${t.poster}" alt="船载试验影像素材"/><span class="task-index">0${i + 1}</span></div><div class="task-card-body"><div class="task-kind">${t.kind}</div><h2>${t.name}</h2><h3>${t.subtitle}</h3><div class="task-card-actions"><button class="button primary" data-enter="${t.id}" data-target="monitor">进入监控 ${icon("arrow")}</button><button class="button" data-enter="${t.id}" data-target="model">三维重建</button></div></div></article>`).join("")}</div>`
-  );
-}
 function monitor() {
   return `<div class="marine-toolbar"><label class="task-picker"><span>当前任务</span><select id="taskSelect" aria-label="选择巡检任务">${tasks.map((t) => `<option value="${t.id}" ${t.id === task.id ? "selected" : ""}>${t.name} · ${t.subtitle}</option>`).join("")}</select></label><label class="demo-switch"><input id="demoToggle" type="checkbox" ${demo ? "checked" : ""}>演示数据</label><div class="mode-switch" aria-label="数据模式"><button data-mode="live" aria-pressed="${mode === "live"}">实时模式</button><button data-mode="replay" aria-pressed="${mode === "replay"}">历史回放</button></div><span class="pill muted" id="connectionState">演示在线</span><div class="control-spacer"></div><button class="button small" id="connectionToggle" ${!demo ? "disabled" : ""}>${offline ? "恢复演示设备" : "模拟离线"}</button><button class="button primary small" id="startMission">${demo ? "开始任务" : "下发真实任务"}</button></div>
   <div class="marine-workspace"><section class="panel route-panel"><div class="panel-head"><h2>航迹地图</h2><span class="map-heading">${task.mapUrl ? "上位机航迹" : "青岛 · 演示航迹"}</span><button class="button small" id="fitRoute">定位</button></div><div class="route-host" id="routeHost">${task.mapUrl ? `<iframe id="hostMap" title="上位机原版航迹页面" src="${esc(task.mapUrl)}"></iframe>` : `<div id="qingdaoMap" aria-label="青岛地图与演示航迹"></div><div id="mapLoading" class="map-loading">正在加载青岛地图…</div>`}<div class="map-north" aria-hidden="true">N<br>▲</div></div><div class="route-readout"><span>演示船位 <b id="positionValue">—</b></span><span id="mapSync">演示航迹</span></div></section>
@@ -118,7 +106,7 @@ function model() {
       "RECONSTRUCTION / " + task.code,
       "三维重建与缺陷标注",
       task.name + " · 新增实景模型与稀疏点云，演示任务共用",
-      `<a class="button" href="#tasks">切换任务</a><a class="button primary" href="#report">巡检报告 ${icon("arrow")}</a>`,
+      `<a class="button" href="#monitor">巡检监控</a><a class="button primary" href="#report">巡检报告 ${icon("arrow")}</a>`,
     ) +
     `<div class="model-layout v4-model"><section class="panel model-main"><div class="reconstruction-tabs" aria-label="重建视图">${[
       ["gaussian", "实景重建"],
@@ -514,30 +502,14 @@ function bind() {
       const f = new FormData(e.target);
       if (f.get("account") === "demo" && f.get("password") === "123456") {
         sessionStorage.setItem("shore-login", "yes");
-        navigate("tasks");
+        navigate("monitor");
       } else
         $("#loginError").textContent = "账号或密码不正确，请使用下方演示账号。";
     };
-  if (current === "tasks") {
+  if (current === "monitor") {
+    bindMonitor();
     loadReconstructionModule().catch(() => {});
-    $$("[data-enter]").forEach(
-      (b) =>
-        (b.onclick = () => {
-          task = tasks.find((t) => t.id === b.dataset.enter);
-          sessionStorage.setItem("shore-task", task.id);
-          offline = false;
-          demo = true;
-          navigate(b.dataset.target);
-        }),
-    );
-    $("#logout").onclick = () => {
-      sessionStorage.removeItem("shore-login");
-      sessionStorage.removeItem("shore-task");
-      task = null;
-      navigate("login");
-    };
   }
-  if (current === "monitor") bindMonitor();
   if (current === "model") bindModel();
   if (current === "report") {
     $("#previewReport").onclick = () =>
@@ -624,9 +596,9 @@ function render() {
     sessionStorage.getItem("shore-login") === "yes"
       ? pages.some((p) => p[0] === requested)
         ? requested
-        : "tasks"
+        : "monitor"
       : "login";
-  if (!task && !["login", "tasks"].includes(current)) {
+  if (!task && current !== "login") {
     task = tasks[0];
     sessionStorage.setItem("shore-task", task.id);
   }
@@ -636,7 +608,6 @@ function render() {
   document.body.dataset.page = current;
   $("#main").innerHTML = {
     login,
-    tasks: taskList,
     monitor,
     model,
     report,
@@ -679,3 +650,12 @@ $("#demoInfo").onclick = () =>
     "演示说明",
     `<div class="demo-info-content"><p>当前为展示环境，三个任务复用现有视频和三维素材。设备状态、青岛航迹及异常标注为演示数据，不代表三次独立实测试验。</p><p>地图恢复青岛底图与示例航线；上位机原版页面和真实设备链路尚未接入。关闭演示开关后不下发真实指令。</p><p>实景重建默认采用正面视角，大幅侧转可能出现伪影，点击复位即可返回。报告按现有材料编排，待人工复核与签署。</p></div>`,
   );
+
+$("#logout").onclick = () => {
+  sessionStorage.removeItem("shore-login");
+  sessionStorage.removeItem("shore-task");
+  task = null;
+  offline = false;
+  demo = true;
+  navigate("login");
+};
