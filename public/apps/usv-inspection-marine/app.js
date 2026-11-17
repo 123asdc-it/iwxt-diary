@@ -32,6 +32,7 @@ let current = "login",
   filter = "all",
   query = "",
   pendingCloudMode = null;
+let reconstructionMode = "gaussian";
 let demo = true,
   mode = "replay",
   offline = false,
@@ -87,14 +88,31 @@ function monitor() {
 }
 
 function model() {
+  if (pendingCloudMode === "raw") reconstructionMode = "legacy";
+  const source = {
+    gaussian: ["3D GAUSSIAN SPLATTING", "实景重建", "317,107 个高斯点"],
+    sparse: ["SPARSE POINT CLOUD", "稀疏点云", "6,907 个点"],
+    legacy: ["SOURCE MODEL / PLY", "原有点云", "原有素材"],
+  }[reconstructionMode];
   return (
     heading(
       "RECONSTRUCTION / " + task.code,
       "三维重建与缺陷标注",
-      task.name + " · 现有 PLY 素材，任务间复用",
+      task.name + " · 新增实景模型与稀疏点云，演示任务共用",
       `<a class="button" href="#tasks">切换任务</a><a class="button primary" href="#report">巡检报告 ${icon("arrow")}</a>`,
     ) +
-    `<div class="model-layout v4-model"><section class="panel model-main"><div class="model-toolbar"><div class="interaction-tabs"><button class="button small active" data-interaction="pan" aria-pressed="true">平移</button><button class="button small" data-interaction="rotate" aria-pressed="false">旋转</button></div><span class="pill warning">素材点云 · 演示标注</span><div class="viewer-actions"><button class="icon-button" id="zoomOut" aria-label="缩小">−</button><button class="icon-button" id="zoomIn" aria-label="放大">＋</button><button class="button small" id="resetView">复位</button></div></div><div class="cloud-stage" id="cloudStage"><canvas id="cloudCanvas" tabindex="0" aria-label="三维点云，拖动平移，右键或Shift拖动旋转，滚轮缩放"></canvas><div class="stage-label">SOURCE MODEL / PLY<strong>现有实采点云素材</strong></div>${task.events.map((d, i) => `<button class="model-marker" data-defect="${i}" aria-label="演示标注 ${d.id}" style="display:none">${i + 1}</button>`).join("")}<div class="cloud-status" id="cloudStatus">正在读取点云…</div><div class="model-help">拖动平移 · 右键 / Shift 旋转 · 滚轮缩放</div></div><div class="model-footer"><span id="pointCount">PLY 读取中</span><span>保留点云原色</span></div></section><div class="stack"><section class="panel"><div class="panel-head"><h2>缺陷详情</h2><span class="pill warning">示意标注</span></div><div id="defectDetail"></div></section><section class="panel"><div class="panel-head"><h2>标注列表</h2><span class="meta">绑定模型坐标</span></div><div class="defect-list">${task.events.map((d, i) => `<button class="defect-select" data-defect="${i}"><span class="number">${i + 1}</span><span><strong>${d.title}</strong><small>${d.id} · 演示位置</small></span></button>`).join("")}</div></section><div class="model-notice"><strong>待替换更好的点云素材</strong><p>当前保留已有 PLY，不展示虚构的两期对比。缺陷为查看流程示意，非实测判定。</p></div></div></div>`
+    `<div class="model-layout v4-model"><section class="panel model-main"><div class="reconstruction-tabs" aria-label="重建视图">${[
+      ["gaussian", "实景重建"],
+      ["sparse", "稀疏点云"],
+      ["legacy", "原有点云"],
+    ]
+      .map(
+        ([id, label]) =>
+          `<button class="button small ${reconstructionMode === id ? "active" : ""}" data-reconstruction="${id}" aria-pressed="${reconstructionMode === id}">${label}</button>`,
+      )
+      .join(
+        "",
+      )}<span>${source[2]}</span></div><div class="model-toolbar"><div class="interaction-tabs"><button class="button small active" data-interaction="pan" aria-pressed="true">平移</button><button class="button small" data-interaction="rotate" aria-pressed="false">旋转</button></div><span class="pill warning">模型素材 · 演示标注</span><div class="viewer-actions"><button class="icon-button" id="zoomOut" aria-label="缩小">−</button><button class="icon-button" id="zoomIn" aria-label="放大">＋</button><button class="button small" id="resetView">复位</button></div></div><div class="cloud-stage" id="cloudStage"><canvas id="cloudCanvas" tabindex="0" aria-label="三维点云，拖动平移，右键或Shift拖动旋转，滚轮缩放"></canvas><div class="stage-label">${source[0]}<strong>${source[1]}</strong></div>${task.events.map((d, i) => `<button class="model-marker" data-defect="${i}" aria-label="演示标注 ${d.id}" style="display:none">${i + 1}</button>`).join("")}<div class="cloud-status" id="cloudStatus">正在读取点云…</div><div class="model-help">拖动平移 · 右键 / Shift 旋转 · 滚轮缩放</div></div><div class="model-footer"><span id="pointCount">PLY 读取中</span><span>${reconstructionMode === "gaussian" ? "3DGS 实景渲染" : "保留点云原色"}</span></div></section><div class="stack"><section class="panel"><div class="panel-head"><h2>缺陷详情</h2><span class="pill warning">示意标注</span></div><div id="defectDetail"></div></section><section class="panel"><div class="panel-head"><h2>标注列表</h2><span class="meta">绑定模型坐标</span></div><div class="defect-list">${task.events.map((d, i) => `<button class="defect-select" data-defect="${i}"><span class="number">${i + 1}</span><span><strong>${d.title}</strong><small>${d.id} · 演示位置</small></span></button>`).join("")}</div></section><div class="model-notice"><strong>本次新增两份重建素材</strong><p>默认正面视角展示岸边实景，大幅侧转可能出现重建伪影，可点击复位。两份素材与任务、视频的对应关系待确认；标注仅为交互示意。</p></div></div></div>`
   );
 }
 function report() {
@@ -323,6 +341,85 @@ function selectDefect(i) {
   };
 }
 function bindModel() {
+  $$("[data-reconstruction]").forEach((button) => {
+    button.onclick = () => {
+      reconstructionMode = button.dataset.reconstruction;
+      pendingCloudMode = null;
+      render();
+    };
+  });
+  if (reconstructionMode === "legacy") {
+    bindLegacyModel();
+    return;
+  }
+  pendingCloudMode = null;
+  selectDefect(0);
+  $$("[data-defect]").forEach(
+    (b) => (b.onclick = () => selectDefect(+b.dataset.defect)),
+  );
+  const stage = $("#cloudStage"),
+    canvas = $("#cloudCanvas");
+  const status = stage.querySelector("#cloudStatus");
+  let active = true,
+    instance = null,
+    pan = true;
+  cleanup = () => {
+    active = false;
+    instance?.dispose();
+  };
+  $("#resetView").onclick = () => instance?.reset();
+  $("#zoomOut").onclick = () => instance?.zoom(1.15);
+  $("#zoomIn").onclick = () => instance?.zoom(1 / 1.15);
+  $$("[data-interaction]").forEach(
+    (button) =>
+      (button.onclick = () => {
+        pan = button.dataset.interaction === "pan";
+        if (instance) instance.panMode = pan;
+        $$("[data-interaction]").forEach((b) => {
+          b.classList.toggle("active", b === button);
+          b.setAttribute("aria-pressed", String(b === button));
+        });
+      }),
+  );
+  import("./reconstruction.js?v=20261117-model")
+    .then(({ ReconstructionView }) => {
+      if (!active) return;
+      instance = new ReconstructionView(
+        canvas,
+        reconstructionMode,
+        (positions) => {
+          if (!active) return;
+          stage.querySelectorAll(".model-marker").forEach((marker, i) => {
+            marker.style.left = positions[i][0] + "px";
+            marker.style.top = positions[i][1] + "px";
+            marker.style.display = positions[i][2] ? "" : "none";
+          });
+        },
+        (text) => {
+          if (!active) return;
+          status.textContent = text;
+          status.hidden = !text;
+        },
+        (count) => {
+          if (active)
+            $("#pointCount").textContent =
+              count.toLocaleString() +
+              (reconstructionMode === "gaussian"
+                ? " 个高斯点 · 新增素材"
+                : " 个点 · 新增素材");
+        },
+      );
+      instance.panMode = pan;
+      cloud = instance;
+    })
+    .catch(() => {
+      if (active) {
+        status.hidden = false;
+        status.textContent = "三维组件加载失败，请刷新页面重试。";
+      }
+    });
+}
+function bindLegacyModel() {
   selectDefect(0);
   $$("[data-defect]").forEach(
     (b) => (b.onclick = () => selectDefect(+b.dataset.defect)),
@@ -466,7 +563,14 @@ function render() {
   $("#railNav").innerHTML = $("#navigation").innerHTML;
   $$("#navigation a, #railNav a").forEach((link) => {
     link.onclick = (event) => {
-      if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      if (
+        event.button ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      )
+        return;
       event.preventDefault();
       navigate(link.hash.slice(1));
     };

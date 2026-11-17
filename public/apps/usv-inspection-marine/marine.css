@@ -220,6 +220,40 @@ main {
 .cloud-stage {
   background: radial-gradient(ellipse at center, #2a414e, #0c1c26);
 }
+.reconstruction-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #2b424f;
+  background: #132630;
+}
+.reconstruction-tabs .active {
+  color: #102b26;
+  background: #64ddbf;
+  border-color: #64ddbf;
+}
+.reconstruction-tabs > span {
+  margin-left: auto;
+  color: #8da9b9;
+  font-size: 13px;
+}
+.reconstruction-tabs ~ .cloud-stage {
+  height: calc(100vh - 430px);
+}
+.reconstruction-tabs ~ .cloud-stage .stage-label {
+  padding: 10px 14px;
+  background: #10212bd9;
+  border: 1px solid #3b5966;
+  border-radius: 6px;
+}
+.reconstruction-tabs ~ .cloud-stage .model-help {
+  background: #10212bd9;
+  padding: 6px 12px;
+  border-radius: 5px;
+  color: #d2e3e9;
+}
 .model-marker {
   background: #245e51;
   border-color: #83d8c2;
