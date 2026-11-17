@@ -1,0 +1,308 @@
+[
+  {
+    "slug": "mathematics",
+    "title": "MIT 6.042J Mathematics for Computer Science syllabus",
+    "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/pages/syllabus/",
+    "whatSupported": "支持逻辑证明、离散对象、图与离散概率的内容边界；模块化先修由本图谱重新组织。"
+  },
+  {
+    "slug": "mathematics",
+    "title": "MIT 18.06 Linear Algebra syllabus",
+    "url": "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/pages/syllabus/",
+    "whatSupported": "支持线性代数主题范围；未把行政课程先修整体照搬为每个概念的必修门槛。"
+  },
+  {
+    "slug": "programming",
+    "title": "Python 官方教程",
+    "url": "https://docs.python.org/3/tutorial/",
+    "whatSupported": "支持语言构造与标准工具范围；官方教程面向已有基本编程概念者，故另补入门控制流。"
+  },
+  {
+    "slug": "programming",
+    "title": "The Missing Semester of Your CS Education",
+    "url": "https://missing.csail.mit.edu/",
+    "whatSupported": "支持命令行、开发环境、调试剖析、版本管理与工具练习。"
+  },
+  {
+    "slug": "algorithms",
+    "title": "MIT 6.006 Introduction to Algorithms syllabus",
+    "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/pages/syllabus/",
+    "whatSupported": "支持编程、离散数学与算法分析的基础衔接及实现要求。"
+  },
+  {
+    "slug": "architecture",
+    "title": "Berkeley CS61C Fall 2026",
+    "url": "https://cs61c.org/fa26/",
+    "whatSupported": "支持数据表示、C、汇编、调用、处理器、缓存与并行的主题衔接。"
+  },
+  {
+    "slug": "operating-systems",
+    "title": "Operating Systems: Three Easy Pieces",
+    "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
+    "whatSupported": "支持虚拟化、并发、持久化三条系统主线；此路线将按需基础拆到模块。"
+  },
+  {
+    "slug": "operating-systems",
+    "title": "Berkeley CS61C Fall 2026",
+    "url": "https://cs61c.org/fa26/",
+    "whatSupported": "支持数据表示、C、汇编、调用、处理器、缓存与并行的主题衔接。"
+  },
+  {
+    "slug": "networks",
+    "title": "Kurose 与 Ross 网络课程官方在线讲座",
+    "url": "https://gaia.cs.umass.edu/kurose_ross/lectures.php",
+    "whatSupported": "支持应用、传输、网络数据面控制面、链路与安全的分层覆盖；本路线采用另一可行顺序。"
+  },
+  {
+    "slug": "networks",
+    "title": "MDN HTTP Overview",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview",
+    "whatSupported": "支持请求响应、客户端服务器、首部与缓存等HTTP机制。"
+  },
+  {
+    "slug": "networks",
+    "title": "RFC 8446: TLS 1.3",
+    "url": "https://www.rfc-editor.org/rfc/rfc8446.html",
+    "whatSupported": "支持认证、密钥交换、握手及记录保护的职责区分；不把历史TLS流程泛化为所有版本。"
+  },
+  {
+    "slug": "databases",
+    "title": "CMU 15-445/645 Fall 2025 syllabus",
+    "url": "https://15445.courses.cs.cmu.edu/fall2025/syllabus.html",
+    "whatSupported": "支持存储、索引、查询执行优化、事务并发与恢复的系统实现路线；SQL入门不照搬整门系统课先修。"
+  },
+  {
+    "slug": "databases",
+    "title": "PostgreSQL Transaction Isolation",
+    "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+    "whatSupported": "支持隔离异常、快照、可串行化及标准与具体实现差异的说明。"
+  },
+  {
+    "slug": "compilers-theory",
+    "title": "Stanford CS143 Compilers",
+    "url": "https://web.stanford.edu/class/cs143/",
+    "whatSupported": "支持词法、语法、语义、IR、优化、代码生成和运行时的编译器流程。"
+  },
+  {
+    "slug": "compilers-theory",
+    "title": "MIT 6.042J Mathematics for Computer Science syllabus",
+    "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/pages/syllabus/",
+    "whatSupported": "支持逻辑证明、离散对象、图与离散概率的内容边界；模块化先修由本图谱重新组织。"
+  },
+  {
+    "slug": "software-engineering",
+    "title": "MIT 6.031 Software Construction",
+    "url": "https://web.mit.edu/6.031/www/sp21/",
+    "whatSupported": "支持规格、测试、抽象、可变性与并发等软件构造基础；本图谱扩展到发布与维护。"
+  },
+  {
+    "slug": "software-engineering",
+    "title": "The Missing Semester of Your CS Education",
+    "url": "https://missing.csail.mit.edu/",
+    "whatSupported": "支持命令行、开发环境、调试剖析、版本管理与工具练习。"
+  },
+  {
+    "slug": "frontend",
+    "title": "MDN Web 核心课程",
+    "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core",
+    "whatSupported": "核对 HTML/CSS/JavaScript 的基础课程组织；本路线另行补入请求边界、无障碍和验收任务。"
+  },
+  {
+    "slug": "frontend",
+    "title": "React 组件与状态",
+    "url": "https://react.dev/learn/thinking-in-react",
+    "whatSupported": "核对静态组件、最小状态、状态归属和单向数据流；路线顺序与任务由本次重新组织。"
+  },
+  {
+    "slug": "backend",
+    "title": "MDN 服务端入门",
+    "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/First_steps",
+    "whatSupported": "核对服务端入门以请求响应、动态网站及框架为入口；不把完整前端课程作硬门槛。"
+  },
+  {
+    "slug": "backend",
+    "title": "PostgreSQL 事务",
+    "url": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
+    "whatSupported": "核对事务原子性、提交与回滚，用于 SQL→业务不变量→缓存一致性的前置衔接。"
+  },
+  {
+    "slug": "mobile-desktop",
+    "title": "Android Basics with Compose",
+    "url": "https://developer.android.com/courses/android-basics-compose/course",
+    "whatSupported": "核对 Android 入门从 Kotlin、简单界面与状态逐步进入应用构建；Android/iOS/跨平台的任选关系为本路线设计。"
+  },
+  {
+    "slug": "data-engineering",
+    "title": "Spark Structured Streaming 编程指南",
+    "url": "https://spark.apache.org/docs/latest/streaming/index.html",
+    "whatSupported": "核对批与流的增量表模型、事件时间窗口、检查点，以及不同执行模式交付语义；端到端任务另明确输出端条件。"
+  },
+  {
+    "slug": "data-engineering",
+    "title": "PostgreSQL 事务教程",
+    "url": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
+    "whatSupported": "核对原子提交与失败回滚，支持采集输出及幂等写入的事务基础。"
+  },
+  {
+    "slug": "cloud-distributed",
+    "title": "MIT 6.5840 Distributed Systems 课程安排",
+    "url": "https://pdos.csail.mit.edu/6.824/schedule.html",
+    "whatSupported": "核对课程覆盖 RPC、线程、复制、Raft/Paxos、一致性与事务；本路线把消息失败模型显式放在共识之前。"
+  },
+  {
+    "slug": "cloud-distributed",
+    "title": "Kubernetes 概览",
+    "url": "https://kubernetes.io/docs/concepts/overview/",
+    "whatSupported": "核对容器化部署、编排和声明式管理范围；容器实操与共识原理被拆成可并行分支。"
+  },
+  {
+    "slug": "game-development",
+    "title": "Godot：第一个 2D 游戏与编程前提",
+    "url": "https://docs.godotengine.org/en/stable/getting_started/first_2d_game/index.html",
+    "whatSupported": "核对先具备基础编程、从 2D 完整游戏入门的前提；引擎任选和各模块达标任务为本路线建议。"
+  },
+  {
+    "slug": "game-development",
+    "title": "Unity 事件函数执行顺序",
+    "url": "https://docs.unity.com/en-us/engine/6000.6/manual/scripting/managing-update-order/execution-order",
+    "whatSupported": "核对脚本、物理与渲染事件执行顺序，支持固定步长和游戏循环衔接。"
+  },
+  {
+    "slug": "ai-ml",
+    "title": "Stanford CS229：课程内容与数学编程前提",
+    "url": "https://cs229.stanford.edu/",
+    "whatSupported": "支持 Python/NumPy、概率、多变量微积分与线性代数入口，以及监督、无监督和学习理论范围；具体小任务是本图谱设计。"
+  },
+  {
+    "slug": "ai-ml",
+    "title": "Stanford CS231n：深度视觉学习前提",
+    "url": "https://cs231n.stanford.edu/",
+    "whatSupported": "支持进入深度网络前准备 Python、矩阵运算、导数与基础概率统计；不支持把全部视觉几何列为必修。"
+  },
+  {
+    "slug": "graphics",
+    "title": "UC Berkeley CS184：图形学课程与项目顺序",
+    "url": "https://cs184.eecs.berkeley.edu/fa26/",
+    "whatSupported": "课程展示采样与变换、投影、纹理与遮挡，以及网格、光线追踪、积分仿真的练习结构；路线中的支线门槛和检查任务为重新组织。"
+  },
+  {
+    "slug": "embedded-robotics",
+    "title": "Northwestern Modern Robotics：作者课程资源与章节",
+    "url": "https://hades.mech.northwestern.edu/index.php/Modern_Robotics",
+    "whatSupported": "支持配置空间、刚体运动、正逆运动学、动力学、轨迹规划及控制的衔接，并提供线性代数复习；本路线另补固件和状态估计。"
+  },
+  {
+    "slug": "hci",
+    "title": "MIT 6.831：设计、实现、评估与研究",
+    "url": "https://ocw.mit.edu/courses/6-831-user-interface-design-and-implementation-spring-2011/pages/syllabus/",
+    "whatSupported": "支持认知与设计原则、低保真原型、启发式评估和用户测试结构。原课程含软件实现并要求软件构造；本路线拆出无需代码的设计研究入口，不照搬整课编程要求。"
+  },
+  {
+    "slug": "hci",
+    "title": "W3C WAI：可访问性教程",
+    "url": "https://www.w3.org/WAI/tutorials/",
+    "whatSupported": "支持页面结构、菜单、图像、表格、表单与交互通知等包容性检查，适用设计者、开发者和内容作者。"
+  },
+  {
+    "slug": "hci",
+    "title": "NIST：选择实验设计",
+    "url": "https://www.itl.nist.gov/div898/handbook/pri/section3/pri3.htm",
+    "whatSupported": "支持先定目标与变量、再选择随机化或区组等实验设计；HCI 具体任务与定性方法是路线自行综合。"
+  },
+  {
+    "slug": "scientific-computing",
+    "title": "MIT 18.085：计算科学与工程大纲",
+    "url": "https://ocw.mit.edu/courses/18-085-computational-science-and-engineering-i-fall-2008/pages/syllabus/",
+    "whatSupported": "支持多变量微积分、微分方程基础，以及线性代数分解、傅里叶、有限差分与有限元的数值算法范围。"
+  },
+  {
+    "slug": "scientific-computing",
+    "title": "SciPy：数值积分与微分方程接口教程",
+    "url": "https://docs.scipy.org/doc/scipy/tutorial/integrate.html",
+    "whatSupported": "支持区分函数积分、采样数据积分和常微分方程积分，并核对数值结果和误差。"
+  },
+  {
+    "slug": "scientific-computing",
+    "title": "NIST：选择实验设计",
+    "url": "https://www.itl.nist.gov/div898/handbook/pri/section3/pri3.htm",
+    "whatSupported": "支持实验目标、变量水平、随机化和区组等设计选择；研究复现清单是本图谱制定。"
+  },
+  {
+    "slug": "computer-vision",
+    "title": "OpenCV：相机标定与三维重建",
+    "url": "https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html",
+    "whatSupported": "支持针孔投影、齐次坐标、内外参和相机到像素的坐标转换，以及标定和重建接口；几何支线不依赖完整深度学习课程。"
+  },
+  {
+    "slug": "computer-vision",
+    "title": "Stanford CS231n：深度学习视觉分支",
+    "url": "https://cs231n.stanford.edu/",
+    "whatSupported": "支持识别网络分支的编程、导数、矩阵和概率统计入口，与多视图几何分支分开安排。"
+  },
+  {
+    "slug": "security-foundations",
+    "title": "NIST 事件响应与风险管理",
+    "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+    "whatSupported": "课程主题范围与工具/机制前提；细化顺序和自检任务为本图谱重新组织。"
+  },
+  {
+    "slug": "security-foundations",
+    "title": "OWASP Web Security Testing Guide",
+    "url": "https://owasp.org/www-project-web-security-testing-guide/stable/",
+    "whatSupported": "课程主题范围与工具/机制前提；细化顺序和自检任务为本图谱重新组织。"
+  },
+  {
+    "slug": "ctf-web",
+    "title": "PortSwigger 学习路线",
+    "url": "https://portswigger.net/web-security/learning-paths",
+    "whatSupported": "课程主题范围与工具/机制前提；细化顺序和自检任务为本图谱重新组织。"
+  },
+  {
+    "slug": "ctf-web",
+    "title": "PortSwigger SQL 注入",
+    "url": "https://portswigger.net/web-security/sql-injection",
+    "whatSupported": "课程主题范围与工具/机制前提；细化顺序和自检任务为本图谱重新组织。"
+  },
+  {
+    "slug": "ctf-reverse",
+    "title": "Ghidra 官方入门课程",
+    "url": "https://ghidra.re/ghidra_docs/GhidraClass/Beginner/Introduction_to_Ghidra_Student_Guide.html",
+    "whatSupported": "课程主题范围与工具/机制前提；细化顺序和自检任务为本图谱重新组织。"
+  },
+  {
+    "slug": "ctf-reverse",
+    "title": "pwn.college Computing 101",
+    "url": "https://pwn.college/computing-101/",
+    "whatSupported": "课程主题范围与工具/机制前提；细化顺序和自检任务为本图谱重新组织。"
+  },
+  {
+    "slug": "ctf-pwn",
+    "title": "pwn.college Computing 101",
+    "url": "https://pwn.college/computing-101/",
+    "whatSupported": "课程主题范围与工具/机制前提；细化顺序和自检任务为本图谱重新组织。"
+  },
+  {
+    "slug": "ctf-pwn",
+    "title": "pwn.college CSE 365 课程",
+    "url": "https://pwn.college/cse365-s2026/",
+    "whatSupported": "课程主题范围与工具/机制前提；细化顺序和自检任务为本图谱重新组织。"
+  },
+  {
+    "slug": "ctf-crypto",
+    "title": "CryptoHack 分级课程",
+    "url": "https://cryptohack.org/courses/",
+    "whatSupported": "课程主题范围与工具/机制前提；细化顺序和自检任务为本图谱重新组织。"
+  },
+  {
+    "slug": "ctf-misc",
+    "title": "Wireshark 官方用户指南",
+    "url": "https://www.wireshark.org/docs/wsug_html_chunked/",
+    "whatSupported": "课程主题范围与工具/机制前提；细化顺序和自检任务为本图谱重新组织。"
+  },
+  {
+    "slug": "ctf-misc",
+    "title": "NIST 事件响应与证据",
+    "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+    "whatSupported": "课程主题范围与工具/机制前提；细化顺序和自检任务为本图谱重新组织。"
+  }
+]

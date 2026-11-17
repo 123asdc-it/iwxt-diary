@@ -1,0 +1,17 @@
+import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+const root=new URL('./',import.meta.url),routes=JSON.parse(await readFile(new URL('learning-routes.json',root),'utf8')),registry=JSON.parse(await readFile(new URL('module-registry.json',root),'utf8'));
+const units=new Map(),reg=new Map(registry.map(u=>[u.id,u])),slugs=new Set(),allowedDepth=new Set(['认识','理解','会用','能实现']);
+for(const r of routes){assert(!slugs.has(r.slug),'Duplicate direction');slugs.add(r.slug);assert(r.summary&&r.branching&&r.finish.length>=2&&r.entry.length&&r.sources.length,r.slug+' missing metadata');for(const s of r.stages){assert(['sequence','parallel','choose'].includes(s.mode));for(const u of s.units){assert(!units.has(u.id),'Duplicate '+u.id);units.set(u.id,u);const expected=reg.get(u.id);assert(expected,`Unregistered ${u.id}`);assert.equal(r.slug,expected.slug);assert.equal(s.name,expected.path[0]);assert.equal(u.title,expected.path[1]);assert(['core','branch','advanced'].includes(u.priority));assert(u.sequence.length>=4&&u.sequence.length<=8,`sequence ${u.id}`);assert(u.bridge.gap&&u.bridge.check&&u.bridge.steps.length>=2,`bridge ${u.id}`);assert(u.outcomes.length>=2&&u.checkpoint.task&&u.checkpoint.pass.length>=2,`checkpoint ${u.id}`);}}}
+assert.equal(routes.length,27);assert.equal(units.size,registry.length);for(const id of reg.keys())assert(units.has(id),`Missing ${id}`);
+const taxonomyContext={window:{}};vm.runInNewContext(await readFile(new URL('../../public/apps/cs-atlas/data-461bd0ba8ccc.js',root),'utf8'),taxonomyContext);
+const actual=new Map();for(const topic of taxonomyContext.window.ATLAS_DATA)for(const stage of topic.children)for(const module of stage.children)actual.set(JSON.stringify([topic.slug,stage.name,module.name]),true);
+assert.equal(actual.size,registry.length,'Registry must track the actual taxonomy');for(const r of registry)assert(actual.has(JSON.stringify([r.slug,...r.path])),`Taxonomy mapping ${r.id}`);
+const edges=[];for(const u of units.values()){for(const d of u.requires){assert(allowedDepth.has(d.depth),`Depth ${u.id}`);assert(d.reason,`Reason ${u.id}`);const ids=d.anyOf||[d.id];assert(ids.length&&(!d.anyOf||ids.length>=2),`Any of ${u.id}`);for(const id of ids){assert(units.has(id),`Invalid ref ${u.id} -> ${id}`);assert.notEqual(id,u.id,`Self dependency ${id}`);if(reg.get(u.id).slug===reg.get(id).slug)assert(id<u.id,`Forward prerequisite contradicts module order: ${u.id} -> ${id}`);edges.push([u.id,id]);}}for(const b of u.checkpoint.ifStuck)assert(units.has(b.id),`Invalid fallback ${u.id}`);}
+for(const r of routes){for(const e of r.entry)if(e.ref)assert(units.has(e.ref),`Entry ${r.slug}`);for(const s of r.sources)assert(s.title&&/^https:\/\//.test(s.url),`Source ${r.slug}`);}
+// Conservative audit: even every alternative must keep the graph acyclic.
+const visited=new Set(),active=new Set(),stack=[];
+function dfs(id){if(active.has(id))throw Error('Dependency cycle: '+[...stack.slice(stack.indexOf(id)),id].join(' -> '));if(visited.has(id))return;active.add(id);stack.push(id);for(const d of units.get(id).requires)for(const next of d.anyOf||[d.id])dfs(next);stack.pop();active.delete(id);visited.add(id);}
+for(const id of units.keys())dfs(id);
+console.log(JSON.stringify({directions:routes.length,modules:units.size,dependencies:edges.length,bridges:[...units.values()].reduce((a,u)=>a+u.bridge.steps.length,0),checkpoints:units.size,referenceIntegrity:'pass',cycleAudit:'pass'},null,2));
