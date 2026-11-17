@@ -113,7 +113,7 @@ function model() {
       )
       .join(
         "",
-      )}<span>${source[2]}</span></div><div class="model-toolbar"><div class="interaction-tabs"><button class="button small active" data-interaction="pan" aria-pressed="true">平移</button><button class="button small" data-interaction="rotate" aria-pressed="false">旋转</button></div><div class="viewer-actions">${reconstructionMode === "gaussian" ? `<button class="button small" id="modelQuality" title="轻量模型优先显示；完整模型保留全部高斯点">${reconstructionQuality === "quick" ? "载入完整模型" : "切回轻量模型"}</button>` : ""}<button class="icon-button" id="zoomOut" aria-label="缩小">−</button><button class="icon-button" id="zoomIn" aria-label="放大">＋</button><button class="button small" id="resetView">复位</button></div></div><div class="cloud-stage ${reconstructionMode === "gaussian" ? "has-model-preview" : ""}" id="cloudStage">${reconstructionMode === "gaussian" ? `<img id="modelPreview" class="model-preview" src="assets/reconstruction/preview.jpg" alt="模型预览，交互视图载入后可旋转与平移" fetchpriority="high"/>` : ""}<canvas id="cloudCanvas" tabindex="0" aria-label="三维点云，拖动平移，右键或Shift拖动旋转，滚轮缩放"></canvas><div class="stage-label"><strong>${source[1]}</strong></div>${task.events.map((d, i) => `<button class="model-marker" data-defect="${i}" aria-label="演示标注 ${d.id}" style="display:none">${i + 1}</button>`).join("")}<div class="cloud-status" id="cloudStatus">正在读取点云…</div><div class="model-help">拖动平移 · 右键 / Shift 旋转 · 滚轮缩放</div></div><div class="model-footer"><span id="pointCount">PLY 读取中</span><span>${reconstructionMode === "gaussian" ? "3DGS 实景渲染" : "保留点云原色"}</span></div></section><div class="stack"><section class="panel"><div class="panel-head"><h2>缺陷详情</h2></div><div id="defectDetail"></div></section><section class="panel"><div class="panel-head"><h2>标注列表</h2></div><div class="defect-list">${task.events.map((d, i) => `<button class="defect-select" data-defect="${i}"><span class="number">${i + 1}</span><span><strong>${d.title}</strong><small>${d.id}</small></span></button>`).join("")}</div></section></div></div>`
+      )}<span>${source[2]}</span></div><div class="model-toolbar"><div class="interaction-tabs"><button class="button small active" data-interaction="pan" aria-pressed="true">平移</button><button class="button small" data-interaction="rotate" aria-pressed="false">旋转</button></div><div class="viewer-actions">${reconstructionMode === "gaussian" ? `<button class="button small" id="modelQuality" title="轻量模型优先显示；完整模型保留全部高斯点">${reconstructionQuality === "quick" ? "载入完整模型" : "切回轻量模型"}</button>` : ""}<button class="icon-button" id="zoomOut" aria-label="缩小">−</button><button class="icon-button" id="zoomIn" aria-label="放大">＋</button><button class="button small" id="resetView">复位</button></div></div><div class="cloud-stage ${reconstructionMode === "gaussian" ? "has-model-preview" : ""}" id="cloudStage">${reconstructionMode === "gaussian" ? `<img id="modelPreview" class="model-preview" src="${window.INSPECTION_ASSET_ORIGIN}assets/reconstruction/preview.jpg" alt="模型预览，交互视图载入后可旋转与平移" fetchpriority="high"/>` : ""}<canvas id="cloudCanvas" tabindex="0" aria-label="三维点云，拖动平移，右键或Shift拖动旋转，滚轮缩放"></canvas><div class="stage-label"><strong>${source[1]}</strong></div>${task.events.map((d, i) => `<button class="model-marker" data-defect="${i}" aria-label="演示标注 ${d.id}" style="display:none">${i + 1}</button>`).join("")}<div class="cloud-status" id="cloudStatus">正在读取点云…</div><div class="model-help">拖动平移 · 右键 / Shift 旋转 · 滚轮缩放</div></div><div class="model-footer"><span id="pointCount">PLY 读取中</span><span>${reconstructionMode === "gaussian" ? "3DGS 实景渲染" : "保留点云原色"}</span></div></section><div class="stack"><section class="panel"><div class="panel-head"><h2>缺陷详情</h2></div><div id="defectDetail"></div></section><section class="panel"><div class="panel-head"><h2>标注列表</h2></div><div class="defect-list">${task.events.map((d, i) => `<button class="defect-select" data-defect="${i}"><span class="number">${i + 1}</span><span><strong>${d.title}</strong><small>${d.id}</small></span></button>`).join("")}</div></section></div></div>`
   );
 }
 function report() {
@@ -376,8 +376,17 @@ function bindModel() {
   let active = true,
     instance = null,
     pan = true;
+  const poster = $("#modelPreview");
+  let posterTimer;
+  if (poster && window.INSPECTION_ASSET_ORIGIN) {
+    const fallback = () => { poster.onerror = null; poster.src = "assets/reconstruction/preview.jpg"; };
+    poster.onerror = fallback;
+    poster.onload = () => clearTimeout(posterTimer);
+    if (!poster.complete) posterTimer = setTimeout(fallback, 5000);
+  }
   cleanup = () => {
     active = false;
+    clearTimeout(posterTimer);
     instance?.dispose();
   };
   $("#resetView").onclick = () => instance?.reset();
@@ -394,7 +403,7 @@ function bindModel() {
         });
       }),
   );
-  import("./reconstruction.bundle.js?v=20261117-fast")
+  import("./reconstruction.bundle.js?v=20261117-fast4")
     .then(({ ReconstructionView }) => {
       if (!active) return;
       instance = new ReconstructionView(
@@ -491,6 +500,7 @@ function bind() {
         $("#loginError").textContent = "账号或密码不正确，请使用下方演示账号。";
     };
   if (current === "tasks") {
+    import("./reconstruction.bundle.js?v=20261117-fast4").catch(() => {});
     $$("[data-enter]").forEach(
       (b) =>
         (b.onclick = () => {
@@ -525,9 +535,23 @@ function bind() {
       status.textContent = "正在载入报告…";
       sheet.hidden = true;
       const image = new Image();
-      image.src = `assets/reports/${task.id}-page-${page}.webp?v=20261117-fast`;
+      const local = `assets/reports/${task.id}-page-${page}.webp?v=20261117-fast`;
       try {
-        await image.decode();
+        if (window.INSPECTION_ASSET_ORIGIN) {
+          let timer;
+          try {
+            image.src = window.INSPECTION_ASSET_ORIGIN + local;
+            await Promise.race([image.decode(), new Promise((_, reject) => {
+              timer = setTimeout(() => reject(Error("Image timeout")), 5000);
+            })]);
+          } catch {
+            image.src = local;
+            await image.decode();
+          } finally { clearTimeout(timer); }
+        } else {
+          image.src = local;
+          await image.decode();
+        }
         if (!active || token !== request) return;
         sheet.src = image.src;
         sheet.alt = `巡检报告第${page}页`;

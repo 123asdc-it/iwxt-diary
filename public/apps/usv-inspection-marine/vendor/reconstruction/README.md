@@ -19,3 +19,9 @@ The default scene-quick.spz contains 160000 selected splats with SPZ v2
 quantization for faster display. The complete 317107-point scene.splat is
 loaded only when requested. `scripts/optimize_web_assets.py` regenerates
 the quick model and WebP report previews without changing originals.
+
+Model metadata is embedded during bundling. Production asset URLs prefer
+the immutable public GitHub revision in tasks.js, then fall back to this site
+on an error or stalled download. localhost is fully local. Refresh the pinned
+asset revision when changing model, report, or poster files. Completed model
+blobs are reused for this page session; pending downloads cancel on navigation.

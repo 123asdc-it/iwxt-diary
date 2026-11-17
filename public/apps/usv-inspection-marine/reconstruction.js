@@ -3,9 +3,59 @@ import { OrbitControls } from "./vendor/reconstruction/OrbitControls.js";
 import {
   Viewer,
   SceneRevealMode,
+  SceneFormat,
 } from "./vendor/reconstruction/gaussian-splats-3d.js";
 
+import metadata from "./assets/reconstruction/metadata.json" with { type: "json" };
 const ASSETS = "assets/reconstruction/";
+const modelCache = new Map();
+
+async function modelAsset(name, signal, onProgress, expectedBytes) {
+  if (signal.aborted) throw new DOMException("Aborted", "AbortError");
+  if (modelCache.has(name)) return modelCache.get(name);
+  const local = ASSETS + name;
+  const remote = globalThis.INSPECTION_ASSET_ORIGIN;
+  const sources = remote ? [remote + local, local] : [local];
+  let lastError;
+  for (const url of sources) {
+    const controller = new AbortController();
+    const cancel = () => controller.abort();
+    signal.addEventListener("abort", cancel, { once: true });
+    let timer;
+    const armTimeout = (ms) => {
+      clearTimeout(timer);
+      timer = setTimeout(cancel, ms);
+    };
+    try {
+      armTimeout(url === local ? 15000 : 6000);
+      const response = await fetch(url, { signal: controller.signal });
+      if (!response.ok) throw Error(`HTTP ${response.status}`);
+      const total = expectedBytes || Number(response.headers.get("content-length"));
+      const reader = response.body.getReader();
+      const chunks = [];
+      let bytes = 0;
+      while (true) {
+        armTimeout(url === local ? 30000 : 8000);
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        bytes += value.byteLength;
+        onProgress(total ? Math.min(100, bytes / total * 100) : 0);
+      }
+      if (expectedBytes && bytes !== expectedBytes) throw Error("模型数据不完整");
+      const blob = new Blob(chunks, { type: "application/octet-stream" });
+      modelCache.set(name, blob);
+      return blob;
+    } catch (error) {
+      if (signal.aborted) throw error;
+      lastError = error;
+    } finally {
+      clearTimeout(timer);
+      signal.removeEventListener("abort", cancel);
+    }
+  }
+  throw lastError;
+}
 
 export class ReconstructionView {
   constructor(canvas, mode, onProject, onStatus, onReady, quality = "quick") {
@@ -67,11 +117,6 @@ export class ReconstructionView {
       this.onStatus(
         this.mode === "gaussian" ? "正在加载实景重建…" : "正在读取稀疏点云…",
       );
-      const response = await fetch(ASSETS + "metadata.json?v=20261117-fast", {
-        signal: this.abort.signal,
-      });
-      if (!response.ok) throw Error("模型信息读取失败");
-      const metadata = await response.json();
       this.metadata = metadata[this.mode === "gaussian" && this.quality === "quick" ? "quick" : this.mode];
       if (!this.alive) return;
       this.reset();
@@ -89,26 +134,29 @@ export class ReconstructionView {
           sphericalHarmonicsDegree: 0,
           sceneRevealMode: SceneRevealMode.Instant,
         });
-        const loading = this.viewer.addSplatScene(ASSETS + (this.quality === "quick" ? "scene-quick.spz" : "scene.splat"), {
-          showLoadingUI: false,
-          splatAlphaRemovalThreshold: 0,
-          onProgress: (percent, label, phase) => {
-            if (!this.alive) return;
-            const kind = this.quality === "quick" ? "轻量模型" : "完整模型";
-            this.onStatus(phase === 0
-              ? (percent > 0 ? `正在下载${kind}… ${Math.round(percent)}%` : `正在连接${kind}…`)
-              : `正在渲染${kind}…`);
-          },
-        });
-        // The library's AbortablePromise.then only accepts a success callback.
-        // Await its native promise so route-change cancellation is caught below.
-        await loading.promise;
+        const quick = this.quality === "quick";
+        const kind = quick ? "轻量模型" : "完整模型";
+        const blob = await modelAsset(quick ? "scene-quick.spz" : "scene.splat",
+          this.abort.signal,
+          (percent) => { if (this.alive) this.onStatus(`正在下载${kind}… ${Math.round(percent)}%`); },
+          quick ? metadata.quick.bytes : metadata.gaussian.count * 32);
+        if (!this.alive) return;
+        this.onStatus(`正在渲染${kind}…`);
+        const blobURL = URL.createObjectURL(blob);
+        try {
+          const loading = this.viewer.addSplatScene(blobURL, {
+            format: quick ? SceneFormat.Spz : SceneFormat.Splat,
+            showLoadingUI: false,
+            splatAlphaRemovalThreshold: 0,
+          });
+          // Await the native promise to catch route-change cancellation.
+          await loading.promise;
+        } finally {
+          URL.revokeObjectURL(blobURL);
+        }
       } else {
-        const response = await fetch(ASSETS + "sparse_pc.ply", {
-          signal: this.abort.signal,
-        });
-        if (!response.ok) throw Error("稀疏点云读取失败");
-        const text = await response.text();
+        const blob = await modelAsset("sparse_pc.ply", this.abort.signal, () => {}, metadata.sources["sparse_pc.ply"].bytes);
+        const text = await blob.text();
         if (!this.alive) return;
         const rows = text
           .slice(text.indexOf("end_header") + 10)

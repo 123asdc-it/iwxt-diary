@@ -1,3 +1,8 @@
+// Immutable copy of the same public assets; fall back to this site if unavailable.
+// Update the pinned commit when publishing replacement model/report assets.
+window.INSPECTION_ASSET_ORIGIN = location.hostname === "iwxt.cn"
+  ? "https://raw.githubusercontent.com/123asdc-it/iwxt-diary/3e3b623f805ae287dfc782c8eea74dec84fd2253/public/apps/usv-inspection-marine/"
+  : "";
 /* Demonstration manifests. Replace assets per task when paired recordings arrive.
    mapUrl embeds the original host-controller page when supplied.
    Otherwise the map shows the explicitly labelled Qingdao demonstration route. */
