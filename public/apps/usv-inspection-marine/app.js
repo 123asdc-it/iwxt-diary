@@ -113,7 +113,7 @@ function model() {
       )
       .join(
         "",
-      )}<span>${source[2]}</span></div><div class="model-toolbar"><div class="interaction-tabs"><button class="button small active" data-interaction="pan" aria-pressed="true">平移</button><button class="button small" data-interaction="rotate" aria-pressed="false">旋转</button></div><div class="viewer-actions">${reconstructionMode === "gaussian" ? `<button class="button small" id="modelQuality" title="轻量模型优先显示；完整模型保留全部高斯点">${reconstructionQuality === "quick" ? "载入完整模型" : "切回轻量模型"}</button>` : ""}<button class="icon-button" id="zoomOut" aria-label="缩小">−</button><button class="icon-button" id="zoomIn" aria-label="放大">＋</button><button class="button small" id="resetView">复位</button></div></div><div class="cloud-stage" id="cloudStage"><canvas id="cloudCanvas" tabindex="0" aria-label="三维点云，拖动平移，右键或Shift拖动旋转，滚轮缩放"></canvas><div class="stage-label"><strong>${source[1]}</strong></div>${task.events.map((d, i) => `<button class="model-marker" data-defect="${i}" aria-label="演示标注 ${d.id}" style="display:none">${i + 1}</button>`).join("")}<div class="cloud-status" id="cloudStatus">正在读取点云…</div><div class="model-help">拖动平移 · 右键 / Shift 旋转 · 滚轮缩放</div></div><div class="model-footer"><span id="pointCount">PLY 读取中</span><span>${reconstructionMode === "gaussian" ? "3DGS 实景渲染" : "保留点云原色"}</span></div></section><div class="stack"><section class="panel"><div class="panel-head"><h2>缺陷详情</h2></div><div id="defectDetail"></div></section><section class="panel"><div class="panel-head"><h2>标注列表</h2></div><div class="defect-list">${task.events.map((d, i) => `<button class="defect-select" data-defect="${i}"><span class="number">${i + 1}</span><span><strong>${d.title}</strong><small>${d.id}</small></span></button>`).join("")}</div></section></div></div>`
+      )}<span>${source[2]}</span></div><div class="model-toolbar"><div class="interaction-tabs"><button class="button small active" data-interaction="pan" aria-pressed="true">平移</button><button class="button small" data-interaction="rotate" aria-pressed="false">旋转</button></div><div class="viewer-actions">${reconstructionMode === "gaussian" ? `<button class="button small" id="modelQuality" title="轻量模型优先显示；完整模型保留全部高斯点">${reconstructionQuality === "quick" ? "载入完整模型" : "切回轻量模型"}</button>` : ""}<button class="icon-button" id="zoomOut" aria-label="缩小">−</button><button class="icon-button" id="zoomIn" aria-label="放大">＋</button><button class="button small" id="resetView">复位</button></div></div><div class="cloud-stage ${reconstructionMode === "gaussian" ? "has-model-preview" : ""}" id="cloudStage">${reconstructionMode === "gaussian" ? `<img id="modelPreview" class="model-preview" src="assets/reconstruction/preview.jpg" alt="模型预览，交互视图载入后可旋转与平移" fetchpriority="high"/>` : ""}<canvas id="cloudCanvas" tabindex="0" aria-label="三维点云，拖动平移，右键或Shift拖动旋转，滚轮缩放"></canvas><div class="stage-label"><strong>${source[1]}</strong></div>${task.events.map((d, i) => `<button class="model-marker" data-defect="${i}" aria-label="演示标注 ${d.id}" style="display:none">${i + 1}</button>`).join("")}<div class="cloud-status" id="cloudStatus">正在读取点云…</div><div class="model-help">拖动平移 · 右键 / Shift 旋转 · 滚轮缩放</div></div><div class="model-footer"><span id="pointCount">PLY 读取中</span><span>${reconstructionMode === "gaussian" ? "3DGS 实景渲染" : "保留点云原色"}</span></div></section><div class="stack"><section class="panel"><div class="panel-head"><h2>缺陷详情</h2></div><div id="defectDetail"></div></section><section class="panel"><div class="panel-head"><h2>标注列表</h2></div><div class="defect-list">${task.events.map((d, i) => `<button class="defect-select" data-defect="${i}"><span class="number">${i + 1}</span><span><strong>${d.title}</strong><small>${d.id}</small></span></button>`).join("")}</div></section></div></div>`
   );
 }
 function report() {
@@ -410,10 +410,14 @@ function bindModel() {
         },
         (text) => {
           if (!active) return;
-          status.textContent = text;
+          status.textContent = text && $("#modelPreview") ? "预览画面 · " + text : text;
           status.hidden = !text;
         },
         (count) => {
+          if (active) {
+            $("#modelPreview")?.remove();
+            stage.classList.remove("has-model-preview");
+          }
           if (active)
             $("#pointCount").textContent =
               count.toLocaleString() +
