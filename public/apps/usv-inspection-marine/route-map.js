@@ -1,15 +1,7 @@
 /* Qingdao demonstration route. Only a configured mapUrl is the host-controller page. */
 window.createQingdaoMap = function (element, task, enabled) {
   if (!element || !window.L) return null;
-  const route = [
-    [36.0522, 120.382],
-    [36.0514, 120.3856],
-    [36.0502, 120.3894],
-    [36.048, 120.394],
-    [36.0469, 120.3986],
-    [36.0457, 120.402],
-  ];
-  if (task.id === "qd-return") route.reverse();
+  const route = task.route;
   const map = L.map(element, {
     scrollWheelZoom: false,
     minZoom: 10,

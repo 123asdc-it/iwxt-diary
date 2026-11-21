@@ -92,3 +92,19 @@ window.INSPECTION_TASKS = [
     },
   ],
 }));
+
+// Shared demonstration route: event coordinates and map position use the same clock.
+const qingdaoRoute = [
+  [36.0522, 120.382], [36.0514, 120.3856], [36.0502, 120.3894],
+  [36.048, 120.394], [36.0469, 120.3986], [36.0457, 120.402],
+];
+window.INSPECTION_TASKS = window.INSPECTION_TASKS.map(task => {
+  const route = task.id === "qd-return" ? [...qingdaoRoute].reverse() : [...qingdaoRoute];
+  const events = task.events.map(event => {
+    const progress = Math.max(0, Math.min(1, event.time / task.duration)) * (route.length - 1);
+    const i = Math.min(route.length - 2, Math.floor(progress)), fraction = progress - i;
+    const [lat, lon] = route[i].map((value, axis) => value + (route[i + 1][axis] - value) * fraction);
+    return {...event, lat, lon};
+  });
+  return {...task, route, events};
+});

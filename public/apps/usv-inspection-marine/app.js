@@ -51,6 +51,16 @@ function loadReconstructionModule() {
   return reconstructionModule;
 }
 
+let mapLibrary;
+function loadMapLibrary() {
+  if (window.L) return Promise.resolve();
+  if (!mapLibrary) mapLibrary = import("./vendor/leaflet.js").catch(error => {
+    mapLibrary = null;
+    throw error;
+  });
+  return mapLibrary;
+}
+
 const reportImages = new Map();
 
 let demo = true,
@@ -91,7 +101,7 @@ function monitor() {
   return `<div class="marine-toolbar"><label class="task-picker"><span>当前任务</span><select id="taskSelect" aria-label="选择巡检任务">${tasks.map((t) => `<option value="${t.id}" ${t.id === task.id ? "selected" : ""}>${t.name} · ${t.subtitle}</option>`).join("")}</select></label><label class="demo-switch"><input id="demoToggle" type="checkbox" ${demo ? "checked" : ""}>演示数据</label><div class="mode-switch" aria-label="数据模式"><button data-mode="live" aria-pressed="${mode === "live"}">实时模式</button><button data-mode="replay" aria-pressed="${mode === "replay"}">历史回放</button></div><span class="pill muted" id="connectionState">演示在线</span><div class="control-spacer"></div><button class="button small" id="connectionToggle" ${!demo ? "disabled" : ""}>${offline ? "恢复演示设备" : "模拟离线"}</button><button class="button primary small" id="startMission">${demo ? "开始任务" : "下发真实任务"}</button></div>
   <div class="marine-workspace"><section class="panel route-panel"><div class="panel-head"><h2>航迹地图</h2><span class="map-heading">${task.mapUrl ? "上位机航迹" : "青岛 · 演示航迹"}</span><button class="button small" id="fitRoute">定位</button></div><div class="route-host" id="routeHost">${task.mapUrl ? `<iframe id="hostMap" title="上位机原版航迹页面" src="${esc(task.mapUrl)}"></iframe>` : `<div id="qingdaoMap" aria-label="青岛地图与演示航迹"></div><div id="mapLoading" class="map-loading">正在加载青岛地图…</div>`}<div class="map-north" aria-hidden="true">N<br>▲</div></div><div class="route-readout"><span>演示船位 <b id="positionValue">—</b></span><span id="mapSync">演示航迹</span></div></section>
   <section class="panel camera-panel"><div class="panel-head"><h2>${icon("camera")}云台监控</h2><div class="camera-actions"><button class="button small" id="toggleReplay">播放</button><button class="button small" id="restartReplay">重播</button><b id="replayTime">00:00</b><button class="button small" id="fullscreenReplay">全屏</button></div></div><div class="camera-view"><video id="trialVideo" muted playsinline preload="metadata" poster="${task.poster}" aria-label="演示云台视频"></video><div class="feed-tag" id="feedLabel"></div><div class="camera-offline" id="cameraOffline" hidden><strong>设备离线</strong><span>画面与设备数据已停止刷新</span></div></div></section>
-  <section class="panel events-panel"><div class="panel-head"><h2>疑似异常</h2><span class="meta">${task.events.length} 条</span></div><div class="event-list">${task.events.map((e, i) => `<button class="event-item ${e.cls === "danger" ? "priority-event" : ""}" data-event="${i}"><span class="event-symbol">${e.cls === "danger" ? "△" : "·"}</span><span class="event-name"><strong>${e.title}</strong><small>${e.id}</small></span><time>${clock(e.time)}</time><span class="event-arrow">›</span></button>`).join("")}</div></section></div>
+  <section class="panel events-panel"><div class="panel-head"><h2>疑似异常</h2><span class="meta">${task.events.length} 条</span></div><div class="event-list">${task.events.map((e, i) => `<button class="event-item ${e.cls === "danger" ? "priority-event" : ""}" data-event="${i}"><span class="event-symbol">${e.cls === "danger" ? "△" : "·"}</span><span class="event-name"><strong>${e.title}</strong><small>${e.id}</small></span><span class="event-coordinates" title="演示航迹坐标"><span>${e.lat.toFixed(4)}° N</span><span>${e.lon.toFixed(4)}° E</span></span><span class="event-arrow">›</span></button>`).join("")}</div></section></div>
   <section class="marine-telemetry"><div id="deviceMetrics" class="metric-grid"></div><div class="marine-task-status"><span>任务状态</span><strong id="missionStatus" aria-live="polite">待演示</strong></div><a class="button report-entry" href="#report">${icon("report")}巡检报告</a></section>
   <div class="monitor-status"><span id="syncStatus">同一回放时钟 · 演示数据</span><span id="sourceBadge">${demo ? "模拟数据 · 试验素材复用" : "真实模式 · 未接入设备"}</span><span id="deviceStamp">等待回放</span><span id="absoluteTime"></span></div>`;
 }
@@ -135,7 +145,7 @@ function report() {
       "",
       `<a href="${task.report}" download="${number}-巡检报告.pdf" class="button primary">${icon("download")}下载报告</a>`,
     ) +
-    `<div class="report-layout"><section class="report-document"><div class="report-document-toolbar"><strong>${number}</strong><span id="reportPageCount">第 1 页 / 共 3 页</span></div><div class="report-page-stage"><div id="reportLoading" class="report-loading" role="status">正在载入报告…</div><img class="report-sheet" id="reportSheet" alt="巡检报告第1页" decoding="async" hidden/></div></section><aside class="stack"><section class="panel report-side"><h3>报告信息</h3><dl><div><dt>任务</dt><dd>${task.name}</dd></div><div><dt>报告版本</dt><dd>V3.0</dd></div><div><dt>编制日期</dt><dd>2026-11-18</dd></div></dl><div class="report-actions"><button class="button" id="previewReport">打开 PDF</button><a class="button" href="#monitor">返回监控</a></div></section><section class="panel report-side"><h3>报告目录</h3><div class="report-page-list">${pageNames.map((name, i) => `<button data-report-page="${i + 1}" class="${i === 0 ? "active" : ""}" aria-pressed="${i === 0}"><span>0${i + 1}</span>${name}</button>`).join("")}</div></section></aside></div>`
+    `<div class="report-layout"><section class="report-document"><div class="report-document-toolbar"><strong>${number}</strong><span>完整报告</span></div><div class="report-continuous">${pageNames.map((name, i) => `<section class="report-page-stage" id="report-section-${i + 1}" aria-label="${name}"><div class="report-loading" role="status">正在载入${name}…</div><img class="report-sheet" alt="${name}" width="1191" height="1684" decoding="async" hidden/></section>`).join("")}</div></section><aside class="stack"><section class="panel report-side"><h3>报告信息</h3><dl><div><dt>任务</dt><dd>${task.name}</dd></div><div><dt>报告版本</dt><dd>V3.0</dd></div><div><dt>编制日期</dt><dd>2026-11-18</dd></div></dl><div class="report-actions"><button class="button" id="previewReport">打开 PDF</button><a class="button" href="#monitor">返回监控</a></div></section><section class="panel report-side"><h3>报告目录</h3><div class="report-page-list">${pageNames.map((name, i) => `<button data-report-page="${i + 1}" class="${i === 0 ? "active" : ""}" aria-pressed="${i === 0}"><span>0${i + 1}</span>${name}</button>`).join("")}</div></section></aside></div>`
   );
 }
 function sampleAt(t) {
@@ -174,7 +184,15 @@ function bindMonitor() {
     render();
   };
   const mission = task;
-  const routeView = createQingdaoMap($("#qingdaoMap"), mission, demo);
+  let routeView = null;
+  const mapElement = $("#qingdaoMap");
+  if (mapElement) loadMapLibrary().then(() => {
+    if (!mapElement.isConnected) return;
+    routeView = createQingdaoMap(mapElement, mission, demo);
+    routeView?.setTime(v.currentTime / mission.duration);
+  }).catch(() => {
+    if (mapElement.isConnected) $("#mapLoading").textContent = "地图暂不可用，请稍后重试";
+  });
   if ($("#fitRoute")) $("#fitRoute").onclick = () => routeView?.fit();
   const v = $("#trialVideo");
   let ended = completedTasks.has(mission.id);
@@ -518,11 +536,11 @@ function bind() {
         "巡检报告",
         `<iframe title="${task.code} 巡检报告" src="${task.report}"></iframe>`,
       );
-    let request = 0, active = true;
-    cleanup = () => { active = false; request++; };
+    let active = true;
+    const sections = $$(".report-continuous .report-page-stage");
     const showPage = async (page) => {
-      const token = ++request;
-      const status = $("#reportLoading"), sheet = $("#reportSheet");
+      const section = sections[page - 1];
+      const status = $(".report-loading", section), sheet = $(".report-sheet", section);
       status.hidden = false;
       status.textContent = "正在载入报告…";
       sheet.hidden = true;
@@ -548,26 +566,38 @@ function bind() {
           return image;
         })().catch(error => { reportImages.delete(local); throw error; }));
         const image = await reportImages.get(local);
-        if (!active || token !== request) return;
+        if (!active) return;
         sheet.src = image.src;
         sheet.alt = `巡检报告第${page}页`;
         sheet.hidden = false;
         status.hidden = true;
-        $("#reportPageCount").textContent = `第 ${page} 页 / 共 3 页`;
-        $$("[data-report-page]").forEach((b) => {
-          const selected = b.dataset.reportPage === String(page);
-          b.classList.toggle("active", selected);
-          b.setAttribute("aria-pressed", String(selected));
-        });
+
       } catch {
-        if (active && token === request) status.textContent = "暂时无法载入，请点击目录重试。";
+        if (active) {
+          status.textContent = "暂时无法载入，点击此处重试。";
+          status.onclick = () => showPage(page);
+        }
       }
     };
-    $$("[data-report-page]").forEach(button => {
-      button.onclick = () => showPage(button.dataset.reportPage);
+    const buttons = $$("[data-report-page]");
+    buttons.forEach(button => {
+      button.onclick = () => sections[Number(button.dataset.reportPage) - 1].scrollIntoView({behavior:"smooth", block:"start"});
     });
-    showPage(1);
+    const observer = new IntersectionObserver(entries => {
+      if (!active) return;
+      const entry = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+      if (!entry) return;
+      const page = sections.indexOf(entry.target) + 1;
+      buttons.forEach(button => {
+        const selected = Number(button.dataset.reportPage) === page;
+        button.classList.toggle("active", selected);
+        button.setAttribute("aria-pressed", String(selected));
+      });
+    }, {rootMargin:"-80px 0px -40% 0px", threshold:0});
+    sections.forEach((section, i) => { observer.observe(section); showPage(i + 1); });
+    cleanup = () => { active = false; observer.disconnect(); };
   }
+
   if (current === "data") {
     renderFiles();
     $("#fileSearch").value = query;
