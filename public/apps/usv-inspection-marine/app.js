@@ -51,6 +51,8 @@ function loadReconstructionModule() {
   return reconstructionModule;
 }
 
+const reportImages = new Map();
+
 let demo = true,
   mode = "replay",
   offline = false,
@@ -83,7 +85,7 @@ function stat(ic, label, value, unit, note) {
   return `<div class="stat-card"><div class="stat-icon">${icon(ic)}</div><div class="stat-content"><div class="stat-label">${label}</div><div class="stat-value">${value}<small>${unit}</small></div><div class="stat-note">${note}</div></div></div>`;
 }
 function login() {
-  return `<section class="login-layout"><div class="login-intro"><h1>每一次巡检，<br>都有迹可循。</h1><p>岸堤巡检与三维重建工作台</p><img src="assets/usv.png" alt="巡检无人船"/></div><form id="loginForm" class="login-card"><h2>登录工作台</h2><label>账号<input name="account" autocomplete="username" value="demo" required></label><label>密码<input name="password" type="password" autocomplete="current-password" placeholder="请输入密码" required></label><p id="loginError" class="error-text" role="alert"></p><button class="button primary" type="submit">登录 ${icon("arrow")}</button><small>演示账号 demo / 密码 123456</small></form></section>`;
+  return `<section class="login-layout"><div class="login-intro"><h1>每一次巡检，<br>都有迹可循。</h1><p>岸堤巡检与三维重建工作台</p><img src="assets/usv.png" alt="巡检无人船" loading="lazy" decoding="async"/></div><form id="loginForm" class="login-card"><h2>登录工作台</h2><label>账号<input name="account" autocomplete="username" value="demo" required></label><label>密码<input name="password" type="password" autocomplete="current-password" placeholder="请输入密码" required></label><p id="loginError" class="error-text" role="alert"></p><button class="button primary" type="submit">登录 ${icon("arrow")}</button><small>演示账号 demo / 密码 123456</small></form></section>`;
 }
 function monitor() {
   return `<div class="marine-toolbar"><label class="task-picker"><span>当前任务</span><select id="taskSelect" aria-label="选择巡检任务">${tasks.map((t) => `<option value="${t.id}" ${t.id === task.id ? "selected" : ""}>${t.name} · ${t.subtitle}</option>`).join("")}</select></label><label class="demo-switch"><input id="demoToggle" type="checkbox" ${demo ? "checked" : ""}>演示数据</label><div class="mode-switch" aria-label="数据模式"><button data-mode="live" aria-pressed="${mode === "live"}">实时模式</button><button data-mode="replay" aria-pressed="${mode === "replay"}">历史回放</button></div><span class="pill muted" id="connectionState">演示在线</span><div class="control-spacer"></div><button class="button small" id="connectionToggle" ${!demo ? "disabled" : ""}>${offline ? "恢复演示设备" : "模拟离线"}</button><button class="button primary small" id="startMission">${demo ? "开始任务" : "下发真实任务"}</button></div>
@@ -508,7 +510,6 @@ function bind() {
     };
   if (current === "monitor") {
     bindMonitor();
-    loadReconstructionModule().catch(() => {});
   }
   if (current === "model") bindModel();
   if (current === "report") {
@@ -525,24 +526,28 @@ function bind() {
       status.hidden = false;
       status.textContent = "正在载入报告…";
       sheet.hidden = true;
-      const image = new Image();
       const local = `assets/reports/r03/${task.id}-page-${page}.webp`;
       try {
-        if (window.INSPECTION_REPORT_ORIGIN) {
-          let timer;
-          try {
-            image.src = window.INSPECTION_REPORT_ORIGIN + local;
-            await Promise.race([image.decode(), new Promise((_, reject) => {
-              timer = setTimeout(() => reject(Error("Image timeout")), 5000);
-            })]);
-          } catch {
+        if (!reportImages.has(local)) reportImages.set(local, (async () => {
+          const image = new Image();
+          if (window.INSPECTION_REPORT_ORIGIN) {
+            let timer;
+            try {
+              image.src = window.INSPECTION_REPORT_ORIGIN + local;
+              await Promise.race([image.decode(), new Promise((_, reject) => {
+                timer = setTimeout(() => reject(Error("Image timeout")), 5000);
+              })]);
+            } catch {
+              image.src = local;
+              await image.decode();
+            } finally { clearTimeout(timer); }
+          } else {
             image.src = local;
             await image.decode();
-          } finally { clearTimeout(timer); }
-        } else {
-          image.src = local;
-          await image.decode();
-        }
+          }
+          return image;
+        })().catch(error => { reportImages.delete(local); throw error; }));
+        const image = await reportImages.get(local);
         if (!active || token !== request) return;
         sheet.src = image.src;
         sheet.alt = `巡检报告第${page}页`;
