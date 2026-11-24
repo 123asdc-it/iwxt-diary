@@ -47,7 +47,7 @@ window.INSPECTION_TASKS = [
   poster: "assets/trial-frame.jpg",
   cloud: "assets/shoreline-sfm-full.ply",
   mapUrl: "",
-  report: `assets/reports/r05/${t.id}.pdf`,
+  report: `assets/reports/r06/${t.id}.pdf`,
   duration: 24,
   // All quantities below are authored demonstration fixtures, not recovered telemetry.
   telemetry: [0, 6, 12, 18, 23.95].map((time, i) => ({
