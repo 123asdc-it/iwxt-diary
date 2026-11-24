@@ -136,7 +136,7 @@ function model() {
 }
 function report() {
   const number =
-    "ZJ-QD-" + String(tasks.indexOf(task) + 1).padStart(2, "0") + "-R06";
+    "ZJ-QD-" + String(tasks.indexOf(task) + 1).padStart(2, "0") + "-R07";
   const pageNames = ["船载影像与运行读数", "异常记录与处置"];
   return (
     heading(
@@ -145,7 +145,7 @@ function report() {
       "",
       `<a href="${task.report}" download="${number}-巡检报告.pdf" class="button primary">${icon("download")}下载报告</a>`,
     ) +
-    `<div class="report-layout"><section class="report-document"><div class="report-document-toolbar"><strong>${number}</strong><span>完整报告</span></div><div class="report-continuous">${pageNames.map((name, i) => `<section class="report-page-stage" id="report-section-${i + 1}" aria-label="${name}"><div class="report-loading" role="status">正在载入${name}…</div><img class="report-sheet" alt="${name}" width="1191" height="1684" decoding="async" hidden/></section>`).join("")}</div></section><aside class="stack"><section class="panel report-side"><h3>报告信息</h3><dl><div><dt>任务</dt><dd>${task.name}</dd></div><div><dt>报告版本</dt><dd>V6.0</dd></div><div><dt>编制日期</dt><dd>2026-11-25</dd></div></dl><div class="report-actions"><button class="button" id="previewReport">打开 PDF</button><a class="button" href="#monitor">返回监控</a></div></section><section class="panel report-side"><h3>报告目录</h3><div class="report-page-list">${pageNames.map((name, i) => `<button data-report-page="${i + 1}" class="${i === 0 ? "active" : ""}" aria-pressed="${i === 0}"><span>0${i + 1}</span>${name}</button>`).join("")}</div></section></aside></div>`
+    `<div class="report-layout"><section class="report-document"><div class="report-document-toolbar"><strong>${number}</strong><span>完整报告</span></div><div class="report-continuous">${pageNames.map((name, i) => `<section class="report-page-stage" id="report-section-${i + 1}" aria-label="${name}"><div class="report-loading" role="status">正在载入${name}…</div><img class="report-sheet" alt="${name}" width="1191" height="1684" decoding="async" hidden/></section>`).join("")}</div></section><aside class="stack"><section class="panel report-side"><h3>报告信息</h3><dl><div><dt>任务</dt><dd>${task.name}</dd></div><div><dt>报告版本</dt><dd>V7.0</dd></div><div><dt>编制日期</dt><dd>2026-11-25</dd></div></dl><div class="report-actions"><button class="button" id="previewReport">打开 PDF</button><a class="button" href="#monitor">返回监控</a></div></section><section class="panel report-side"><h3>报告目录</h3><div class="report-page-list">${pageNames.map((name, i) => `<button data-report-page="${i + 1}" class="${i === 0 ? "active" : ""}" aria-pressed="${i === 0}"><span>0${i + 1}</span>${name}</button>`).join("")}</div></section></aside></div>`
   );
 }
 function sampleAt(t) {
@@ -544,7 +544,7 @@ function bind() {
       status.hidden = false;
       status.textContent = "正在载入报告…";
       sheet.hidden = true;
-      const local = `assets/reports/r06/${task.id}-page-${page}.webp`;
+      const local = `assets/reports/r07/${task.id}-page-${page}.webp`;
       try {
         if (!reportImages.has(local)) reportImages.set(local, (async () => {
           const image = new Image();
