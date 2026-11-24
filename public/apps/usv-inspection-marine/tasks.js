@@ -4,7 +4,7 @@ window.INSPECTION_ASSET_ORIGIN = location.hostname === "iwxt.cn"
   ? "https://raw.githubusercontent.com/123asdc-it/iwxt-diary/3e3b623f805ae287dfc782c8eea74dec84fd2253/public/apps/usv-inspection-marine/"
   : "";
 window.INSPECTION_REPORT_ORIGIN = location.hostname === "iwxt.cn"
-  ? "https://raw.githubusercontent.com/123asdc-it/iwxt-diary/e01dd5c14974ff84523a7cda09606df686a19a42/public/apps/usv-inspection-marine/"
+  ? "https://raw.githubusercontent.com/123asdc-it/iwxt-diary/fe3cd747db2a83099c6c79472771c620e667a1c4/public/apps/usv-inspection-marine/"
   : "";
 /* Demonstration manifests. Replace assets per task when paired recordings arrive.
    mapUrl embeds the original host-controller page when supplied.
@@ -49,7 +49,7 @@ window.INSPECTION_TASKS = [
   poster: "assets/trial-frame.jpg",
   cloud: "assets/shoreline-sfm-full.ply",
   mapUrl: "",
-  report: `assets/reports/r03/${t.id}.pdf`,
+  report: `assets/reports/r04/${t.id}.pdf`,
   duration: 24,
   // All quantities below are authored demonstration fixtures, not recovered telemetry.
   telemetry: [0, 6, 12, 18, 23.95].map((time, i) => ({
@@ -69,26 +69,26 @@ window.INSPECTION_TASKS = [
     {
       id: "A-07",
       time: 5 + t.offset,
-      title: "接缝疑似细裂纹",
+      title: "疑似树木倒塌",
       level: "待复核",
       cls: "warning",
-      note: "演示标注，用于展示影像定位与复核流程。",
+      note: "检查树干倒伏方向及其对岸线通行的影响。",
     },
     {
       id: "A-11",
       time: 12 + t.offset,
-      title: "临水面局部缺损",
+      title: "疑似枯枝堆积",
       level: "优先复核",
       cls: "danger",
-      note: "演示标注，用于展示优先复核的交互。",
+      note: "检查岸边枝条聚集范围，优先清理靠近航线的枯枝。",
     },
     {
       id: "A-14",
       time: 19 + t.offset,
-      title: "表面附着物变化",
+      title: "疑似植被侵入航道",
       level: "待复核",
       cls: "warning",
-      note: "演示标注，用于展示复巡记录流程。",
+      note: "检查临水枝叶伸展范围，修剪后保留同位置复巡记录。",
     },
   ],
 }));
